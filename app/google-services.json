@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "360438045539",
+    "firebase_url": "https://cairohat-app.firebaseio.com",
+    "project_id": "cairohat-app",
+    "storage_bucket": "cairohat-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:360438045539:android:b465643010b56dbc",
+        "android_client_info": {
+          "package_name": "com.cairohat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "360438045539-1smk9pslcsqodslo46nhl217ls2t2k2p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnDa0HMcNfQg1tkluCpdtrjX9bTd4blt4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
