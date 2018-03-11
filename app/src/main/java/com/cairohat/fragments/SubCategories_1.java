@@ -4,6 +4,8 @@ package com.cairohat.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -43,14 +45,14 @@ public class SubCategories_1 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.categories, container, false);
-    
+
         // Get CategoryID from Bundle arguments
         parentCategoryID = getArguments().getInt("CategoryID");
-        
+
         // Enable Drawer Indicator with static variable actionBarDrawerToggle of MainActivity
         MainActivity.actionBarDrawerToggle.setDrawerIndicatorEnabled(false);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getArguments().getString("CategoryName", getString(R.string.actionCategory)));
-        
+
 
         // Get CategoriesList from ApplicationContext
         allCategoriesList = new ArrayList<>();
@@ -65,10 +67,15 @@ public class SubCategories_1 extends Fragment {
 
         // Hide some of the Views
         headerText.setVisibility(View.GONE);
+
         emptyText.setVisibility(View.GONE);
 
 
+
+
         subCategoriesList = new ArrayList<>();
+
+
 
         for (int i=0;  i<allCategoriesList.size();  i++) {
             if (allCategoriesList.get(i).getParent().equalsIgnoreCase(String.valueOf(parentCategoryID))) {
@@ -77,14 +84,20 @@ public class SubCategories_1 extends Fragment {
         }
 
 
+        if(subCategoriesList.size() == 0){
+            emptyText.setVisibility(View.VISIBLE);
+        }
+
+
+
         // Initialize the CategoryListAdapter and LayoutManager for RecyclerView
         categoryListAdapter = new CategoryListAdapter_1(getContext(), subCategoriesList, true);
         category_recycler.setLayoutManager(new GridLayoutManager(getContext(), 2));
-    
+
         // Set the Adapter to the RecyclerView
         category_recycler.setAdapter(categoryListAdapter);
 
-        
+
         categoryListAdapter.notifyDataSetChanged();
 
 

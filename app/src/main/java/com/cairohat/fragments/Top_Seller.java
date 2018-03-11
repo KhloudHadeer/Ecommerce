@@ -128,7 +128,7 @@ public class Top_Seller extends Fragment {
 
                 if (response.isSuccessful()) {
                     if(response.body().size() == 0){
-                        emptyRecord.setVisibility(View.VISIBLE);
+                       // emptyRecord.setVisibility(View.VISIBLE);
 
                     }else {
                         for (int i = 0; i < response.body().size(); i++) {

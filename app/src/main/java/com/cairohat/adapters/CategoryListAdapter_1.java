@@ -55,6 +55,7 @@ public class CategoryListAdapter_1 extends RecyclerView.Adapter<CategoryListAdap
         // Inflate the custom layout
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_categories_1, parent, false);
 
+
         return new MyViewHolder(itemView);
     }
 
@@ -75,6 +76,10 @@ public class CategoryListAdapter_1 extends RecyclerView.Adapter<CategoryListAdap
 
 
         holder.category_title.setText(categoryDetails.getName());
+
+
+
+
 //        holder.category_products.setText(categoryDetails.getTotalProducts() + " "+ context.getString(R.string.products));
 
     }
@@ -101,12 +106,20 @@ public class CategoryListAdapter_1 extends RecyclerView.Adapter<CategoryListAdap
 
         public MyViewHolder(final View itemView) {
             super(itemView);
+
+
+
             category_card = (RelativeLayout) itemView.findViewById(R.id.category_card);
             category_image = (ImageView) itemView.findViewById(R.id.category_image);
             category_title = (TextView) itemView.findViewById(R.id.category_title);
             category_products = (TextView) itemView.findViewById(R.id.category_products);
 
             category_card.setOnClickListener(this);
+
+
+
+
+
         }
 
 

@@ -114,7 +114,7 @@ public class All_Products extends Fragment {
         productsList = new ArrayList<>();
 
         // Request for Products based on PageNo.
-      //  RequestAllProducts(pageNo, sortBy);
+        RequestAllProducts(pageNo, sortBy);
 
 
         // Initialize GridLayoutManager and LinearLayoutManager
@@ -283,17 +283,14 @@ public class All_Products extends Fragment {
         getAllProducts.setCustomersId(customerID);
         getAllProducts.setType(sortBy);
 
-        Call<ProductData> call = APIClient.getInstance()
-                .getAllProducts
-                        (
-                                getAllProducts
-                        );
-
-        call.enqueue(new Callback<ProductData>() {
+        Call<List<ProductData>> call = APIClient.getInstance()
+                .getallproduct(pageNumber);
+        call.enqueue(new Callback<List<ProductData>>() {
             @Override
-            public void onResponse(Call<ProductData> call, retrofit2.Response<ProductData> response) {
+            public void onResponse(Call<List<ProductData>> call, retrofit2.Response<List<ProductData>> response) {
                 
                 if (response.isSuccessful()) {
+                    Toast.makeText(getContext() , response.code()+response.message() , Toast.LENGTH_LONG).cancel();
 //                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
 //                        // Products have been returned. Add Products to the ProductsList
 //                        addProducts(response.body());
@@ -315,12 +312,12 @@ public class All_Products extends Fragment {
                     
                 }
                 else {
-                    Toast.makeText(getContext(), ""+response.message(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), response.code()+response.message(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<ProductData> call, Throwable t) {
+            public void onFailure(Call<List<ProductData>> call, Throwable t) {
                 Toast.makeText(getContext(), "NetworkCallFailure : "+t, Toast.LENGTH_LONG).show();
             }
         });

@@ -53,6 +53,7 @@ public class Category_Products extends Fragment {
     boolean isVisible;
     boolean isGridView;
     boolean isFilterApplied;
+    private static int numpage = 0;
     
     int categoryID;
     String customerID;
@@ -163,6 +164,8 @@ public class Category_Products extends Fragment {
 
         // Initialize the ProductAdapter for RecyclerView
         productAdapter = new ProductAdapter(getContext(), categoryProductsList, false);
+        Toast.makeText(getContext() , categoryProductsList.size()+"" , Toast.LENGTH_LONG).cancel();
+
 
         
         setRecyclerViewLayoutManager(isGridView);
@@ -393,6 +396,7 @@ public class Category_Products extends Fragment {
 //            ProductDetails productDetails = productData.getProductData().get(i);
 //            categoryProductsList.add(productDetails);
 //        }
+        categoryProductsList.add(productData);
 
         productAdapter.notifyDataSetChanged();
 
@@ -414,7 +418,7 @@ public class Category_Products extends Fragment {
 
     //*********** Request Products of given Category from the Server based on PageNo. ********//
 
-    public void RequestCategoryProducts(int pageNumber, String sortBy) {
+    public void RequestCategoryProducts(final int pageNumber, final String sortBy) {
 
         GetAllProducts getAllProducts = new GetAllProducts();
         getAllProducts.setPageNumber(pageNumber);
@@ -424,17 +428,24 @@ public class Category_Products extends Fragment {
         getAllProducts.setType(sortBy);
 
 
-        Call<ProductData> call = APIClient.getInstance()
-                .getAllProducts
-                        (
-                                getAllProducts
-                        );
+        Call<List<ProductData>> call = APIClient.getInstance()
+                .getallproduct(numpage+1);
+        numpage++;
 
-        call.enqueue(new Callback<ProductData>() {
+
+
+        call.enqueue(new Callback<List<ProductData>>() {
             @Override
-            public void onResponse(Call<ProductData> call, retrofit2.Response<ProductData> response) {
+            public void onResponse(Call<List<ProductData>> call, retrofit2.Response<List<ProductData>> response) {
                 
                 if (response.isSuccessful()) {
+                    for(int i=0; i<response.body().size(); i++) {
+                        addCategoryProducts(response.body().get(i));
+                    }
+                    if(response.body().size() == 10){
+                        RequestCategoryProducts(pageNumber , sortBy);
+                    }
+
 //                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
 //
 //                        // Products have been returned. Add Products to the ProductsList
@@ -461,15 +472,15 @@ public class Category_Products extends Fragment {
                     
                 }
                 else {
-                    if (isVisible)
+                  //  if (isVisible)
                         Toast.makeText(getContext(), ""+response.message(), Toast.LENGTH_SHORT).show();
                 }
                 
             }
 
             @Override
-            public void onFailure(Call<ProductData> call, Throwable t) {
-                if (isVisible)
+            public void onFailure(Call<List<ProductData>> call, Throwable t) {
+               // if (isVisible)
                     Toast.makeText(getContext(), "NetworkCallFailure : "+t, Toast.LENGTH_LONG).show();
             }
         });

@@ -26,7 +26,6 @@ import com.cairohat.models.shipping_model.ShippingRateData;
 import com.cairohat.models.user_model.UserData;
 import com.cairohat.models.user_model.Userdata2;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -76,6 +75,13 @@ public interface APIRequests {
 
     @GET("wooconnector/product/getbestsales")
     Call<List<ProductData>> getbestsales(@Query("post_num_page") int number);
+
+
+    @GET("wooconnector/product/getcategories")
+    Call<List<CategoryData>> getcategproduct(@Query("cat_num_page") int num);
+
+//    @GET("wooconnector/product/getbestviews")
+//    Call<> getbestreviews();
 
 
     @GET("listing_cat")
@@ -178,6 +184,9 @@ public interface APIRequests {
 
     @POST("getAllProducts")
     Call<ProductData> getAllProducts(       @Body GetAllProducts getAllProducts);
+
+    @GET("wooconnector/product/getproduct")
+    Call<List<ProductData>> getallproduct(@Query("post_num_page") int num);
 
 
     @FormUrlEncoded

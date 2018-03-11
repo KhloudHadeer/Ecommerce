@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cairohat.activities.MainActivity;
 import com.cairohat.R;
@@ -66,8 +67,7 @@ public class Categories_1 extends Fragment {
 
         // Get CategoriesList from ApplicationContext
         allCategoriesList = ((App) getContext().getApplicationContext()).getCategoriesList();
-        System.out.println("size"+allCategoriesList.size());
-        
+
         
         // Binding Layout Views
         emptyText = (TextView) rootView.findViewById(R.id.empty_record_text);
@@ -109,6 +109,7 @@ public class Categories_1 extends Fragment {
         category_recycler.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
         categoryListAdapter.notifyDataSetChanged();
+        System.out.println("size , "+ allCategoriesList.size() );
 
 
         return rootView;

@@ -32,6 +32,7 @@
             android:layout_height="wrap_content"
             android:text="@string/record_not_found"
             android:textSize="18sp"
+            android:layout_marginTop="60dp"
             android:textColor="@color/textColorPrimaryLight"
             android:layout_centerInParent="true" />
 

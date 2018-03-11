@@ -98,7 +98,8 @@ public class StartAppRequests {
 
         Call<List<CategoryData>> call = APIClient.getInstance()
                 .getcategoriespages(pagenum+1);
-        pagenum ++;
+        Call<List<CategoryData>> call1 = APIClient.getInstance().getcategproduct(pagenum+1);
+         pagenum ++;
 
 
         //CategoryData categoryData = new CategoryData();
@@ -114,12 +115,18 @@ public class StartAppRequests {
         try {
      
                 categoryDataList.addAll(call.clone().execute().body());
+                categoryDataList.addAll(call1.clone().execute().body());
 
 
             if (call.clone().execute().body().size() == 10){
                 RequestAllCategories();
 
             }
+            if (call1.clone().execute().body().size() == 10){
+                RequestAllCategories();
+
+            }
+
 
             app.setCategoriesList(categoryDataList);
 
