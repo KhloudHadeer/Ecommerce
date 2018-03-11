@@ -48,7 +48,6 @@ import retrofit2.Response;
 public class StartAppRequests {
 
     private App app = new App();
-    private Context context;
     private static int pagenum = 0;
     List<CategoryData> categoryDataList = new ArrayList<>();
 

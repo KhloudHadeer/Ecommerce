@@ -260,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 // Get User's Info from Local Database User_Info_DB
                 User_Info_DB userInfoDB = new User_Info_DB();
-                UserDetails userInfo = userInfoDB.getUserData(sharedPreferences.getString("userID", null));
+                UserDetails userInfo = userInfoDB.getUserData(sharedPreferences.getString("userName", null));
 
                 // Set User's Name, Email and Photo
                 drawer_profile_email.setText(userInfo.getCustomersEmailAddress());
