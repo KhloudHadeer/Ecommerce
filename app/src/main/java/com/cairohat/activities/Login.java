@@ -91,6 +91,9 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         // Initialize Facebook SDk for Facebook Login
         FacebookSdk.sdkInitialize(getApplicationContext());
 
+
+
+
         // Initializing Google SDK for Google Login
         mGoogleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -329,7 +332,6 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     //*********** Proceed Login with User Email and Password ********//
 
     private void processLogin() {
-
         dialogLoader.showProgressDialog();
 
         Call<Userdata2> call = APIClient.getInstance()
@@ -357,6 +359,8 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                         //editor.putString("userID", userDetails.getCustomersId());
                         editor.putString("userEmail", userDetails.getEmail());
                         editor.putString("userName", userDetails.getNicename());
+                        editor.putString("usernamename", userDetails.getNicename());
+             //   editor.putString("usernamename", user_email.getText().toString().trim());
                        // editor.putString("userDefaultAddressID", userDetails.getCustomersDefaultAddressId());
                         editor.putBoolean("isLogged_in", true);
                         editor.apply();

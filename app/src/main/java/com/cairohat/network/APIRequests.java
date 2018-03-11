@@ -73,6 +73,11 @@ public interface APIRequests {
                                             @Field("password") String customers_password );
 
 
+    @FormUrlEncoded
+    @POST("mobiconnector/user/get_info")
+    Call<Userdata2> processProfile(            @Field("username") String customers_username );
+
+
 
     @GET("wooconnector/product/getbestsales")
     Call<List<ProductData>> getbestsales(@Query("post_num_page") int number);
