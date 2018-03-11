@@ -1,4 +1,4 @@
-<resources  xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <!--  App Information -->
     <string name="app_name"> Cairohat </string>

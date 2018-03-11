@@ -58,7 +58,7 @@ public interface APIRequests {
 
 
 
-    @POST("user/register")
+    @POST("mobiconnector/user/register")
     @FormUrlEncoded
     Call<Void> Registeration(           @Field("first_name") String customers_firstname,
                                             @Field("last_name") String customers_lastname,
@@ -68,9 +68,14 @@ public interface APIRequests {
                                             @Field("customers_picture") String customers_picture*/);
 
     @FormUrlEncoded
-    @POST("jwt/token")
+    @POST("mobiconnector/jwt/token")
     Call<Userdata2> processLogin(            @Field("username") String customers_email_address,
                                             @Field("password") String customers_password );
+
+
+
+    @GET("wooconnector/product/getbestsales")
+    Call<List<ProductData>> getbestsales(@Query("post_num_page") int number);
 
 
     @GET("listing_cat")
@@ -78,7 +83,7 @@ public interface APIRequests {
 
 
 
-    @GET("listing_cat")
+    @GET("wp/v2/listing_cat")
     Call<List<CategoryData>> getcategoriespages(@Query("page") int pageno);
 
     @FormUrlEncoded

@@ -1,5 +1,6 @@
 package com.cairohat.models.shipping_model;
 
+import com.cairohat.models.product_model.ProductData;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -48,7 +49,7 @@ public class PostTaxAndShippingData {
     private String productsWeightUnit;
     @SerializedName("products")
     @Expose
-    private List<ProductDetails> products = null;
+    private List<ProductData> products = null;
 
     
     public int getTaxZoneId() {
@@ -147,11 +148,11 @@ public class PostTaxAndShippingData {
         this.productsWeightUnit = productsWeightUnit;
     }
 
-    public List<ProductDetails> getProducts() {
+    public List<ProductData> getProducts() {
         return products;
     }
 
-    public void setProducts(List<ProductDetails> products) {
+    public void setProducts(List<ProductData> products) {
         this.products = products;
     }
 

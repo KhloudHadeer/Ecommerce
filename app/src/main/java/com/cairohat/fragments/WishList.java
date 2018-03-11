@@ -54,7 +54,7 @@ public class WishList extends Fragment {
     GridLayoutManager gridLayoutManager;
     ProductAdapterRemovable productAdapter;
 
-    List<ProductDetails> favouriteProductsList;
+    List<ProductData> favouriteProductsList;
 
     DialogLoader dialogLoader;
 
@@ -133,9 +133,9 @@ public class WishList extends Fragment {
     private void addProducts(ProductData productData) {
 
         // Add Products to favouriteProductsList from the List of ProductData
-        for (int i = 0; i < productData.getProductData().size(); i++) {
-            favouriteProductsList.add(productData.getProductData().get(i));
-        }
+//        for (int i = 0; i < productData.getProductData().size(); i++) {
+//            favouriteProductsList.add(productData.getProductData().get(i));
+//        }
 
         productAdapter.notifyDataSetChanged();
 
@@ -176,21 +176,21 @@ public class WishList extends Fragment {
 
                 // Check if the Response is successful
                 if (response.isSuccessful()) {
-                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
-                        
-                        // Products have been returned. Add Products to the favouriteProductsList
-                        addProducts(response.body());
-
-                    }
-                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
-                        addProducts(response.body());
-                        Snackbar.make(rootView, response.body().getMessage(), Snackbar.LENGTH_LONG).show();
-    
-                    }
-                    else {
-                        // Unable to get Success status
-                        Snackbar.make(rootView, getString(R.string.unexpected_response), Snackbar.LENGTH_SHORT).show();
-                    }
+//                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
+//
+//                        // Products have been returned. Add Products to the favouriteProductsList
+//                        addProducts(response.body());
+//
+//                    }
+//                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
+//                        addProducts(response.body());
+//                        Snackbar.make(rootView, response.body().getMessage(), Snackbar.LENGTH_LONG).show();
+//
+//                    }
+//                    else {
+//                        // Unable to get Success status
+//                        Snackbar.make(rootView, getString(R.string.unexpected_response), Snackbar.LENGTH_SHORT).show();
+//                    }
     
                     progressBar.setVisibility(View.GONE);
     

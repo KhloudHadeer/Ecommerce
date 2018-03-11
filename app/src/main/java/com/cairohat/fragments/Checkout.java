@@ -918,7 +918,7 @@ public class Checkout extends Fragment {
 
         for (int i=0;  i<checkoutItemsList.size();  i++) {
             // Add the Price of each Cart Product to finalPrice
-            finalPrice += Double.parseDouble(checkoutItemsList.get(i).getCustomersBasketProduct().getTotalPrice());
+            finalPrice += Double.parseDouble(checkoutItemsList.get(i).getCustomersBasketProduct().getPrice());
         }
 
         return finalPrice;
@@ -966,22 +966,22 @@ public class Checkout extends Fragment {
             PostProducts orderProduct = new PostProducts();
         
             // Get current Product Details
-            orderProduct.setProductsId(checkoutItemsList.get(i).getCustomersBasketProduct().getProductsId());
-            orderProduct.setProductsName(checkoutItemsList.get(i).getCustomersBasketProduct().getProductsName());
-            orderProduct.setModel(checkoutItemsList.get(i).getCustomersBasketProduct().getProductsModel());
-            orderProduct.setImage(checkoutItemsList.get(i).getCustomersBasketProduct().getProductsImage());
-            orderProduct.setWeight(checkoutItemsList.get(i).getCustomersBasketProduct().getProductsWeight());
-            orderProduct.setUnit(checkoutItemsList.get(i).getCustomersBasketProduct().getProductsWeightUnit());
-            orderProduct.setManufacture(checkoutItemsList.get(i).getCustomersBasketProduct().getManufacturersName());
-            orderProduct.setCategoriesId(checkoutItemsList.get(i).getCustomersBasketProduct().getCategoriesId());
-            orderProduct.setCategoriesName(checkoutItemsList.get(i).getCustomersBasketProduct().getCategoriesName());
-            orderProduct.setPrice(checkoutItemsList.get(i).getCustomersBasketProduct().getProductsPrice());
-            orderProduct.setFinalPrice(checkoutItemsList.get(i).getCustomersBasketProduct().getProductsFinalPrice());
-            orderProduct.setSubtotal(checkoutItemsList.get(i).getCustomersBasketProduct().getTotalPrice());
-            orderProduct.setTotal(checkoutItemsList.get(i).getCustomersBasketProduct().getTotalPrice());
-            orderProduct.setCustomersBasketQuantity(checkoutItemsList.get(i).getCustomersBasketProduct().getCustomersBasketQuantity());
+            orderProduct.setProductsId(checkoutItemsList.get(i).getCustomersBasketProduct().getId());
+            orderProduct.setProductsName(checkoutItemsList.get(i).getCustomersBasketProduct().getName());
+//            orderProduct.setModel(checkoutItemsList.get(i).getCustomersBasketProduct().getProductsModel());
+//            orderProduct.setImage(checkoutItemsList.get(i).getCustomersBasketProduct().getProductsImage());
+//            orderProduct.setWeight(checkoutItemsList.get(i).getCustomersBasketProduct().getProductsWeight());
+//            orderProduct.setUnit(checkoutItemsList.get(i).getCustomersBasketProduct().getProductsWeightUnit());
+//            orderProduct.setManufacture(checkoutItemsList.get(i).getCustomersBasketProduct().getManufacturersName());
+//            orderProduct.setCategoriesId(checkoutItemsList.get(i).getCustomersBasketProduct().getCategoriesId());
+//            orderProduct.setCategoriesName(checkoutItemsList.get(i).getCustomersBasketProduct().getCategoriesName());
+            orderProduct.setPrice(checkoutItemsList.get(i).getCustomersBasketProduct().getPrice());
+            orderProduct.setFinalPrice(checkoutItemsList.get(i).getCustomersBasketProduct().getPrice());
+            orderProduct.setSubtotal(checkoutItemsList.get(i).getCustomersBasketProduct().getPrice());
+            orderProduct.setTotal(checkoutItemsList.get(i).getCustomersBasketProduct().getPrice());
+            orderProduct.setCustomersBasketQuantity(checkoutItemsList.get(i).getCustomersBasketProduct().getCustomerquantity());
         
-            orderProduct.setOnSale(checkoutItemsList.get(i).getCustomersBasketProduct().getIsSaleProduct().equalsIgnoreCase("1"));
+           // orderProduct.setOnSale(checkoutItemsList.get(i).getCustomersBasketProduct().getIsSaleProduct().equalsIgnoreCase("1"));
     
             
             List<PostProductsAttributes> productAttributes = new ArrayList<>();
@@ -1411,22 +1411,22 @@ public class Checkout extends Fragment {
             
             for (int i=0;  i<checkoutItemsList.size();  i++) {
                 
-                int productID = checkoutItemsList.get(i).getCustomersBasketProduct().getProductsId();
-                int categoryID = checkoutItemsList.get(i).getCustomersBasketProduct().getCategoriesId();
+                int productID = checkoutItemsList.get(i).getCustomersBasketProduct().getId();
+               // int categoryID = checkoutItemsList.get(i).getCustomersBasketProduct().getCategoriesId();
                 
     
-                if (!checkoutItemsList.get(i).getCustomersBasketProduct().getIsSaleProduct().equalsIgnoreCase("1")  ||  !coupon.getExcludeSaleItems().equalsIgnoreCase("1")) {
-                    if (!isStringExistsInList(String.valueOf(categoryID), coupon.getExcludedProductCategories())  ||  coupon.getExcludedProductCategories().size() == 0 ) {
-                        if (!isStringExistsInList(String.valueOf(productID), coupon.getExcludeProductIds())  ||  coupon.getExcludeProductIds().size() == 0 ) {
-                            if (isStringExistsInList(String.valueOf(categoryID), coupon.getProductCategories())  ||  coupon.getProductCategories().size() == 0 ) {
-                                if (isStringExistsInList(String.valueOf(productID), coupon.getProductIds())  ||  coupon.getProductIds().size() == 0 ) {
-                                    
-                                    discount += (Double.parseDouble(coupon.getAmount()) * checkoutItemsList.get(i).getCustomersBasketProduct().getCustomersBasketQuantity());
-                                }
-                            }
-                        }
-                    }
-                }
+//                if (!checkoutItemsList.get(i).getCustomersBasketProduct().getIsSaleProduct().equalsIgnoreCase("1")  ||  !coupon.getExcludeSaleItems().equalsIgnoreCase("1")) {
+//                    if (!isStringExistsInList(String.valueOf(categoryID), coupon.getExcludedProductCategories())  ||  coupon.getExcludedProductCategories().size() == 0 ) {
+//                        if (!isStringExistsInList(String.valueOf(productID), coupon.getExcludeProductIds())  ||  coupon.getExcludeProductIds().size() == 0 ) {
+//                            if (isStringExistsInList(String.valueOf(categoryID), coupon.getProductCategories())  ||  coupon.getProductCategories().size() == 0 ) {
+//                                if (isStringExistsInList(String.valueOf(productID), coupon.getProductIds())  ||  coupon.getProductIds().size() == 0 ) {
+//
+//                                    discount += (Double.parseDouble(coupon.getAmount()) * checkoutItemsList.get(i).getCustomersBasketProduct().getCustomersBasketQuantity());
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
     
                 
             }
@@ -1436,23 +1436,23 @@ public class Checkout extends Fragment {
             
             for (int i=0;  i<checkoutItemsList.size();  i++) {
         
-                int productID = checkoutItemsList.get(i).getCustomersBasketProduct().getProductsId();
-                int categoryID = checkoutItemsList.get(i).getCustomersBasketProduct().getCategoriesId();
+                int productID = checkoutItemsList.get(i).getCustomersBasketProduct().getId();
+               // int categoryID = checkoutItemsList.get(i).getCustomersBasketProduct().getCategoriesId();
     
     
-                if (!checkoutItemsList.get(i).getCustomersBasketProduct().getIsSaleProduct().equalsIgnoreCase("1")  ||  !coupon.getExcludeSaleItems().equalsIgnoreCase("1")) {
-                    if (!isStringExistsInList(String.valueOf(categoryID), coupon.getExcludedProductCategories())  ||  coupon.getExcludedProductCategories().size() == 0 ) {
-                        if (!isStringExistsInList(String.valueOf(productID), coupon.getExcludeProductIds())  ||  coupon.getExcludeProductIds().size() == 0 ) {
-                            if (isStringExistsInList(String.valueOf(categoryID), coupon.getProductCategories())  ||  coupon.getProductCategories().size() == 0 ) {
-                                if (isStringExistsInList(String.valueOf(productID), coupon.getProductIds())  ||  coupon.getProductIds().size() == 0 ) {
-    
-                                    double discountOnPrice = (Double.parseDouble(checkoutItemsList.get(i).getCustomersBasketProduct().getProductsFinalPrice()) * Double.parseDouble(coupon.getAmount())) / 100;
-                                    discount += (discountOnPrice * checkoutItemsList.get(i).getCustomersBasketProduct().getCustomersBasketQuantity());
-                                }
-                            }
-                        }
-                    }
-                }
+//                if (!checkoutItemsList.get(i).getCustomersBasketProduct().getIsSaleProduct().equalsIgnoreCase("1")  ||  !coupon.getExcludeSaleItems().equalsIgnoreCase("1")) {
+//                    if (!isStringExistsInList(String.valueOf(categoryID), coupon.getExcludedProductCategories())  ||  coupon.getExcludedProductCategories().size() == 0 ) {
+//                        if (!isStringExistsInList(String.valueOf(productID), coupon.getExcludeProductIds())  ||  coupon.getExcludeProductIds().size() == 0 ) {
+//                            if (isStringExistsInList(String.valueOf(categoryID), coupon.getProductCategories())  ||  coupon.getProductCategories().size() == 0 ) {
+//                                if (isStringExistsInList(String.valueOf(productID), coupon.getProductIds())  ||  coupon.getProductIds().size() == 0 ) {
+//
+//                                    double discountOnPrice = (Double.parseDouble(checkoutItemsList.get(i).getCustomersBasketProduct().getProductsFinalPrice()) * Double.parseDouble(coupon.getAmount())) / 100;
+//                                    discount += (discountOnPrice * checkoutItemsList.get(i).getCustomersBasketProduct().getCustomersBasketQuantity());
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
         
             }
         }
@@ -1555,19 +1555,19 @@ public class Checkout extends Fragment {
     
         for (int i=0;  i<checkoutItemsList.size();  i++) {
     
-            int productID = checkoutItemsList.get(i).getCustomersBasketProduct().getProductsId();
-            int categoryID = checkoutItemsList.get(i).getCustomersBasketProduct().getCategoriesId();
+            int productID = checkoutItemsList.get(i).getCustomersBasketProduct().getId();
+           // int categoryID = checkoutItemsList.get(i).getCustomersBasketProduct().getCategoriesId();
             
     
-            if (coupon.getExcludeSaleItems().equalsIgnoreCase("1") && checkoutItemsList.get(i).getCustomersBasketProduct().getIsSaleProduct().equalsIgnoreCase("1")) {
+            if (coupon.getExcludeSaleItems().equalsIgnoreCase("1") && checkoutItemsList.get(i).getCustomersBasketProduct().getSale_price().equalsIgnoreCase("1")) {
                 valid_sale_items_in_for_coupon = false;
             }
             
     
             if (coupon.getExcludedProductCategories().size() != 0) {
-                if (isStringExistsInList(String.valueOf(categoryID), coupon.getExcludedProductCategories())) {
-                    no_excluded_category_item_in_cart = false;
-                }
+//                if (isStringExistsInList(String.valueOf(categoryID), coupon.getExcludedProductCategories())) {
+//                    no_excluded_category_item_in_cart = false;
+//                }
             }
     
             if (coupon.getExcludeProductIds().size() != 0) {
@@ -1577,9 +1577,9 @@ public class Checkout extends Fragment {
             }
     
             if (coupon.getProductCategories().size() != 0) {
-                if (isStringExistsInList(String.valueOf(categoryID), coupon.getProductCategories())) {
-                    valid_category_items_in_cart = true;
-                }
+//                if (isStringExistsInList(String.valueOf(categoryID), coupon.getProductCategories())) {
+//                    valid_category_items_in_cart = true;
+//                }
             } else {
                 valid_category_items_in_cart = true;
             }
@@ -1723,19 +1723,19 @@ public class Checkout extends Fragment {
         
         for (int i=0;  i<checkoutItemsList.size();  i++) {
             
-            int productID = checkoutItemsList.get(i).getCustomersBasketProduct().getProductsId();
-            int categoryID = checkoutItemsList.get(i).getCustomersBasketProduct().getCategoriesId();
+            int productID = checkoutItemsList.get(i).getCustomersBasketProduct().getId();
+          //  int categoryID = checkoutItemsList.get(i).getCustomersBasketProduct().getCategoriesId();
             
             
-            if (!coupon.getExcludeSaleItems().equalsIgnoreCase("1") || !checkoutItemsList.get(i).getCustomersBasketProduct().getIsSaleProduct().equalsIgnoreCase("1")) {
+            if (!coupon.getExcludeSaleItems().equalsIgnoreCase("1") || !checkoutItemsList.get(i).getCustomersBasketProduct().getSale_price().equalsIgnoreCase("1")) {
                 valid_sale_items_in_for_coupon = true;
             }
             
             
             if (coupon.getExcludedProductCategories().size() != 0) {
-                if (isStringExistsInList(String.valueOf(categoryID), coupon.getExcludedProductCategories())) {
-                    any_non_excluded_category_item_in_cart = true;
-                }
+//                if (isStringExistsInList(String.valueOf(categoryID), coupon.getExcludedProductCategories())) {
+//                    any_non_excluded_category_item_in_cart = true;
+//                }
             } else {
                 any_non_excluded_category_item_in_cart = true;
             }
@@ -1749,9 +1749,9 @@ public class Checkout extends Fragment {
             }
             
             if (coupon.getProductCategories().size() != 0) {
-                if (isStringExistsInList(String.valueOf(categoryID), coupon.getProductCategories())) {
-                    any_valid_category_item_in_cart = true;
-                }
+//                if (isStringExistsInList(String.valueOf(categoryID), coupon.getProductCategories())) {
+//                    any_valid_category_item_in_cart = true;
+//                }
             } else {
                 any_valid_category_item_in_cart = true;
             }

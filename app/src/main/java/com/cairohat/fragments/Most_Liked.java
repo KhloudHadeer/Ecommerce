@@ -39,7 +39,7 @@ public class Most_Liked extends Fragment {
 
     ProductAdapter productAdapter;
 
-    List<ProductDetails> mostLikedProductList;
+    List<ProductData> mostLikedProductList;
 
 
     @Nullable
@@ -98,7 +98,7 @@ public class Most_Liked extends Fragment {
     private void addProducts(ProductData productData) {
 
         // Add Products to mostLikedProductList
-        mostLikedProductList.addAll(productData.getProductData());
+        mostLikedProductList.add(productData);
         
         productAdapter.notifyDataSetChanged();
     }
@@ -128,16 +128,16 @@ public class Most_Liked extends Fragment {
                 
                 if (response.isSuccessful()) {
                     
-                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
-                        // Products have been returned. Add Products to the mostLikedProductList
-                        addProducts(response.body());
-                        emptyRecord.setVisibility(View.GONE);
-
-                    }
-                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
-                        // Products haven't been returned
-                        emptyRecord.setVisibility(View.VISIBLE);
-                    }
+//                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
+//                        // Products have been returned. Add Products to the mostLikedProductList
+//                        addProducts(response.body());
+//                        emptyRecord.setVisibility(View.GONE);
+//
+//                    }
+//                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
+//                        // Products haven't been returned
+//                        emptyRecord.setVisibility(View.VISIBLE);
+//                    }
 
                 }
             }

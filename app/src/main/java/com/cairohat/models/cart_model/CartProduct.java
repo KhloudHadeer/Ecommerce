@@ -2,10 +2,10 @@ package com.cairohat.models.cart_model;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.cairohat.models.product_model.ProductData;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import com.cairohat.models.product_model.ProductDetails;
 
 
 public class CartProduct {
@@ -22,7 +22,7 @@ public class CartProduct {
     private String customersBasketDateAdded;
     @SerializedName("customers_basket_product")
     @Expose
-    private ProductDetails customersBasketProduct;
+    private ProductData customersBasketProduct;
     @SerializedName("customers_basket_product_attributes")
     @Expose
     private List<CartProductAttributes> customersBasketProductAttributes = new ArrayList<CartProductAttributes>();
@@ -53,11 +53,11 @@ public class CartProduct {
         this.customersBasketDateAdded = customersBasketDateAdded;
     }
 
-    public ProductDetails getCustomersBasketProduct() {
+    public ProductData getCustomersBasketProduct() {
         return customersBasketProduct;
     }
 
-    public void setCustomersBasketProduct(ProductDetails customersBasketProduct) {
+    public void setCustomersBasketProduct(ProductData customersBasketProduct) {
         this.customersBasketProduct = customersBasketProduct;
     }
 

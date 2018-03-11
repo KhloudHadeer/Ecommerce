@@ -192,7 +192,6 @@ public class SplashScreen extends Activity {
             else {
                 setAppConfig();
 
-                
                 if (myAppPrefsManager.isFirstTimeLaunch()) {
                     // Navigate to IntroScreen
                     startActivity(new Intent(getBaseContext(), IntroScreen.class));

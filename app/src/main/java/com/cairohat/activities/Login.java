@@ -332,7 +332,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
 
         dialogLoader.showProgressDialog();
 
-        Call<Userdata2> call = APIClient.getInstancelogin()
+        Call<Userdata2> call = APIClient.getInstance()
                 .processLogin
                         (
                                 user_email.getText().toString().trim(),
@@ -343,6 +343,41 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
             @Override
             public void onResponse(Call<Userdata2> call, Response<Userdata2> response) {
                 dialogLoader.hideProgressDialog();
+                Userdata2 userDetails = response.body();
+
+                        // Save User Data to Local Databases
+                        if (userInfoDB.getUserData(userDetails.getNicename()) != null) {
+                            // User already exists
+                            userInfoDB.updateUserData(userDetails);
+                        } else {
+                            // Insert Details of New User
+                            userInfoDB.insertUserData(userDetails);
+                        }
+                editor = sharedPreferences.edit();
+                        //editor.putString("userID", userDetails.getCustomersId());
+                        editor.putString("userEmail", userDetails.getEmail());
+                        editor.putString("userName", userDetails.getNicename());
+                       // editor.putString("userDefaultAddressID", userDetails.getCustomersDefaultAddressId());
+                        editor.putBoolean("isLogged_in", true);
+                        editor.apply();
+
+                        // Set UserLoggedIn in MyAppPrefsManager
+                        MyAppPrefsManager myAppPrefsManager = new MyAppPrefsManager(Login.this);
+                        myAppPrefsManager.setUserLoggedIn(true);
+
+                        // Set isLogged_in of ConstantValues
+                        ConstantValues.IS_USER_LOGGED_IN = myAppPrefsManager.isUserLoggedIn();
+
+
+                        MyFirebaseInstanceIDService.RegisterDeviceForFCM(Login.this);
+
+
+                        // Navigate back to MainActivity
+                        Intent i = new Intent(Login.this, MainActivity.class);
+                        startActivity(i);
+                        finish();
+                        overridePendingTransition(R.anim.enter_from_right, R.anim.exit_out_right);
+
                 Toast.makeText(Login.this , response.body().getNicename(), Toast.LENGTH_LONG).show();
 
             }
@@ -480,25 +515,25 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                     if (response.body().getSuccess().equalsIgnoreCase("1") || response.body().getSuccess().equalsIgnoreCase("2"))
                     {
                         // Get the User Details from Response
-                        UserDetails userDetails = response.body().getData().get(0);
+                        UserData userDetails = response.body();
 
                         // Save User Data to Local Databases
-                        if (userInfoDB.getUserData(userDetails.getCustomersId()) != null) {
-                            // User already exists
-                            userInfoDB.updateUserData(userDetails);
-                        } else {
-                            // Insert Details of New User
-                            userInfoDB.insertUserData(userDetails);
-                        }
-
-                        // Save necessary details in SharedPrefs
-                        editor = sharedPreferences.edit();
-                        editor.putString("userID", userDetails.getCustomersId());
-                        editor.putString("userEmail", userDetails.getCustomersEmailAddress());
-                        editor.putString("userName", userDetails.getCustomersFirstname()+" "+userDetails.getCustomersLastname());
-                        editor.putString("userDefaultAddressID", userDetails.getCustomersDefaultAddressId());
-                        editor.putBoolean("isLogged_in", true);
-                        editor.apply();
+//                        if (userInfoDB.getUserData(userDetails.getCustomersId()) != null) {
+//                            // User already exists
+//                            userInfoDB.updateUserData(userDetails);
+//                        } else {
+//                            // Insert Details of New User
+//                            userInfoDB.insertUserData(userDetails);
+//                        }
+//
+//                        // Save necessary details in SharedPrefs
+//                        editor = sharedPreferences.edit();
+//                        editor.putString("userID", userDetails.getCustomersId());
+//                        editor.putString("userEmail", userDetails.getCustomersEmailAddress());
+//                        editor.putString("userName", userDetails.getCustomersFirstname()+" "+userDetails.getCustomersLastname());
+//                        editor.putString("userDefaultAddressID", userDetails.getCustomersDefaultAddressId());
+//                        editor.putBoolean("isLogged_in", true);
+//                        editor.apply();
     
                         
                         // Set UserLoggedIn in MyAppPrefsManager
@@ -571,12 +606,12 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                         UserDetails userDetails = response.body().getData().get(0);
 
                         // Save User Data to Local Databases
-                        if (userInfoDB.getUserData(userDetails.getCustomersId()) != null) {
-                            userInfoDB.updateUserData(userDetails);
-                        }
-                        else {
-                            userInfoDB.insertUserData(userDetails);
-                        }
+//                        if (userInfoDB.getUserData(userDetails.getCustomersId()) != null) {
+//                            userInfoDB.updateUserData(userDetails);
+//                        }
+//                        else {
+//                            userInfoDB.insertUserData(userDetails);
+//                        }
 
                         // Save necessary details in SharedPrefs
                         editor = sharedPreferences.edit();

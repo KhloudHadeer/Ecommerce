@@ -2,14 +2,12 @@ package com.cairohat.adapters;
 
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Paint;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Contacts;
+import android.os.Parcelable;
 import android.provider.ContactsContract;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -36,6 +34,7 @@ import com.bumptech.glide.request.target.Target;
 import com.cairohat.activities.MainActivity;
 
 import com.cairohat.models.product_model.Option;
+import com.cairohat.models.product_model.ProductData;
 import com.cairohat.models.product_model.Value;
 import com.cairohat.models.user_model.UserData;
 import com.cairohat.network.APIClient;
@@ -53,7 +52,6 @@ import com.cairohat.constant.ConstantValues;
 import com.cairohat.models.cart_model.CartProduct;
 import com.cairohat.models.cart_model.CartProductAttributes;
 import com.cairohat.models.product_model.ProductDetails;
-import android.support.v4.app.Fragment;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -70,15 +68,16 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
     private Boolean isHorizontal;
     
     private User_Recents_DB recents_db;
-    private List<ProductDetails> productList;
+    private List<ProductData> productList;
 
 
-    public ProductAdapter(Context context, List<ProductDetails> productList, Boolean isHorizontal) {
+    public ProductAdapter(Context context, List<ProductData> productList, Boolean isHorizontal) {
         this.context = context;
         this.productList = productList;
         this.isHorizontal = isHorizontal;
 
         recents_db = new User_Recents_DB();
+
         customerID = this.context.getSharedPreferences("UserInfo", Context.MODE_PRIVATE).getString("userID", "");
     }
 
@@ -114,10 +113,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
         if (position != productList.size()) {
         
             // Get the data model based on Position
-            final ProductDetails product = productList.get(position);
+            final ProductData product = productList.get(position);
     
             // Check if the Product is already in the Cart
-            if (My_Cart.checkCartHasProduct(product.getProductsId())) {
+            if (My_Cart.checkCartHasProduct(product.getParent_id())) {
                 holder.product_checked.setVisibility(View.VISIBLE);
             } else {
                 holder.product_checked.setVisibility(View.GONE);
@@ -125,36 +124,36 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
     
     
             // Set Product Image on ImageView with Glide Library
-            Glide.with(context)
-                    .load(ConstantValues.URL+product.getProductsImage())
-                    .listener(new RequestListener<String, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            holder.cover_loader.setVisibility(View.GONE);
-                            return false;
-                        }
+//            Glide.with(context)
+//                    .load(ConstantValues.URL+product.getProductsImage())
+//                    .listener(new RequestListener<String, GlideDrawable>() {
+//                        @Override
+//                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+//                            holder.cover_loader.setVisibility(View.GONE);
+//                            return false;
+//                        }
+//
+//                        @Override
+//                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+//                            holder.cover_loader.setVisibility(View.GONE);
+//                            return false;
+//                        }
+//                    })
+//                    .into(holder.product_thumbnail);
     
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            holder.cover_loader.setVisibility(View.GONE);
-                            return false;
-                        }
-                    })
-                    .into(holder.product_thumbnail);
     
-    
-            holder.product_title.setText(product.getProductsName());
+            holder.product_title.setText(product.getName());
             holder.product_price_old.setPaintFlags(holder.product_price_old.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
     
     
             // Calculate the Discount on Product with static method of Helper class
-            final String discount = Utilities.checkDiscount(product.getProductsPrice(), product.getDiscountPrice());
+            final String discount = null; /*= Utilities.checkDiscount(product.getRegular_price(), product.getSale_price());*/
     
             if (discount != null) {
                 // Set Product's Price
                 holder.product_price_old.setVisibility(View.VISIBLE);
-                holder.product_price_old.setText(ConstantValues.CURRENCY_SYMBOL + product.getProductsPrice());
-                holder.product_price_new.setText(ConstantValues.CURRENCY_SYMBOL + product.getDiscountPrice());
+                holder.product_price_old.setText(ConstantValues.CURRENCY_SYMBOL + product.getRegular_price());
+                holder.product_price_new.setText(ConstantValues.CURRENCY_SYMBOL + product.getSale_price());
     
                 holder.product_tag_new.setVisibility(View.GONE);
                 holder.product_tag_new_text.setVisibility(View.GONE);
@@ -167,20 +166,20 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
             } else {
     
                 // Check if the Product is Newly Added with the help of static method of Helper class
-                if (Utilities.checkNewProduct(product.getProductsDateAdded())) {
-                    // Set New Tag and its Text
-                    holder.product_tag_new.setVisibility(View.VISIBLE);
-                    holder.product_tag_new_text.setVisibility(View.VISIBLE);
-                } else {
-                    holder.product_tag_new.setVisibility(View.GONE);
-                    holder.product_tag_new_text.setVisibility(View.GONE);
-                }
+//                if (Utilities.checkNewProduct(product.getProductsDateAdded())) {
+//                    // Set New Tag and its Text
+//                    holder.product_tag_new.setVisibility(View.VISIBLE);
+//                    holder.product_tag_new_text.setVisibility(View.VISIBLE);
+//                } else {
+//                    holder.product_tag_new.setVisibility(View.GONE);
+//                    holder.product_tag_new_text.setVisibility(View.GONE);
+//                }
     
                 // Hide Discount Text and Set Product's Price
                 holder.product_tag_discount.setVisibility(View.GONE);
                 holder.product_tag_discount_text.setVisibility(View.GONE);
                 holder.product_price_old.setVisibility(View.GONE);
-                holder.product_price_new.setText(ConstantValues.CURRENCY_SYMBOL + product.getProductsPrice());
+                holder.product_price_new.setText(ConstantValues.CURRENCY_SYMBOL + product.getRegular_price());
             }
     
     
@@ -188,11 +187,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
             holder.product_like_btn.setOnCheckedChangeListener(null);
     
             // Check if Product is Liked
-            if (product.getIsLiked().equalsIgnoreCase("1")) {
-                holder.product_like_btn.setChecked(true);
-            } else {
-                holder.product_like_btn.setChecked(false);
-            }
+//            if (product.getIsLiked().equalsIgnoreCase("1")) {
+//                holder.product_like_btn.setChecked(true);
+//            } else {
+//                holder.product_like_btn.setChecked(false);
+//            }
     
     
             // Handle the Click event of product_like_btn ToggleButton
@@ -204,21 +203,21 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
                     if (ConstantValues.IS_USER_LOGGED_IN) {
     
                         
-                        if(holder.product_like_btn.isChecked()) {
-                            product.setIsLiked("1");
-                            holder.product_like_btn.setChecked(true);
-    
-                            // Like the Product for the User with the static method of Product_Description
-                            Product_Description.LikeProduct(product.getProductsId(), customerID, context, view);
-                        }
-                        else {
-                            product.setIsLiked("0");
-                            holder.product_like_btn.setChecked(false);
-    
-                            // Unlike the Product for the User with the static method of Product_Description
-                            Product_Description.UnlikeProduct(product.getProductsId(), customerID, context, view);
-                        }
-    
+//                        if(holder.product_like_btn.isChecked()) {
+//                            product.setIsLiked("1");
+//                            holder.product_like_btn.setChecked(true);
+//
+//                            // Like the Product for the User with the static method of Product_Description
+//                            Product_Description.LikeProduct(product.getProductsId(), customerID, context, view);
+//                        }
+//                        else {
+//                            product.setIsLiked("0");
+//                            holder.product_like_btn.setChecked(false);
+//
+//                            // Unlike the Product for the User with the static method of Product_Description
+//                            Product_Description.UnlikeProduct(product.getProductsId(), customerID, context, view);
+//                        }
+//
                     } else {
                         // Keep the Like Button Unchecked
                         holder.product_like_btn.setChecked(false);
@@ -240,7 +239,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
     
                     // Get Product Info
                     Bundle itemInfo = new Bundle();
-                    itemInfo.putParcelable("productDetails", product);
+                    itemInfo.putParcelable("productDetails",  product);
 
                     ContentResolver cr = context.getContentResolver();
                     Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
@@ -298,7 +297,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
                         }
                     }
 
-                    Log.i("AAA", "aaaaaaaaaaa "+ product.getProductsImage());
+                   // Log.i("AAA", "aaaaaaaaaaa "+ product.getProductsImage());
 
                     // Navigate to Product_Description of selected Product
                     Fragment fragment = new Product_Description();
@@ -312,8 +311,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
     
     
                     // Add the Product to User's Recently Viewed Products
-                    if (!recents_db.getUserRecents().contains(product.getProductsId())) {
-                        recents_db.insertRecentItem(product.getProductsId());
+                    if (!recents_db.getUserRecents().contains(product.getId())) {
+                        recents_db.insertRecentItem(product.getId());
                     }
                 }
             });
@@ -340,8 +339,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
     
     
                     // Add the Product to User's Recently Viewed Products
-                    if (!recents_db.getUserRecents().contains(product.getProductsId())) {
-                        recents_db.insertRecentItem(product.getProductsId());
+                    if (!recents_db.getUserRecents().contains(product.getId())) {
+                        recents_db.insertRecentItem(product.getId());
                     }
                 }
             });
@@ -354,7 +353,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
                 holder.product_add_cart_btn.setVisibility(View.VISIBLE);
                 holder.product_add_cart_btn.setOnClickListener(null);
     
-                if (product.getProductsQuantity() < 1) {
+                if (product.getStock_quantity() < 1) {
                     holder.product_add_cart_btn.setText(context.getString(R.string.outOfStock));
                     holder.product_add_cart_btn.setBackground(ContextCompat.getDrawable(context, R.drawable.rounded_corners_button_red));
                 } else {
@@ -365,7 +364,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
                 holder.product_add_cart_btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (product.getProductsQuantity() > 0) {
+                        if (product.getStock_quantity() > 0) {
                             Utilities.animateCartMenuIcon(context, (MainActivity)context);
     
                             // Add Product to User's Cart
@@ -443,7 +442,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
 
     //********** Adds the Product to User's Cart *********//
 
-    private void addProductToCart(ProductDetails product) {
+    private void addProductToCart(ProductData product) {
 
         CartProduct cartProduct = new CartProduct();
 
@@ -452,15 +451,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
 
 
         // Check Discount on Product with the help of static method of Helper class
-        final String discount = Utilities.checkDiscount(product.getProductsPrice(), product.getDiscountPrice());
+        final String discount = Utilities.checkDiscount(product.getRegular_price(), product.getSale_price());
 
         // Get Product's Price based on Discount
         if (discount != null) {
-            product.setIsSaleProduct("1");
-            productBasePrice = Double.parseDouble(product.getDiscountPrice());
+           // product.setIsSaleProduct("1");
+            productBasePrice = Double.parseDouble(product.getSale_price());
         } else {
-            product.setIsSaleProduct("0");
-            productBasePrice = Double.parseDouble(product.getProductsPrice());
+           // product.setIsSaleProduct("0");
+            productBasePrice = Double.parseDouble(product.getSale_price());
         }
 
 
@@ -499,11 +498,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
 
 
         // Set Product's Price and Quantity
-        product.setCustomersBasketQuantity(1);
-        product.setProductsPrice(String.valueOf(productBasePrice));
-        product.setAttributesPrice(String.valueOf(attributesPrice));
-        product.setProductsFinalPrice(String.valueOf(productFinalPrice));
-        product.setTotalPrice(String.valueOf(productFinalPrice));
+       // product.setCustomersBasketQuantity(1);
+        product.setRegular_price(String.valueOf(productBasePrice));
+       // product.setAttributesPrice(String.valueOf(attributesPrice));
+        product.setPrice(String.valueOf(productFinalPrice));
+        product.setPrice(String.valueOf(productFinalPrice));
 
         // Set Customer's Basket Product and selected Attributes Info
         cartProduct.setCustomersBasketProduct(product);

@@ -408,7 +408,7 @@ public class Signup extends AppCompatActivity {
         dialogLoader.showProgressDialog();
     
         
-        Call<Void> call = APIClient.getInstancelogin()
+        Call<Void> call = APIClient.getInstance()
                 .Registeration
                         (
                             user_firstname.getText().toString().trim(),

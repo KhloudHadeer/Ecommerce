@@ -4,6 +4,7 @@ package com.cairohat.app;
 import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,12 +22,10 @@ import com.cairohat.models.pages_model.PagesDetails;
 import com.cairohat.models.shipping_model.ShippingService;
 
 
-/**
- * App extending Application, is used to save some Lists and Objects with Application Context.
- **/
 
 
-public class App extends Application {
+
+public class App extends MultiDexApplication {
 
     // Application Context
     private static Context context;

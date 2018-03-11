@@ -38,7 +38,7 @@ public class Special_Deals extends Fragment {
 
     ProductAdapter productAdapter;
 
-    List<ProductDetails> dealProductsList;
+    List<ProductData> dealProductsList;
 
 
     @Nullable
@@ -99,7 +99,7 @@ public class Special_Deals extends Fragment {
     private void addProducts(ProductData productData) {
 
         // Add Products to dealProductsList
-        dealProductsList.addAll(productData.getProductData());
+        dealProductsList.add(productData);
 
         productAdapter.notifyDataSetChanged();
     }
@@ -129,17 +129,17 @@ public class Special_Deals extends Fragment {
                 
                 if (response.isSuccessful()) {
                     
-                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
-                        // Products have been returned. Add Products to the dealProductsList
-                        addProducts(response.body());
-                        emptyRecord.setVisibility(View.GONE);
-
-                    }
-                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
-                        // Products haven't been returned
-                        emptyRecord.setVisibility(View.VISIBLE);
-
-                    }
+//                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
+//                        // Products have been returned. Add Products to the dealProductsList
+//                        addProducts(response.body());
+//                        emptyRecord.setVisibility(View.GONE);
+//
+//                    }
+//                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
+//                        // Products haven't been returned
+//                        emptyRecord.setVisibility(View.VISIBLE);
+//
+//                    }
                 }
             }
 

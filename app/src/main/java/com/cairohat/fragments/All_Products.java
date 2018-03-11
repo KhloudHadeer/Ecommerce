@@ -56,7 +56,7 @@ public class All_Products extends Fragment {
     RecyclerView all_products_recycler;
 
     ProductAdapter productAdapter;
-    List<ProductDetails> productsList;
+    List<ProductData> productsList;
     
     GridLayoutManager gridLayoutManager;
     LinearLayoutManager linearLayoutManager;
@@ -254,10 +254,10 @@ public class All_Products extends Fragment {
     private void addProducts(ProductData productData) {
         
         // Add Products to ProductsList from the List of ProductData
-        for (int i = 0; i < productData.getProductData().size(); i++) {
-            ProductDetails productDetails = productData.getProductData().get(i);
-            productsList.add(productDetails);
-        }
+//        for (int i = 0; i < productData.getProductData().size(); i++) {
+//            ProductData productDetails = productData.getProductData().get(i);
+//            productsList.add(productDetails);
+//        }
 
         productAdapter.notifyDataSetChanged();
 
@@ -294,21 +294,21 @@ public class All_Products extends Fragment {
             public void onResponse(Call<ProductData> call, retrofit2.Response<ProductData> response) {
                 
                 if (response.isSuccessful()) {
-                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
-                        // Products have been returned. Add Products to the ProductsList
-                        addProducts(response.body());
-
-                    }
-                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
-                        // Products haven't been returned. Call the method to process some implementations
-                        addProducts(response.body());
-                        Snackbar.make(rootView, response.body().getMessage(), Snackbar.LENGTH_SHORT).show();
-
-                    }
-                    else {
-                        // Unable to get Success status
-                        Snackbar.make(rootView, getString(R.string.unexpected_response), Snackbar.LENGTH_SHORT).show();
-                    }
+//                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
+//                        // Products have been returned. Add Products to the ProductsList
+//                        addProducts(response.body());
+//
+//                    }
+//                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
+//                        // Products haven't been returned. Call the method to process some implementations
+//                        addProducts(response.body());
+//                        Snackbar.make(rootView, response.body().getMessage(), Snackbar.LENGTH_SHORT).show();
+//
+//                    }
+//                    else {
+//                        // Unable to get Success status
+//                        Snackbar.make(rootView, getString(R.string.unexpected_response), Snackbar.LENGTH_SHORT).show();
+//                    }
 
                     // Hide the ProgressBar
                     progressBar.setVisibility(View.GONE);

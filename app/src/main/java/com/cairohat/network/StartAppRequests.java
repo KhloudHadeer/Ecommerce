@@ -113,10 +113,9 @@ public class StartAppRequests {
 
 
         try {
-           // categoryDataList = new ArrayList<>();
-            for(int i =0; i<call.clone().execute().body().size(); i++){
-                categoryDataList.add(call.clone().execute().body().get(i));
-            }
+     
+                categoryDataList.addAll(call.clone().execute().body());
+
 
             if (call.clone().execute().body().size() == 10){
                 RequestAllCategories();

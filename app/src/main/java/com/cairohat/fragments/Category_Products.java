@@ -73,7 +73,7 @@ public class Category_Products extends Fragment {
     PostFilterData filters = null;
 
     ProductAdapter productAdapter;
-    List<ProductDetails> categoryProductsList;
+    List<ProductData> categoryProductsList;
     List<FilterDetails> filtersList = new ArrayList<>();
 
     GridLayoutManager gridLayoutManager;
@@ -389,10 +389,10 @@ public class Category_Products extends Fragment {
     private void addCategoryProducts(ProductData productData) {
 
         // Add Products to CategoryProductsList from the List of ProductData
-        for (int i = 0; i < productData.getProductData().size(); i++) {
-            ProductDetails productDetails = productData.getProductData().get(i);
-            categoryProductsList.add(productDetails);
-        }
+//        for (int i = 0; i < productData.getProductData().size(); i++) {
+//            ProductDetails productDetails = productData.getProductData().get(i);
+//            categoryProductsList.add(productDetails);
+//        }
 
         productAdapter.notifyDataSetChanged();
 
@@ -435,26 +435,26 @@ public class Category_Products extends Fragment {
             public void onResponse(Call<ProductData> call, retrofit2.Response<ProductData> response) {
                 
                 if (response.isSuccessful()) {
-                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
+//                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
+//
+//                        // Products have been returned. Add Products to the ProductsList
+//                        addCategoryProducts(response.body());
+//
+//                    }
+//                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
+//                        // Products haven't been returned. Call the method to process some implementations
+//                        addCategoryProducts(response.body());
+//
+//                        // Show the Message to the User
+//                        if (isVisible)
+//                            Snackbar.make(rootView, response.body().getMessage(), Snackbar.LENGTH_SHORT).show();
 
-                        // Products have been returned. Add Products to the ProductsList
-                        addCategoryProducts(response.body());
-
-                    }
-                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
-                        // Products haven't been returned. Call the method to process some implementations
-                        addCategoryProducts(response.body());
-                        
-                        // Show the Message to the User
-                        if (isVisible)
-                            Snackbar.make(rootView, response.body().getMessage(), Snackbar.LENGTH_SHORT).show();
-
-                    }
-                    else {
-                        // Unable to get Success status
-                        if (isVisible)
-                            Snackbar.make(rootView, getString(R.string.unexpected_response), Snackbar.LENGTH_SHORT).show();
-                    }
+//                    }
+//                    else {
+//                        // Unable to get Success status
+//                        if (isVisible)
+//                            Snackbar.make(rootView, getString(R.string.unexpected_response), Snackbar.LENGTH_SHORT).show();
+    //                }
 
                     // Hide the ProgressBar
                     progressBar.setVisibility(View.GONE);
@@ -503,24 +503,24 @@ public class Category_Products extends Fragment {
             public void onResponse(Call<ProductData> call, retrofit2.Response<ProductData> response) {
                 
                 if (response.isSuccessful()) {
-                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
-                        
-                        // Products have been returned. Add Products to the ProductsList
-                        addCategoryProducts(response.body());
-
-                    }
-                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
-                        // Products haven't been returned. Call the method to process some implementations
-                        addCategoryProducts(response.body());
-                        
-                        // Show the Message to the User
-                        Snackbar.make(rootView, response.body().getMessage(), Snackbar.LENGTH_SHORT).show();
-
-                    }
-                    else {
-                        // Unable to get Success status
-                        Snackbar.make(rootView, getString(R.string.unexpected_response), Snackbar.LENGTH_SHORT).show();
-                    }
+//                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
+//
+//                        // Products have been returned. Add Products to the ProductsList
+//                        addCategoryProducts(response.body());
+//
+//                    }
+//                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
+//                        // Products haven't been returned. Call the method to process some implementations
+//                        addCategoryProducts(response.body());
+//
+//                        // Show the Message to the User
+//                        Snackbar.make(rootView, response.body().getMessage(), Snackbar.LENGTH_SHORT).show();
+//
+//                    }
+//                    else {
+//                        // Unable to get Success status
+//                        Snackbar.make(rootView, getString(R.string.unexpected_response), Snackbar.LENGTH_SHORT).show();
+//                    }
 
                     // Hide the ProgressBar
                     progressBar.setVisibility(View.GONE);

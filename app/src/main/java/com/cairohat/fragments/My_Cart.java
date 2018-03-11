@@ -238,7 +238,7 @@ public class My_Cart extends Fragment {
         List<CartProduct> cartItems = user_cart_db.getCartItems();
         
         for (int i=0;  i<cartItems.size();  i++) {
-            cartSize += cartItems.get(i).getCustomersBasketProduct().getCustomersBasketQuantity();
+            cartSize += cartItems.get(i).getCustomersBasketProduct().getCustomerquantity();
         }
         
         return cartSize;

@@ -9,9 +9,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class Image implements Parcelable {
 
-    @SerializedName("image")
-    @Expose
-    private String image;
+
+    private String src;
 
 
 
@@ -26,7 +25,7 @@ public class Image implements Parcelable {
      *     The image
      */
     public String getImage() {
-        return image;
+        return src;
     }
 
     /**
@@ -35,7 +34,7 @@ public class Image implements Parcelable {
      *     The image
      */
     public void setImage(String image) {
-        this.image = image;
+        this.src = image;
     }
 
 
@@ -54,7 +53,7 @@ public class Image implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(image);
+        parcel.writeString(src);
     }
 
 
@@ -80,7 +79,7 @@ public class Image implements Parcelable {
     //********** Retrieves the values from the Parcel *********//
 
     protected Image(Parcel parcel) {
-        this.image = parcel.readString();
+        this.src = parcel.readString();
     }
 
 }

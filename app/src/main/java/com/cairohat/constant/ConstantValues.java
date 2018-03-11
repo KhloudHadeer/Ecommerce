@@ -10,8 +10,8 @@ public class ConstantValues {
     
     //*********** API Base URL ********//
     //public static final String ECOMMERCE_URL = "http://app.cairohat.com/api/v1/";
-    public static final String ECOMMERCE_URL = "http://www.cairohat.com/wp-json/wp/v2/";
-    public static final String LOGIN_URL = "http://www.cairohat.com/wp-json/mobiconnector/";
+    public static final String ECOMMERCE_URL = "http://www.cairohat.com/wp-json/";
+   // public static final String LOGIN_URL = "http://www.cairohat.com/wp-json/";
 
     public static final String URL = "http://app.cairohat.com/";
 

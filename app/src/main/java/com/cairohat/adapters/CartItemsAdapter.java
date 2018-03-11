@@ -113,13 +113,13 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.MyVi
             final CartProduct cartProduct = cartItemsList.get(position);
     
             // Set Product Image on ImageView with Glide Library
-            Glide.with(context).load(ConstantValues.URL+ cartProduct.getCustomersBasketProduct().getProductsImage()).into(holder.cart_item_cover);
+           // Glide.with(context).load(ConstantValues.URL+ cartProduct.getCustomersBasketProduct().getProductsImage()).into(holder.cart_item_cover);
     
-            holder.cart_item_title.setText(cartProduct.getCustomersBasketProduct().getProductsName());
-            holder.cart_item_category.setText(cartProduct.getCustomersBasketProduct().getCategoriesName());
-            holder.cart_item_quantity.setText("" + cartProduct.getCustomersBasketProduct().getCustomersBasketQuantity());
-            holder.cart_item_base_price.setText(ConstantValues.CURRENCY_SYMBOL + cartProduct.getCustomersBasketProduct().getProductsPrice());
-            holder.cart_item_sub_price.setText(ConstantValues.CURRENCY_SYMBOL + cartProduct.getCustomersBasketProduct().getTotalPrice());
+            holder.cart_item_title.setText(cartProduct.getCustomersBasketProduct().getName());
+           // holder.cart_item_category.setText(cartProduct.getCustomersBasketProduct().getCategoriesName());
+            holder.cart_item_quantity.setText("" + cartProduct.getCustomersBasketProduct().getStock_quantity());
+            holder.cart_item_base_price.setText(ConstantValues.CURRENCY_SYMBOL + cartProduct.getCustomersBasketProduct().getRegular_price());
+            holder.cart_item_sub_price.setText(ConstantValues.CURRENCY_SYMBOL + cartProduct.getCustomersBasketProduct().getPrice());
     
     
             List<Value> selectedAttributeValues= new ArrayList<>();
@@ -143,7 +143,7 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.MyVi
     
             // Holds Product Quantity
             final int[] number = {1};
-            number[0] = cartProduct.getCustomersBasketProduct().getCustomersBasketQuantity();
+            number[0] = cartProduct.getCustomersBasketProduct().getStock_quantity();
     
     
             // Decrease Product Quantity
@@ -158,11 +158,11 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.MyVi
                         holder.cart_item_quantity.setText(""+ number[0]);
                 
                         // Calculate Product Price with selected Quantity
-                        double price = Double.parseDouble(cartProduct.getCustomersBasketProduct().getProductsFinalPrice()) * number[0];
+                        double price = Double.parseDouble(cartProduct.getCustomersBasketProduct().getPrice()) * number[0];
                 
                         // Set Final Price and Quantity
-                        cartProduct.getCustomersBasketProduct().setTotalPrice(""+ price);
-                        cartProduct.getCustomersBasketProduct().setCustomersBasketQuantity(number[0]);
+                        cartProduct.getCustomersBasketProduct().setPrice(""+ price);
+                        cartProduct.getCustomersBasketProduct().setCustomerquantity(number[0]);
                 
                 
                         // Update CartItem in Local Database using static method of My_Cart
@@ -185,17 +185,17 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.MyVi
                 @Override
                 public void onClick(View view) {
                     // Check if the Quantity is less than the maximum or stock Quantity
-                    if (number[0] < cartProduct.getCustomersBasketProduct().getProductsQuantity()) {
+                    if (number[0] < cartProduct.getCustomersBasketProduct().getStock_quantity()) {
                         // Increase Quantity by 1
                         number[0] = number[0] + 1;
                         holder.cart_item_quantity.setText(""+ number[0]);
                 
                         // Calculate Product Price with selected Quantity
-                        double price = Double.parseDouble(cartProduct.getCustomersBasketProduct().getProductsFinalPrice()) * number[0];
+                        double price = Double.parseDouble(cartProduct.getCustomersBasketProduct().getPrice()) * number[0];
                 
                         // Set Final Price and Quantity
-                        cartProduct.getCustomersBasketProduct().setTotalPrice(""+ price);
-                        cartProduct.getCustomersBasketProduct().setCustomersBasketQuantity(number[0]);
+                        cartProduct.getCustomersBasketProduct().setPrice(""+ price);
+                        cartProduct.getCustomersBasketProduct().setCustomerquantity(number[0]);
                 
                 
                         // Update CartItem in Local Database using static method of My_Cart
@@ -219,7 +219,7 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.MyVi
                 public void onClick(View v) {
                     // Get Product Info
                     Bundle itemInfo = new Bundle();
-                    itemInfo.putInt("itemID", cartProduct.getCustomersBasketProduct().getProductsId());
+                    itemInfo.putInt("itemID", cartProduct.getCustomersBasketProduct().getId());
             
                     // Navigate to Product_Description of selected Product
                     Fragment fragment = new Product_Description();
@@ -232,8 +232,8 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.MyVi
             
             
                     // Add the Product to User's Recently Viewed Products
-                    if (!recents_db.getUserRecents().contains(cartProduct.getCustomersBasketProduct().getProductsId())) {
-                        recents_db.insertRecentItem(cartProduct.getCustomersBasketProduct().getProductsId());
+                    if (!recents_db.getUserRecents().contains(cartProduct.getCustomersBasketProduct().getId())) {
+                        recents_db.insertRecentItem(cartProduct.getCustomersBasketProduct().getId());
                     }
                 }
             });
@@ -302,7 +302,7 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.MyVi
 
         for (int i=0;  i<cartItemsList.size();  i++) {
             // Update the Cart's Total Price
-            finalPrice += Double.parseDouble(cartItemsList.get(i).getCustomersBasketProduct().getTotalPrice());
+            finalPrice += Double.parseDouble(cartItemsList.get(i).getCustomersBasketProduct().getPrice());
         }
 
         cartFragment.cart_total_price.setText(context.getString(R.string.total) +" : "+ ConstantValues.CURRENCY_SYMBOL + finalPrice);

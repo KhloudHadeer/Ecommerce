@@ -17,6 +17,7 @@ import android.widget.Toast;
 import android.widget.Button;
 import android.view.LayoutInflater;
 
+import com.cairohat.models.product_model.ProductData;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -320,13 +321,13 @@ public class Shipping_Methods extends Fragment {
         
         double productWeight = 0;
         String productWeightUnit = "g";
-        List<ProductDetails> productsList = new ArrayList<>();
+        List<ProductData> productsList = new ArrayList<>();
         
         
         // Get ProductWeight, WeightUnit and ProductsList
         for (int i=0;  i<checkoutItemsList.size();  i++) {
-            productWeight += Double.parseDouble(checkoutItemsList.get(i).getCustomersBasketProduct().getProductsWeight());
-            productWeightUnit = checkoutItemsList.get(i).getCustomersBasketProduct().getProductsWeightUnit();
+//            productWeight += Double.parseDouble(checkoutItemsList.get(i).getCustomersBasketProduct().getProductsWeight());
+//            productWeightUnit = checkoutItemsList.get(i).getCustomersBasketProduct().getProductsWeightUnit();
             productsList.add(checkoutItemsList.get(i).getCustomersBasketProduct());
         }
         

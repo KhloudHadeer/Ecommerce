@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.cairohat.models.user_model.UserDetails;
+import com.cairohat.models.user_model.Userdata2;
 
 
 /**
@@ -57,23 +58,23 @@ public class User_Info_DB {
 
     //*********** Insert New User Data ********//
 
-    public void insertUserData(UserDetails user){
+    public void insertUserData(Userdata2 user){
         // get and open SQLiteDatabase Instance from static method of DB_Manager class
         db = DB_Manager.getInstance().openDatabase();
 
         ContentValues values = new ContentValues();
 
-        values.put(CUSTOMERS_ID,              user.getCustomersId());
-        values.put(CUSTOMERS_FIRSTNAME,       user.getCustomersFirstname());
-        values.put(CUSTOMERS_LASTNAME,        user.getCustomersLastname());
-        values.put(CUSTOMERS_EMAIL_ADDRESS,   user.getCustomersEmailAddress());
-        values.put(CUSTOMERS_PASSWORD,        user.getCustomersPassword());
-        values.put(CUSTOMERS_DOB,             user.getCustomersDob());
-        values.put(CUSTOMERS_TELEPHONE,       user.getCustomersTelephone());
-        values.put(CUSTOMERS_FAX,             user.getCustomersFax());
-        values.put(CUSTOMERS_GENDER,          user.getCustomersGender());
-        values.put(CUSTOMERS_NEWSLETTER,      user.getCustomersNewsletter());
-        values.put(CUSTOMERS_PICTURE,         user.getCustomersPicture());
+       // values.put(CUSTOMERS_ID,              user.getCustomersId());
+        values.put(CUSTOMERS_FIRSTNAME,       user.getNicename());
+       // values.put(CUSTOMERS_LASTNAME,        user.getCustomersLastname());
+        values.put(CUSTOMERS_EMAIL_ADDRESS,   user.getEmail());
+//        values.put(CUSTOMERS_PASSWORD,        user.getCustomersPassword());
+//        values.put(CUSTOMERS_DOB,             user.getCustomersDob());
+//        values.put(CUSTOMERS_TELEPHONE,       user.getCustomersTelephone());
+//        values.put(CUSTOMERS_FAX,             user.getCustomersFax());
+//        values.put(CUSTOMERS_GENDER,          user.getCustomersGender());
+//        values.put(CUSTOMERS_NEWSLETTER,      user.getCustomersNewsletter());
+//        values.put(CUSTOMERS_PICTURE,         user.getCustomersPicture());
 
         db.insert(TABLE_USER_INFO, null, values);
 
@@ -89,7 +90,7 @@ public class User_Info_DB {
         // get and open SQLiteDatabase Instance from static method of DB_Manager class
         db = DB_Manager.getInstance().openDatabase();
 
-        Cursor cursor =  db.rawQuery( "SELECT * FROM "+ TABLE_USER_INFO +" WHERE "+ CUSTOMERS_ID +" =?", new String[] {userID});
+        Cursor cursor =  db.rawQuery( "SELECT * FROM "+ TABLE_USER_INFO +" WHERE "+ CUSTOMERS_FIRSTNAME +" =?", new String[] {userID});
 
         UserDetails userInfo = new UserDetails();
 
@@ -124,23 +125,23 @@ public class User_Info_DB {
 
     //*********** Update the Details of existing User ********//
 
-    public void updateUserData(UserDetails user){
+    public void updateUserData(Userdata2 user){
         // get and open SQLiteDatabase Instance from static method of DB_Manager class
         db = DB_Manager.getInstance().openDatabase();
 
         ContentValues values = new ContentValues();
 
-        values.put(CUSTOMERS_ID,              user.getCustomersId());
-        values.put(CUSTOMERS_FIRSTNAME,       user.getCustomersFirstname());
-        values.put(CUSTOMERS_LASTNAME,        user.getCustomersLastname());
-        values.put(CUSTOMERS_DOB,             user.getCustomersDob());
-        values.put(CUSTOMERS_TELEPHONE,       user.getCustomersTelephone());
-        values.put(CUSTOMERS_FAX,             user.getCustomersFax());
-        values.put(CUSTOMERS_GENDER,          user.getCustomersGender());
-        values.put(CUSTOMERS_NEWSLETTER,      user.getCustomersNewsletter());
-        values.put(CUSTOMERS_PICTURE,         user.getCustomersPicture());
+       // values.put(CUSTOMERS_ID,              user.getCustomersId());
+        values.put(CUSTOMERS_FIRSTNAME,       user.getNicename());
+//        values.put(CUSTOMERS_LASTNAME,        user.getCustomersLastname());
+//        values.put(CUSTOMERS_DOB,             user.getCustomersDob());
+//        values.put(CUSTOMERS_TELEPHONE,       user.getCustomersTelephone());
+//        values.put(CUSTOMERS_FAX,             user.getCustomersFax());
+//        values.put(CUSTOMERS_GENDER,          user.getCustomersGender());
+//        values.put(CUSTOMERS_NEWSLETTER,      user.getCustomersNewsletter());
+//        values.put(CUSTOMERS_PICTURE,         user.getCustomersPicture());
 
-        db.update(TABLE_USER_INFO, values, CUSTOMERS_EMAIL_ADDRESS +" = ?", new String[]{user.getCustomersEmailAddress()});
+        db.update(TABLE_USER_INFO, values, CUSTOMERS_EMAIL_ADDRESS +" = ?", new String[]{user.getEmail()});
 
         // close the Database
         DB_Manager.getInstance().closeDatabase();

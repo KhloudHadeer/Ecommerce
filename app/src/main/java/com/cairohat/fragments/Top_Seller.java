@@ -21,7 +21,6 @@ import com.cairohat.adapters.ProductAdapter;
 import com.cairohat.constant.ConstantValues;
 import com.cairohat.models.product_model.GetAllProducts;
 import com.cairohat.models.product_model.ProductData;
-import com.cairohat.models.product_model.ProductDetails;
 import com.cairohat.network.APIClient;
 
 import retrofit2.Call;
@@ -32,14 +31,15 @@ public class Top_Seller extends Fragment {
 
     String customerID;
     Boolean isHeaderVisible;
-    Call<ProductData> networkCall;
+    Call<List<ProductData>> networkCall;
 
     TextView emptyRecord, headerText;
     RecyclerView top_seller_recycler;
 
     ProductAdapter productAdapter;
 
-    List<ProductDetails> topSellerProductsList;
+    List<ProductData> topSellerProductsList;
+    private static int numberpage= 0;
 
 
     @Nullable
@@ -71,22 +71,23 @@ public class Top_Seller extends Fragment {
         }
     
     
-        topSellerProductsList = new ArrayList<>();
+        topSellerProductsList = new ArrayList<ProductData>();
         
 
         // RecyclerView has fixed Size
         top_seller_recycler.setHasFixedSize(true);
         top_seller_recycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-    
+        RequestTopSellerProducts();
         // Initialize the ProductAdapter for RecyclerView
         productAdapter = new ProductAdapter(getContext(), topSellerProductsList, true);
     
         // Set the Adapter and LayoutManager to the RecyclerView
         top_seller_recycler.setAdapter(productAdapter);
-        
+
+
 
         // Request for Most Sold Products
-        RequestTopSellerProducts();
+
 
 
         return rootView;
@@ -99,9 +100,10 @@ public class Top_Seller extends Fragment {
     private void addProducts(ProductData productData) {
 
         // Add Products to topSellerProductsList
-        topSellerProductsList.addAll(productData.getProductData());
+        topSellerProductsList.add(productData);
 
         productAdapter.notifyDataSetChanged();
+
     }
 
 
@@ -117,34 +119,44 @@ public class Top_Seller extends Fragment {
         getAllProducts.setType("top seller");
 
         networkCall = APIClient.getInstance()
-                .getAllProducts
-                        (
-                                getAllProducts
-                        );
+                .getbestsales(numberpage+1);
+        numberpage++;
 
-        networkCall.enqueue(new Callback<ProductData>() {
+        networkCall.enqueue(new Callback<List<ProductData>>() {
             @Override
-            public void onResponse(Call<ProductData> call, retrofit2.Response<ProductData> response) {
-                
+            public void onResponse(Call<List<ProductData>> call, retrofit2.Response<List<ProductData>> response) {
+
                 if (response.isSuccessful()) {
-
-                    // Check the Success status
-                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
-                        // Products have been returned. Add Products to the topSellerProductsList
-                        emptyRecord.setVisibility(View.GONE);
-                        addProducts(response.body());
-
-                    }
-                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
-                        // Products haven't been returned
+                    if(response.body().size() == 0){
                         emptyRecord.setVisibility(View.VISIBLE);
 
+                    }else {
+                        for (int i = 0; i < response.body().size(); i++) {
+                            addProducts(response.body().get(i));
+                        }
+                        if(response.body().size() == 10){
+                            RequestTopSellerProducts();
+
+                        }
                     }
+
+                    // Check the Success status
+//                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
+//                        // Products have been returned. Add Products to the topSellerProductsList
+//                        emptyRecord.setVisibility(View.GONE);
+//                        addProducts(response.body());
+//
+//                    }
+//                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
+//                        // Products haven't been returned
+//
+//
+//                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<ProductData> call, Throwable t) {
+            public void onFailure(Call<List<ProductData>> call, Throwable t) {
                 if (!networkCall.isCanceled()) {
                     Toast.makeText(getContext(), "NetworkCallFailure : "+t, Toast.LENGTH_LONG).show();
                 }

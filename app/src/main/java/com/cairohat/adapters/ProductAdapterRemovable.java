@@ -28,6 +28,7 @@ import com.cairohat.R;
 
 import java.util.List;
 
+import com.cairohat.models.product_model.ProductData;
 import com.cairohat.utils.Utilities;
 import com.cairohat.constant.ConstantValues;
 import com.cairohat.databases.User_Recents_DB;
@@ -49,12 +50,12 @@ public class ProductAdapterRemovable extends RecyclerView.Adapter<ProductAdapter
     private boolean isRecents;
     private boolean isHorizontal;
 
-    private List<ProductDetails> productList;
+    private List<ProductData> productList;
 
     private User_Recents_DB recents_db;
 
 
-    public ProductAdapterRemovable(Context context, List<ProductDetails> productList, boolean isHorizontal, boolean isRecents, TextView emptyText) {
+    public ProductAdapterRemovable(Context context, List<ProductData> productList, boolean isHorizontal, boolean isRecents, TextView emptyText) {
         this.context = context;
         this.productList = productList;
         this.isHorizontal = isHorizontal;
@@ -90,42 +91,42 @@ public class ProductAdapterRemovable extends RecyclerView.Adapter<ProductAdapter
     public void onBindViewHolder(final MyViewHolder holder, int position) {
 
         // Get the data model based on Position
-        final ProductDetails product = productList.get(position);
+        final ProductData product = productList.get(position);
 
         holder.product_checked.setVisibility(View.GONE);
 
 
         // Set Product Image on ImageView with Glide Library
-        Glide.with(context)
-                .load(ConstantValues.URL+product.getProductsImage())
-                .listener(new RequestListener<String, GlideDrawable>() {
-                    @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        holder.cover_loader.setVisibility(View.GONE);
-                        return false;
-                    }
+//        Glide.with(context)
+//                .load(ConstantValues.URL+product.getProductsImage())
+//                .listener(new RequestListener<String, GlideDrawable>() {
+//                    @Override
+//                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+//                        holder.cover_loader.setVisibility(View.GONE);
+//                        return false;
+//                    }
+//
+//                    @Override
+//                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+//                        holder.cover_loader.setVisibility(View.GONE);
+//                        return false;
+//                    }
+//                })
+//                .into(holder.product_thumbnail);
 
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        holder.cover_loader.setVisibility(View.GONE);
-                        return false;
-                    }
-                })
-                .into(holder.product_thumbnail);
 
-
-        holder.product_title.setText(product.getProductsName());
+        holder.product_title.setText(product.getName());
         holder.product_price_old.setPaintFlags(holder.product_price_old.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
 
 
         // Calculate the Discount on Product with static method of Helper class
-        String discount = Utilities.checkDiscount(product.getProductsPrice(), product.getDiscountPrice());
+        String discount = Utilities.checkDiscount(product.getRegular_price(), product.getSale_price());
 
         if (discount != null) {
             // Set Product's Price
             holder.product_price_old.setVisibility(View.VISIBLE);
-            holder.product_price_old.setText(ConstantValues.CURRENCY_SYMBOL + product.getProductsPrice());
-            holder.product_price_new.setText(ConstantValues.CURRENCY_SYMBOL + product.getDiscountPrice());
+            holder.product_price_old.setText(ConstantValues.CURRENCY_SYMBOL + product.getRegular_price());
+            holder.product_price_new.setText(ConstantValues.CURRENCY_SYMBOL + product.getSale_price());
 
             holder.product_tag_new.setVisibility(View.GONE);
             holder.product_tag_new_text.setVisibility(View.GONE);
@@ -138,20 +139,20 @@ public class ProductAdapterRemovable extends RecyclerView.Adapter<ProductAdapter
         } else {
 
             // Check if the Product is Newly Added with the help of static method of Helper class
-            if (Utilities.checkNewProduct(product.getProductsDateAdded())) {
-                // Set New Tag and its Text
-                holder.product_tag_new.setVisibility(View.VISIBLE);
-                holder.product_tag_new_text.setVisibility(View.VISIBLE);
-            } else {
-                holder.product_tag_new.setVisibility(View.GONE);
-                holder.product_tag_new_text.setVisibility(View.GONE);
-            }
+//            if (Utilities.checkNewProduct(product.getProductsDateAdded())) {
+//                // Set New Tag and its Text
+//                holder.product_tag_new.setVisibility(View.VISIBLE);
+//                holder.product_tag_new_text.setVisibility(View.VISIBLE);
+//            } else {
+//                holder.product_tag_new.setVisibility(View.GONE);
+//                holder.product_tag_new_text.setVisibility(View.GONE);
+//            }
 
             // Hide Discount Text and Set Product's Price
             holder.product_tag_discount.setVisibility(View.GONE);
             holder.product_tag_discount_text.setVisibility(View.GONE);
             holder.product_price_old.setVisibility(View.GONE);
-            holder.product_price_new.setText(ConstantValues.CURRENCY_SYMBOL + product.getProductsPrice());
+            holder.product_price_new.setText(ConstantValues.CURRENCY_SYMBOL + product.getPrice());
         }
         
         
@@ -177,8 +178,8 @@ public class ProductAdapterRemovable extends RecyclerView.Adapter<ProductAdapter
 
 
                 // Add the Product to User's Recently Viewed Products
-                if (!recents_db.getUserRecents().contains(product.getProductsId())) {
-                    recents_db.insertRecentItem(product.getProductsId());
+                if (!recents_db.getUserRecents().contains(product.getId())) {
+                    recents_db.insertRecentItem(product.getId());
                 }
             }
         });
@@ -194,11 +195,11 @@ public class ProductAdapterRemovable extends RecyclerView.Adapter<ProductAdapter
                 // Check if Product is in User's Recents
                 if (isRecents) {
                     // Delete Product from User_Recents_DB Local Database
-                    recents_db.deleteRecentItem(product.getProductsId());
+                    recents_db.deleteRecentItem(product.getId());
                 
                 } else {
                     // Unlike the Product for the User with the static method of Product_Description
-                    Product_Description.UnlikeProduct(product.getProductsId(), customerID, context, view);
+                    Product_Description.UnlikeProduct(product.getId(), customerID, context, view);
                 }
             
                 // Remove Product from productList List

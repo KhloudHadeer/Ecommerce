@@ -325,6 +325,7 @@ public class Utilities {
         }
 
         Double oldPrice = Double.parseDouble(actualPrice);
+
         Double newPrice = Double.parseDouble(discountedPrice);
 
         double discount = (oldPrice - newPrice)/oldPrice * 100;

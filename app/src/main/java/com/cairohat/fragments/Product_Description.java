@@ -76,7 +76,7 @@ public class Product_Description extends Fragment {
     TextView title, category, price_new, price_old, product_stock, product_likes, product_tag_new, product_tag_discount;
 
     DialogLoader dialogLoader;
-    ProductDetails productDetails;
+    ProductData productDetails;
     ProductAttributesAdapter attributesAdapter;
 
     List<Image> itemImages = new ArrayList<>();
@@ -159,7 +159,7 @@ public class Product_Description extends Fragment {
 
     //*********** Adds Product's Details to the Views ********//
 
-    private void setProductDetails(final ProductDetails productDetails) {
+    private void setProductDetails(final ProductData productDetails) {
 
         // Get Product Images and Attributes
         itemImages = productDetails.getImages();
@@ -167,49 +167,49 @@ public class Product_Description extends Fragment {
 
 
         // Setup the ImageSlider of Product Images
-        ImageSlider(productDetails.getProductsImage(), itemImages);
+       // ImageSlider(productDetails.getProductsImage(), itemImages);
 
 
         // Set Product's Information
-        title.setText(productDetails.getProductsName());
-        category.setText(productDetails.getCategoriesName());
+        title.setText(productDetails.getName());
+        //category.setText(productDetails.getCategoriesName());
         
 
-        if (productDetails.getProductsLiked() > 0) {
-            product_likes.setText(getString(R.string.likes) + " (" + String.valueOf(productDetails.getProductsLiked()) +")");
-        }
-        else {
-            product_likes.setText(getString(R.string.likes) + " (0)");
-        }
+//        if (productDetails.getProductsLiked() > 0) {
+//            product_likes.setText(getString(R.string.likes) + " (" + String.valueOf(productDetails.getProductsLiked()) +")");
+//        }
+//        else {
+//            product_likes.setText(getString(R.string.likes) + " (0)");
+//        }
 
 
         // Check Discount on Product with the help of static method of Helper class
-        String discount = Utilities.checkDiscount(productDetails.getProductsPrice(), productDetails.getDiscountPrice());
+        String discount = null;/*Utilities.checkDiscount(productDetails.getRegular_price(), productDetails.getSale_price());*/
 
         if (discount != null) {
-            productDetails.setIsSaleProduct("1");
+            //productDetails.setIsSaleProduct("1");
             
             // Set Discount Tag
             product_tag_discount.setVisibility(View.VISIBLE);
             product_tag_discount.setText(discount);
             // Set Price info based on Discount
             price_old.setVisibility(View.VISIBLE);
-            price_old.setText(ConstantValues.CURRENCY_SYMBOL + productDetails.getProductsPrice());
-            productBasePrice = Double.parseDouble(productDetails.getDiscountPrice());
+            price_old.setText(ConstantValues.CURRENCY_SYMBOL + productDetails.getPrice());
+            productBasePrice = Double.parseDouble(productDetails.getSale_price());
 
         }
         else {
-            productDetails.setIsSaleProduct("0");
+           // productDetails.setIsSaleProduct("0");
 
             price_old.setVisibility(View.GONE);
             product_tag_discount.setVisibility(View.GONE);
-            productBasePrice = Double.parseDouble(productDetails.getProductsPrice());
+            productBasePrice = Double.parseDouble(productDetails.getPrice());
         }
 
 
 
         // Check if the Product is Out of Stock
-        if (productDetails.getProductsQuantity() < 1) {
+        if (productDetails.getStock_quantity() < 1) {
             product_stock.setText(getString(R.string.outOfStock));
             productCartBtn.setText(getString(R.string.outOfStock));
             product_stock.setTextColor(ContextCompat.getColor(getContext(), R.color.colorAccentRed));
@@ -226,15 +226,15 @@ public class Product_Description extends Fragment {
 
 
         // Check if the Product is Newly Added with the help of static method of Helper class
-        if (Utilities.checkNewProduct(productDetails.getProductsDateAdded())) {
-            product_tag_new.setVisibility(View.VISIBLE);
-        }
-        else {
-            product_tag_new.setVisibility(View.GONE);
-        }
+//        if (Utilities.checkNewProduct(productDetails.getProductsDateAdded())) {
+//            product_tag_new.setVisibility(View.VISIBLE);
+//        }
+//        else {
+//            product_tag_new.setVisibility(View.GONE);
+//        }
+//
     
-    
-        String description = productDetails.getProductsDescription();
+        String description = productDetails.getDescription();
         String styleSheet = "<style> " +
                                 "body{background:#ffffff; margin:0; padding:0} " +
                                 "p{color:#757575;} " +
@@ -300,11 +300,11 @@ public class Product_Description extends Fragment {
         price_new.setText(ConstantValues.CURRENCY_SYMBOL + productFinalPrice);
 
         // Check if the User has Liked the Product
-        if (productDetails.getIsLiked().equalsIgnoreCase("1")) {
-            product_like_btn.setChecked(true);
-        } else {
-            product_like_btn.setChecked(false);
-        }
+//        if (productDetails.getIsLiked().equalsIgnoreCase("1")) {
+//            product_like_btn.setChecked(true);
+//        } else {
+//            product_like_btn.setChecked(false);
+//        }
 
 
         // Handle Click event of product_share_btn Button
@@ -313,13 +313,13 @@ public class Product_Description extends Fragment {
             public void onClick(View view) {
 
                 // Share Product with the help of static method of Helper class
-                Utilities.shareProduct
-                        (
-                            getContext(),
-                            productDetails.getProductsName(),
-                            sliderImageView,
-                            productDetails.getProductsUrl()
-                        );
+//                Utilities.shareProduct
+//                        (
+//                            getContext(),
+//                            productDetails.getName(),
+//                            sliderImageView,
+//                           // productDetails.getProductsUrl()
+//                        );
             }
         });
 
@@ -334,18 +334,18 @@ public class Product_Description extends Fragment {
 
                     // Check if the User has Checked the Like Button
                     if(product_like_btn.isChecked()) {
-                        productDetails.setIsLiked("1");
+                       // productDetails.setIsLiked("1");
                         product_like_btn.setChecked(true);
 
                         // Request the Server to Like the Product for the User
-                        LikeProduct(productDetails.getProductsId(), customerID, getContext(), view);
+                        LikeProduct(productDetails.getId(), customerID, getContext(), view);
 
                     } else {
-                        productDetails.setIsLiked("0");
+                        //productDetails.setIsLiked("0");
                         product_like_btn.setChecked(false);
 
                         // Request the Server to Unlike the Product for the User
-                        UnlikeProduct(productDetails.getProductsId(), customerID, getContext(), view);
+                        UnlikeProduct(productDetails.getId(), customerID, getContext(), view);
                     }
 
                 } else {
@@ -368,16 +368,16 @@ public class Product_Description extends Fragment {
             @Override
             public void onClick(View view) {
 
-                if (productDetails.getProductsQuantity() > 0) {
+                if (productDetails.getStock_quantity() > 0) {
                     
                     CartProduct cartProduct = new CartProduct();
     
                     // Set Product's Price, Quantity and selected Attributes Info
-                    productDetails.setCustomersBasketQuantity(1);
-                    productDetails.setProductsPrice(String.valueOf(productBasePrice));
-                    productDetails.setAttributesPrice(String.valueOf(attributesPrice));
-                    productDetails.setProductsFinalPrice(String.valueOf(productFinalPrice));
-                    productDetails.setTotalPrice(String.valueOf(productFinalPrice));
+                    productDetails.setCustomerquantity(1);
+                    productDetails.setRegular_price(String.valueOf(productBasePrice));
+                  //  productDetails.setAttributesPrice(String.valueOf(attributesPrice));
+                    productDetails.setPrice(String.valueOf(productFinalPrice));
+                    productDetails.setPrice(String.valueOf(productFinalPrice));
                     cartProduct.setCustomersBasketProduct(productDetails);
                     cartProduct.setCustomersBasketProductAttributes(selectedAttributesList);
     
@@ -549,20 +549,20 @@ public class Product_Description extends Fragment {
 
                 // Check if the Response is successful
                 if (response.isSuccessful()) {
-                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
-
-                        // Product's Details has been returned
-                        setProductDetails(response.body().getProductData().get(0));
-
-                    }
-                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
-                        Snackbar.make(rootView, response.body().getMessage(), Snackbar.LENGTH_LONG).show();
-    
-                    }
-                    else {
-                        // Unable to get Success status
-                        Snackbar.make(rootView, getString(R.string.unexpected_response), Snackbar.LENGTH_SHORT).show();
-                    }
+//                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
+//
+//                        // Product's Details has been returned
+//                        setProductDetails(response.body().getProductData().get(0));
+//
+//                    }
+//                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
+//                        Snackbar.make(rootView, response.body().getMessage(), Snackbar.LENGTH_LONG).show();
+//
+//                    }
+//                    else {
+//                        // Unable to get Success status
+//                        Snackbar.make(rootView, getString(R.string.unexpected_response), Snackbar.LENGTH_SHORT).show();
+//                    }
                 }
                 else {
                     Toast.makeText(getContext(), response.message(), Toast.LENGTH_SHORT).show();
@@ -596,20 +596,21 @@ public class Product_Description extends Fragment {
                 if (response.isSuccessful()) {
 
                     // Check the Success status
-                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
-
-                        // Product has been Liked. Show the message to User
-                        Snackbar.make(view, context.getString(R.string.added_to_favourites), Snackbar.LENGTH_SHORT).show();
-
-                    }
-                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
-                        Snackbar.make(view, response.body().getMessage(), Snackbar.LENGTH_LONG).show();
-    
-                    }
-                    else {
-                        // Unable to get Success status
-                        Snackbar.make(view, context.getString(R.string.unexpected_response), Snackbar.LENGTH_SHORT).show();
-                    }
+//                    if (response.body()
+//                            .getSuccess().equalsIgnoreCase("1")) {
+//
+//                        // Product has been Liked. Show the message to User
+//                        Snackbar.make(view, context.getString(R.string.added_to_favourites), Snackbar.LENGTH_SHORT).show();
+//
+//                    }
+//                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
+//                        Snackbar.make(view, response.body().getMessage(), Snackbar.LENGTH_LONG).show();
+//
+//                    }
+//                    else {
+//                        // Unable to get Success status
+//                        Snackbar.make(view, context.getString(R.string.unexpected_response), Snackbar.LENGTH_SHORT).show();
+//                    }
                 }
                 else {
                     Toast.makeText(context, response.message(), Toast.LENGTH_SHORT).show();
@@ -643,20 +644,20 @@ public class Product_Description extends Fragment {
                 if (response.isSuccessful()) {
 
                     // Check the Success status
-                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
-
-                        // Product has been Disliked. Show the message to User
-                        Snackbar.make(view, context.getString(R.string.removed_from_favourites), Snackbar.LENGTH_SHORT).show();
-
-                    }
-                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
-                        Snackbar.make(view, response.body().getMessage(), Snackbar.LENGTH_LONG).show();
-    
-                    }
-                    else {
-                        // Unable to get Success status
-                        Snackbar.make(view, context.getString(R.string.unexpected_response), Snackbar.LENGTH_SHORT).show();
-                    }
+//                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
+//
+//                        // Product has been Disliked. Show the message to User
+//                        Snackbar.make(view, context.getString(R.string.removed_from_favourites), Snackbar.LENGTH_SHORT).show();
+//
+//                    }
+//                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
+//                        Snackbar.make(view, response.body().getMessage(), Snackbar.LENGTH_LONG).show();
+//
+//                    }
+//                    else {
+//                        // Unable to get Success status
+//                        Snackbar.make(view, context.getString(R.string.unexpected_response), Snackbar.LENGTH_SHORT).show();
+//                    }
                 }
                 else {
                     Toast.makeText(context, response.message(), Toast.LENGTH_SHORT).show();

@@ -364,7 +364,7 @@ public class Update_Account extends Fragment {
                         UserDetails userDetails = response.body().getData().get(0);
 
                         // Update in Local Databases as well
-                        userInfoDB.updateUserData(userDetails);
+                       // userInfoDB.updateUserData(userDetails);
                         userInfoDB.updateUserPassword(userDetails);
     
                         // Get the User's Info from the Local Databases User_Info_DB

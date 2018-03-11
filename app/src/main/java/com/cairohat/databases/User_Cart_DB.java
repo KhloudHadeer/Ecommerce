@@ -10,6 +10,7 @@ import java.util.List;
 import com.cairohat.models.cart_model.CartProduct;
 import com.cairohat.models.cart_model.CartProductAttributes;
 import com.cairohat.models.product_model.Option;
+import com.cairohat.models.product_model.ProductData;
 import com.cairohat.models.product_model.ProductDetails;
 import com.cairohat.models.product_model.Value;
 import com.cairohat.utils.Utilities;
@@ -153,29 +154,29 @@ public class User_Cart_DB {
 
         ContentValues productValues = new ContentValues();
 
-        productValues.put(CART_PRODUCT_ID,                      cart.getCustomersBasketProduct().getProductsId());
-        productValues.put(CART_PRODUCT_NAME,                    cart.getCustomersBasketProduct().getProductsName());
-        productValues.put(CART_PRODUCT_IMAGE,                   cart.getCustomersBasketProduct().getProductsImage());
-        productValues.put(CART_PRODUCT_URL,                     cart.getCustomersBasketProduct().getProductsUrl());
-        productValues.put(CART_PRODUCT_MODEL,                   cart.getCustomersBasketProduct().getProductsModel());
-        productValues.put(CART_PRODUCT_WEIGHT,                  cart.getCustomersBasketProduct().getProductsWeight());
-        productValues.put(CART_PRODUCT_WEIGHT_UNIT,             cart.getCustomersBasketProduct().getProductsWeightUnit());
-        productValues.put(CART_PRODUCT_STOCK,                   cart.getCustomersBasketProduct().getProductsQuantity());
-        productValues.put(CART_PRODUCT_QUANTITY,                cart.getCustomersBasketProduct().getCustomersBasketQuantity());
-        productValues.put(CART_PRODUCT_PRICE,                   cart.getCustomersBasketProduct().getProductsPrice());
-        productValues.put(CART_PRODUCT_ATTR_PRICE,              cart.getCustomersBasketProduct().getAttributesPrice());
-        productValues.put(CART_PRODUCT_FINAL_PRICE,             cart.getCustomersBasketProduct().getProductsFinalPrice());
-        productValues.put(CART_PRODUCT_TOTAL_PRICE,             cart.getCustomersBasketProduct().getTotalPrice());
-        productValues.put(CART_PRODUCT_DESCRIPTION,             cart.getCustomersBasketProduct().getProductsDescription());
-        productValues.put(CART_CATEGORIES_ID,                   cart.getCustomersBasketProduct().getCategoriesId());
-        productValues.put(CART_CATEGORIES_NAME,                 cart.getCustomersBasketProduct().getCategoriesName());
-        productValues.put(CART_MANUFACTURERS_ID,                cart.getCustomersBasketProduct().getManufacturersId());
-        productValues.put(CART_MANUFACTURERS_NAME,              cart.getCustomersBasketProduct().getManufacturersName());
-        productValues.put(CART_PRODUCT_TAX_CLASS_ID,            cart.getCustomersBasketProduct().getProductsTaxClassId());
-        productValues.put(CART_TAX_DESCRIPTION,                 cart.getCustomersBasketProduct().getTaxDescription());
-        productValues.put(CART_TAX_CLASS_TITLE,                 cart.getCustomersBasketProduct().getTaxClassTitle());
-        productValues.put(CART_TAX_CLASS_DESCRIPTION,           cart.getCustomersBasketProduct().getTaxClassDescription());
-        productValues.put(CART_PRODUCT_IS_SALE,                 cart.getCustomersBasketProduct().getIsSaleProduct());
+        productValues.put(CART_PRODUCT_ID,                      cart.getCustomersBasketProduct().getId());
+        productValues.put(CART_PRODUCT_NAME,                    cart.getCustomersBasketProduct().getName());
+      //  productValues.put(CART_PRODUCT_IMAGE,                   cart.getCustomersBasketProduct().getProductsImage());
+      //  productValues.put(CART_PRODUCT_URL,                     cart.getCustomersBasketProduct().getProductsUrl());
+       // productValues.put(CART_PRODUCT_MODEL,                   cart.getCustomersBasketProduct().getProductsModel());
+       // productValues.put(CART_PRODUCT_WEIGHT,                  cart.getCustomersBasketProduct().getProductsWeight());
+        //productValues.put(CART_PRODUCT_WEIGHT_UNIT,             cart.getCustomersBasketProduct().getProductsWeightUnit());
+        productValues.put(CART_PRODUCT_STOCK,                   cart.getCustomersBasketProduct().getStock_quantity());
+        productValues.put(CART_PRODUCT_QUANTITY,                cart.getCustomersBasketProduct().getCustomerquantity());
+        productValues.put(CART_PRODUCT_PRICE,                   cart.getCustomersBasketProduct().getRegular_price());
+       // productValues.put(CART_PRODUCT_ATTR_PRICE,              cart.getCustomersBasketProduct().getAttributesPrice());
+        productValues.put(CART_PRODUCT_FINAL_PRICE,             cart.getCustomersBasketProduct().getPrice());
+        productValues.put(CART_PRODUCT_TOTAL_PRICE,             cart.getCustomersBasketProduct().getPrice());
+        productValues.put(CART_PRODUCT_DESCRIPTION,             cart.getCustomersBasketProduct().getShort_description());
+        productValues.put(CART_CATEGORIES_ID,                   cart.getCustomersBasketProduct().getCategories().get(0).getId());
+        productValues.put(CART_CATEGORIES_NAME,                 cart.getCustomersBasketProduct().getCategories().get(0).getName());
+      //  productValues.put(CART_MANUFACTURERS_ID,                cart.getCustomersBasketProduct().getManufacturersId());
+       // productValues.put(CART_MANUFACTURERS_NAME,              cart.getCustomersBasketProduct().getManufacturersName());
+       // productValues.put(CART_PRODUCT_TAX_CLASS_ID,            cart.getCustomersBasketProduct().getProductsTaxClassId());
+      //  productValues.put(CART_TAX_DESCRIPTION,                 cart.getCustomersBasketProduct().getTaxDescription());
+        //productValues.put(CART_TAX_CLASS_TITLE,                 cart.getCustomersBasketProduct().getTaxClassTitle());
+        //productValues.put(CART_TAX_CLASS_DESCRIPTION,           cart.getCustomersBasketProduct().getTaxClassDescription());
+       // productValues.put(CART_PRODUCT_IS_SALE,                 cart.getCustomersBasketProduct().getIsSaleProduct());
         productValues.put(CART_DATE_ADDED,                      Utilities.getDateTime());
 
         db.insert(TABLE_CART, null, productValues);
@@ -192,7 +193,7 @@ public class User_Cart_DB {
 
             ContentValues attributeValues = new ContentValues();
 
-            attributeValues.put(CART_PRODUCT_ID,                cart.getCustomersBasketProduct().getProductsId());
+            attributeValues.put(CART_PRODUCT_ID,                cart.getCustomersBasketProduct().getId());
             attributeValues.put(ATTRIBUTE_OPTION_ID,            option.getId());
             attributeValues.put(ATTRIBUTE_OPTION_NAME,          option.getName());
             attributeValues.put(ATTRIBUTE_VALUE_ID,             value.getId());
@@ -223,31 +224,34 @@ public class User_Cart_DB {
         if (cursor.moveToFirst()) {
             do {
                 CartProduct cart = new CartProduct();
-                ProductDetails product = new ProductDetails();
+                ProductData product = new ProductData();
 
-                product.setProductsId(cursor.getInt(1));
-                product.setProductsName(cursor.getString(2));
-                product.setProductsImage(cursor.getString(3));
-                product.setProductsUrl(cursor.getString(4));
-                product.setProductsModel(cursor.getString(5));
-                product.setProductsWeight(cursor.getString(6));
-                product.setProductsWeightUnit(cursor.getString(7));
-                product.setProductsQuantity(cursor.getInt(8));
-                product.setCustomersBasketQuantity(cursor.getInt(9));
-                product.setProductsPrice(cursor.getString(10));
-                product.setAttributesPrice(cursor.getString(11));
-                product.setProductsFinalPrice(cursor.getString(12));
-                product.setTotalPrice(cursor.getString(13));
-                product.setProductsDescription(cursor.getString(14));
-                product.setCategoriesId(cursor.getInt(15));
-                product.setCategoriesName(cursor.getString(16));
-                product.setManufacturersId(cursor.getInt(17));
-                product.setManufacturersName(cursor.getString(18));
-                product.setTaxClassId(cursor.getInt(19));
-                product.setTaxDescription(cursor.getString(20));
-                product.setTaxClassTitle(cursor.getString(21));
-                product.setTaxClassDescription(cursor.getString(22));
-                product.setIsSaleProduct(cursor.getString(23));
+                product.setId(cursor.getInt(1));
+                product.setName(cursor.getString(2));
+                //  product.setProductsImage(cursor.getString(3));
+                // product.setProductsUrl(cursor.getString(4));
+                //product.setProductsModel(cursor.getString(5));
+                //product.setProductsWeight(cursor.getString(6));
+                //product.setProductsWeightUnit(cursor.getString(7));
+                product.setStock_quantity(cursor.getInt(8));
+                product.setCustomerquantity(cursor.getInt(9));
+                product.setRegular_price(cursor.getString(10));
+                //  product.setAttributesPrice(cursor.getString(11));
+                product.setPrice(cursor.getString(12));
+                product.setPrice(cursor.getString(13));
+                product.setDescription(cursor.getString(14));
+                //   product.setCategoriesId(cursor.getInt(15));
+                //  product.setCategoriesName(cursor.getString(16));
+                //  product.setManufacturersId(cursor.getInt(17));
+                //  product.setManufacturersName(cursor.getString(18));
+                //  product.setTaxClassId(cursor.getInt(19));
+                //  product.setTaxDescription(cursor.getString(20));
+                //  product.setTaxClassTitle(cursor.getString(21));
+                //  product.setTaxClassDescription(cursor.getString(22));
+                //  product.setIsSaleProduct(cursor.getString(23));
+
+
+
 
 
                 cart.setCustomersBasketId(cursor.getInt(0));
@@ -321,31 +325,31 @@ public class User_Cart_DB {
         if (cursor != null) {
             cursor.moveToFirst();
 
-            ProductDetails product = new ProductDetails();
+            ProductData product = new ProductData();
 
-            product.setProductsId(cursor.getInt(1));
-            product.setProductsName(cursor.getString(2));
-            product.setProductsImage(cursor.getString(3));
-            product.setProductsUrl(cursor.getString(4));
-            product.setProductsModel(cursor.getString(5));
-            product.setProductsWeight(cursor.getString(6));
-            product.setProductsWeightUnit(cursor.getString(7));
-            product.setProductsQuantity(cursor.getInt(8));
-            product.setCustomersBasketQuantity(cursor.getInt(9));
-            product.setProductsPrice(cursor.getString(10));
-            product.setAttributesPrice(cursor.getString(11));
-            product.setProductsFinalPrice(cursor.getString(12));
-            product.setTotalPrice(cursor.getString(13));
-            product.setProductsDescription(cursor.getString(14));
-            product.setCategoriesId(cursor.getInt(15));
-            product.setCategoriesName(cursor.getString(16));
-            product.setManufacturersId(cursor.getInt(17));
-            product.setManufacturersName(cursor.getString(18));
-            product.setTaxClassId(cursor.getInt(19));
-            product.setTaxDescription(cursor.getString(20));
-            product.setTaxClassTitle(cursor.getString(21));
-            product.setTaxClassDescription(cursor.getString(22));
-            product.setIsSaleProduct(cursor.getString(23));
+            product.setId(cursor.getInt(1));
+            product.setName(cursor.getString(2));
+          //  product.setProductsImage(cursor.getString(3));
+           // product.setProductsUrl(cursor.getString(4));
+            //product.setProductsModel(cursor.getString(5));
+            //product.setProductsWeight(cursor.getString(6));
+            //product.setProductsWeightUnit(cursor.getString(7));
+            product.setStock_quantity(cursor.getInt(8));
+            product.setCustomerquantity(cursor.getInt(9));
+            product.setRegular_price(cursor.getString(10));
+          //  product.setAttributesPrice(cursor.getString(11));
+            product.setPrice(cursor.getString(12));
+            product.setPrice(cursor.getString(13));
+            product.setDescription(cursor.getString(14));
+         //   product.setCategoriesId(cursor.getInt(15));
+          //  product.setCategoriesName(cursor.getString(16));
+          //  product.setManufacturersId(cursor.getInt(17));
+          //  product.setManufacturersName(cursor.getString(18));
+          //  product.setTaxClassId(cursor.getInt(19));
+          //  product.setTaxDescription(cursor.getString(20));
+          //  product.setTaxClassTitle(cursor.getString(21));
+          //  product.setTaxClassDescription(cursor.getString(22));
+          //  product.setIsSaleProduct(cursor.getString(23));
 
 
             cartProduct.setCustomersBasketId(cursor.getInt(0));
@@ -435,30 +439,30 @@ public class User_Cart_DB {
 
         ContentValues productValues = new ContentValues();
 
-        productValues.put(CART_PRODUCT_ID,                      cart.getCustomersBasketProduct().getProductsId());
-        productValues.put(CART_PRODUCT_NAME,                    cart.getCustomersBasketProduct().getProductsName());
-        productValues.put(CART_PRODUCT_IMAGE,                   cart.getCustomersBasketProduct().getProductsImage());
-        productValues.put(CART_PRODUCT_URL,                     cart.getCustomersBasketProduct().getProductsUrl());
-        productValues.put(CART_PRODUCT_MODEL,                   cart.getCustomersBasketProduct().getProductsModel());
-        productValues.put(CART_PRODUCT_WEIGHT,                  cart.getCustomersBasketProduct().getProductsWeight());
-        productValues.put(CART_PRODUCT_WEIGHT_UNIT,             cart.getCustomersBasketProduct().getProductsWeightUnit());
-        productValues.put(CART_PRODUCT_STOCK,                   cart.getCustomersBasketProduct().getProductsQuantity());
-        productValues.put(CART_PRODUCT_QUANTITY,                cart.getCustomersBasketProduct().getCustomersBasketQuantity());
-        productValues.put(CART_PRODUCT_PRICE,                   cart.getCustomersBasketProduct().getProductsPrice());
-        productValues.put(CART_PRODUCT_ATTR_PRICE,              cart.getCustomersBasketProduct().getAttributesPrice());
-        productValues.put(CART_PRODUCT_FINAL_PRICE,             cart.getCustomersBasketProduct().getProductsFinalPrice());
-        productValues.put(CART_PRODUCT_TOTAL_PRICE,             cart.getCustomersBasketProduct().getTotalPrice());
-        productValues.put(CART_PRODUCT_DESCRIPTION,             cart.getCustomersBasketProduct().getProductsDescription());
-        productValues.put(CART_CATEGORIES_ID,                   cart.getCustomersBasketProduct().getCategoriesId());
-        productValues.put(CART_CATEGORIES_NAME,                 cart.getCustomersBasketProduct().getCategoriesName());
-        productValues.put(CART_MANUFACTURERS_ID,                cart.getCustomersBasketProduct().getManufacturersId());
-        productValues.put(CART_MANUFACTURERS_NAME,              cart.getCustomersBasketProduct().getManufacturersName());
-        productValues.put(CART_PRODUCT_TAX_CLASS_ID,            cart.getCustomersBasketProduct().getProductsTaxClassId());
-        productValues.put(CART_TAX_DESCRIPTION,                 cart.getCustomersBasketProduct().getTaxDescription());
-        productValues.put(CART_TAX_CLASS_TITLE,                 cart.getCustomersBasketProduct().getTaxClassTitle());
-        productValues.put(CART_TAX_CLASS_DESCRIPTION,           cart.getCustomersBasketProduct().getTaxClassDescription());
-        productValues.put(CART_PRODUCT_IS_SALE,                 cart.getCustomersBasketProduct().getIsSaleProduct());
 
+        productValues.put(CART_PRODUCT_ID,                      cart.getCustomersBasketProduct().getId());
+        productValues.put(CART_PRODUCT_NAME,                    cart.getCustomersBasketProduct().getName());
+        //  productValues.put(CART_PRODUCT_IMAGE,                   cart.getCustomersBasketProduct().getProductsImage());
+        //  productValues.put(CART_PRODUCT_URL,                     cart.getCustomersBasketProduct().getProductsUrl());
+        // productValues.put(CART_PRODUCT_MODEL,                   cart.getCustomersBasketProduct().getProductsModel());
+        // productValues.put(CART_PRODUCT_WEIGHT,                  cart.getCustomersBasketProduct().getProductsWeight());
+        //productValues.put(CART_PRODUCT_WEIGHT_UNIT,             cart.getCustomersBasketProduct().getProductsWeightUnit());
+        productValues.put(CART_PRODUCT_STOCK,                   cart.getCustomersBasketProduct().getStock_quantity());
+        productValues.put(CART_PRODUCT_QUANTITY,                cart.getCustomersBasketProduct().getCustomerquantity());
+        productValues.put(CART_PRODUCT_PRICE,                   cart.getCustomersBasketProduct().getRegular_price());
+        // productValues.put(CART_PRODUCT_ATTR_PRICE,              cart.getCustomersBasketProduct().getAttributesPrice());
+        productValues.put(CART_PRODUCT_FINAL_PRICE,             cart.getCustomersBasketProduct().getPrice());
+        productValues.put(CART_PRODUCT_TOTAL_PRICE,             cart.getCustomersBasketProduct().getPrice());
+        productValues.put(CART_PRODUCT_DESCRIPTION,             cart.getCustomersBasketProduct().getShort_description());
+        productValues.put(CART_CATEGORIES_ID,                   cart.getCustomersBasketProduct().getCategories().get(0).getId());
+        productValues.put(CART_CATEGORIES_NAME,                 cart.getCustomersBasketProduct().getCategories().get(0).getName());
+        //  productValues.put(CART_MANUFACTURERS_ID,                cart.getCustomersBasketProduct().getManufacturersId());
+        // productValues.put(CART_MANUFACTURERS_NAME,              cart.getCustomersBasketProduct().getManufacturersName());
+        // productValues.put(CART_PRODUCT_TAX_CLASS_ID,            cart.getCustomersBasketProduct().getProductsTaxClassId());
+        //  productValues.put(CART_TAX_DESCRIPTION,                 cart.getCustomersBasketProduct().getTaxDescription());
+        //productValues.put(CART_TAX_CLASS_TITLE,                 cart.getCustomersBasketProduct().getTaxClassTitle());
+        //productValues.put(CART_TAX_CLASS_DESCRIPTION,           cart.getCustomersBasketProduct().getTaxClassDescription());
+        // productValues.put(CART_PRODUCT_IS_SALE,                 cart.getCustomersBasketProduct().getIsSaleProduct());
 
         db.update(TABLE_CART, productValues, CART_ID +" = ?", new String[]{String.valueOf(cart.getCustomersBasketId())});
 
@@ -471,7 +475,7 @@ public class User_Cart_DB {
 
             ContentValues attributeValues = new ContentValues();
 
-            attributeValues.put(CART_PRODUCT_ID,                cart.getCustomersBasketProduct().getProductsId());
+            attributeValues.put(CART_PRODUCT_ID,                cart.getCustomersBasketProduct().getId());
             attributeValues.put(ATTRIBUTE_OPTION_ID,            option.getId());
             attributeValues.put(ATTRIBUTE_OPTION_NAME,          option.getName());
             attributeValues.put(ATTRIBUTE_VALUE_ID,             value.getId());
@@ -498,8 +502,8 @@ public class User_Cart_DB {
 
         ContentValues values = new ContentValues();
 
-        values.put(CART_PRODUCT_QUANTITY,               cart.getCustomersBasketProduct().getCustomersBasketQuantity());
-        values.put(CART_PRODUCT_TOTAL_PRICE,            cart.getCustomersBasketProduct().getTotalPrice());
+        values.put(CART_PRODUCT_QUANTITY,               cart.getCustomersBasketProduct().getCustomerquantity());
+        values.put(CART_PRODUCT_TOTAL_PRICE,            cart.getCustomersBasketProduct().getPrice());
 
         db.update(TABLE_CART, values, CART_ID +" = ?", new String[]{String.valueOf(cart.getCustomersBasketId())});
 

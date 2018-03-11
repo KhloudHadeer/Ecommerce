@@ -62,13 +62,13 @@ public class CheckoutItemsAdapter extends RecyclerView.Adapter<CheckoutItemsAdap
         final CartProduct cartProduct = checkoutItemsList.get(position);
 
         // Set Product Image on ImageView with Glide Library
-        Glide.with(context).load(ConstantValues.URL+ cartProduct.getCustomersBasketProduct().getProductsImage()).into(holder.checkout_item_cover);
+      //  Glide.with(context).load(ConstantValues.URL+ cartProduct.getCustomersBasketProduct().getProductsImage()).into(holder.checkout_item_cover);
 
-        holder.checkout_item_title.setText(cartProduct.getCustomersBasketProduct().getProductsName());
-        holder.checkout_item_quantity.setText(String.valueOf(cartProduct.getCustomersBasketProduct().getCustomersBasketQuantity()));
-        holder.checkout_item_price.setText(ConstantValues.CURRENCY_SYMBOL + cartProduct.getCustomersBasketProduct().getProductsPrice());
-        holder.checkout_item_price_final.setText(ConstantValues.CURRENCY_SYMBOL + cartProduct.getCustomersBasketProduct().getTotalPrice());
-        holder.checkout_item_category.setText(cartProduct.getCustomersBasketProduct().getCategoriesName());
+        holder.checkout_item_title.setText(cartProduct.getCustomersBasketProduct().getName());
+        holder.checkout_item_quantity.setText(String.valueOf(cartProduct.getCustomersBasketProduct().getCustomerquantity()));
+        holder.checkout_item_price.setText(ConstantValues.CURRENCY_SYMBOL + cartProduct.getCustomersBasketProduct().getRegular_price());
+        holder.checkout_item_price_final.setText(ConstantValues.CURRENCY_SYMBOL + cartProduct.getCustomersBasketProduct().getPrice());
+       // holder.checkout_item_category.setText(cartProduct.getCustomersBasketProduct().getCategoriesName());
     
     
         List<Value> selectedAttributeValues= new ArrayList<>();

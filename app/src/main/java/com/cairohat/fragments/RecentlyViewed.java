@@ -40,7 +40,7 @@ public class RecentlyViewed extends Fragment {
     User_Recents_DB recents_db = new User_Recents_DB();
 
     ArrayList<Integer> recents;
-    List<ProductDetails> recentViewedList;
+    List<ProductData> recentViewedList;
 
 
 
@@ -104,9 +104,9 @@ public class RecentlyViewed extends Fragment {
     private void addRecentProducts(ProductData productData) {
 
         // Add Products to recentViewedList
-        if (productData.getProductData().size() > 0 ) {
-            recentViewedList.add(productData.getProductData().get(0));
-        }
+//        if (productData.getProductData().size() > 0 ) {
+//            recentViewedList.add(productData.getProductData().get(0));
+//        }
 
         // Notify the Adapter
         productAdapter.notifyDataSetChanged();
@@ -137,18 +137,18 @@ public class RecentlyViewed extends Fragment {
                 
                 if (response.isSuccessful()) {
                     
-                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
-                        // Product's Details has been returned.
-                        // Add Product to the recentViewedList
-                        addRecentProducts(response.body());
-
-                    }
-                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
-                        // Product's Details haven't been returned.
-                        // Call the method to process some implementations
-                        addRecentProducts(response.body());
-
-                    }
+//                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
+//                        // Product's Details has been returned.
+//                        // Add Product to the recentViewedList
+//                        addRecentProducts(response.body());
+//
+//                    }
+//                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
+//                        // Product's Details haven't been returned.
+//                        // Call the method to process some implementations
+//                        addRecentProducts(response.body());
+//
+//                    }
                 }
             }
 
