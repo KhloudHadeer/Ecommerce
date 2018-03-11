@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,6 +30,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.cairohat.activities.Login;
+import com.cairohat.app.MyAppPrefsManager;
 import com.cairohat.customs.CircularImageView;
 
 import com.cairohat.activities.MainActivity;
@@ -38,26 +41,33 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import com.cairohat.constant.ConstantValues;
 import com.cairohat.customs.DialogLoader;
 import com.cairohat.databases.User_Info_DB;
+import com.cairohat.models.category_model.CategoryData;
 import com.cairohat.models.user_model.UserData;
 import com.cairohat.models.user_model.UserDetails;
+import com.cairohat.models.user_model.Userdata2;
 import com.cairohat.network.APIClient;
+import com.cairohat.services.MyFirebaseInstanceIDService;
 import com.cairohat.utils.CheckPermissions;
 import com.cairohat.utils.Utilities;
 import com.cairohat.utils.ImagePicker;
 import com.cairohat.utils.ValidateInputs;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
+
+import static android.content.Context.MODE_PRIVATE;
+import static com.braintreepayments.api.internal.BraintreeSharedPreferences.getSharedPreferences;
 
 
 public class Update_Account extends Fragment {
 
     View rootView;
-    String customers_id;
     String profileImageCurrent = "";
     String profileImageChanged = "";
     private static final int PICK_IMAGE_ID = 360;           // the number doesn't matter
@@ -65,10 +75,11 @@ public class Update_Account extends Fragment {
     Button updateInfoBtn;
     CircularImageView user_photo;
     FloatingActionButton user_photo_edit_fab;
-    EditText input_first_name, input_last_name, input_dob, input_contact_no, input_current_password, input_new_password;
-
+    EditText input_first_name, input_last_name, input_email,input_address,input_city,input_zipcode,input_country,input_contact_no, input_current_password, input_new_password;
+    String username;
     DialogLoader dialogLoader;
-
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
     UserDetails userInfo;
     User_Info_DB userInfoDB = new User_Info_DB();
 
@@ -81,84 +92,97 @@ public class Update_Account extends Fragment {
         // Enable Drawer Indicator with static variable actionBarDrawerToggle of MainActivity
         MainActivity.actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getString(R.string.actionAccount));
-
+        sharedPreferences = this.getContext().getSharedPreferences("UserInfo", getContext().MODE_PRIVATE);
         // Get the CustomerID from SharedPreferences
-        customers_id = this.getContext().getSharedPreferences("UserInfo", getContext().MODE_PRIVATE).getString("userID", "");
+        username = sharedPreferences.getString("userEmail", null);
+
+
+
+//        username= this.getContext().getSharedPreferences("UserInfo", getContext().MODE_PRIVATE).getString("userName","");
 
 
         // Binding Layout Views
         user_photo = (CircularImageView) rootView.findViewById(R.id.user_photo);
         input_first_name = (EditText) rootView.findViewById(R.id.firstname);
         input_last_name = (EditText) rootView.findViewById(R.id.lastname);
-        input_dob = (EditText) rootView.findViewById(R.id.dob);
-        input_contact_no = (EditText) rootView.findViewById(R.id.contact);
+//        input_dob = (EditText) rootView.findViewById(R.id.dob);
+        input_email = (EditText) rootView.findViewById(R.id.email);
+        input_address = (EditText) rootView.findViewById(R.id.address);
+        input_city = (EditText) rootView.findViewById(R.id.city);
+        input_zipcode = (EditText) rootView.findViewById(R.id.zipcode);
+        input_country = (EditText) rootView.findViewById(R.id.country);
+        input_contact_no = (EditText) rootView.findViewById(R.id.phone);
         input_current_password = (EditText) rootView.findViewById(R.id.current_password);
         input_new_password = (EditText) rootView.findViewById(R.id.new_password);
         updateInfoBtn = (Button) rootView.findViewById(R.id.updateInfoBtn);
         user_photo_edit_fab = (FloatingActionButton) rootView.findViewById(R.id.user_photo_edit_fab);
 
-
-        // Set KeyListener of some View to null
-        input_dob.setKeyListener(null);
-
-
         dialogLoader = new DialogLoader(getContext());
 
+        // Set KeyListener of some View to null
+       // input_dob.setKeyListener(null);
+
+        getCustomerInfo();
+
+
+
         // Get the User's Info from the Local Databases User_Info_DB
-        userInfo = userInfoDB.getUserData(customers_id);
-        
+        //userInfo = userInfoDB.getUserData(customers_id);
+
+
+
 
         // Set User's Info to Form Inputs
-        input_first_name.setText(userInfo.getCustomersFirstname());
-        input_last_name.setText(userInfo.getCustomersLastname());
-        input_contact_no.setText(userInfo.getCustomersTelephone());
+//        input_first_name.setText(userInfo.getCustomersFirstname());
+//        input_last_name.setText(userInfo.getCustomersLastname());
+//        input_contact_no.setText(userInfo.getCustomersTelephone());
 
 
-        // Set User's Date of Birth
-        if (userInfo.getCustomersDob().equalsIgnoreCase("0000-00-00 00:00:00")) {
-            input_dob.setText("");
-        }
-        else {
-            // Get the String of Date from userInfo
-            String dateString = userInfo.getCustomersDob();
-            // Set Date Format
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-
-            // Convert String of Date to Date Format
-            Date convertedDate = new Date();
-            try {
-                convertedDate = dateFormat.parse(dateString);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            input_dob.setText(dateFormat.format(convertedDate));
-        }
+//        // Set User's Date of Birth
+//        if (userInfo.getCustomersDob().equalsIgnoreCase("0000-00-00 00:00:00")) {
+//            input_dob.setText("");
+//        }
+//        else {
+//            // Get the String of Date from userInfo
+//            String dateString = userInfo.getCustomersDob();
+//            // Set Date Format
+//            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+//
+//            // Convert String of Date to Date Format
+//            Date convertedDate = new Date();
+//            try {
+//                convertedDate = dateFormat.parse(dateString);
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//
+//            //input_dob.setText(dateFormat.format(convertedDate));
+//        }
 
 
         // Set User's Photo
-        if (userInfo.getCustomersPicture() != null && !userInfo.getCustomersPicture().isEmpty()){
-            profileImageCurrent = userInfo.getCustomersPicture();
-            Glide.with(this)
-                    .load(ConstantValues.URL+profileImageCurrent).asBitmap()
-                    .placeholder(R.drawable.profile)
-                    .error(R.drawable.profile)
-                    .into(user_photo);
-            
-        }
-        else {
-            profileImageCurrent = "";
-            Glide.with(this)
-                    .load(R.drawable.profile).asBitmap()
-                    .placeholder(R.drawable.profile)
-                    .error(R.drawable.profile)
-                    .into(user_photo);
-        }
+//        if (userInfo.getCustomersPicture() != null && !userInfo.getCustomersPicture().isEmpty()){
+//            profileImageCurrent = userInfo.getCustomersPicture();
+//            Glide.with(this)
+//                    .load(ConstantValues.URL+profileImageCurrent).asBitmap()
+//                    .placeholder(R.drawable.profile)
+//                    .error(R.drawable.profile)
+//                    .into(user_photo);
+//
+//        }
+//        else {
+//            profileImageCurrent = "";
+//            Glide.with(this)
+//                    .load(R.drawable.profile).asBitmap()
+//                    .placeholder(R.drawable.profile)
+//                    .error(R.drawable.profile)
+//                    .into(user_photo);
+//        }
 
 
 
         // Handle Touch event of input_dob EditText
-        input_dob.setOnTouchListener(new View.OnTouchListener() {
+      /*   input_dob.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
@@ -202,7 +226,7 @@ public class Update_Account extends Fragment {
                 return false;
             }
         });
-
+*/
 
 
         // Handle Click event of user_photo_edit_fab FAB
@@ -210,16 +234,16 @@ public class Update_Account extends Fragment {
             @Override
             public void onClick(View view) {
                 
-                if (CheckPermissions.is_CAMERA_PermissionGranted()  &&  CheckPermissions.is_STORAGE_PermissionGranted()) {
-                    pickImage();
-                }
-                else {
-                    requestPermissions
-                        (
-                            new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            CheckPermissions.PERMISSIONS_REQUEST_CAMERA
-                        );
-                }
+//                if (CheckPermissions.is_CAMERA_PermissionGranted()  &&  CheckPermissions.is_STORAGE_PermissionGranted()) {
+//                    pickImage();
+//                }
+//                else {
+//                    requestPermissions
+//                        (
+//                            new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+//                            CheckPermissions.PERMISSIONS_REQUEST_CAMERA
+//                        );
+//                }
                 
             }
         });
@@ -229,24 +253,25 @@ public class Update_Account extends Fragment {
         updateInfoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                EditCustomerInfo();
                 // Validate User's Info Form Inputs
-                boolean isValidData = validateInfoForm();
-
-                if (isValidData) {
-                    if ("".equalsIgnoreCase(input_current_password.getText().toString()) &&  "".equalsIgnoreCase(input_new_password.getText().toString())) {
-                        // Proceed User Registration
-                        updateCustomerInfo();
-                    }
-                    else {
-                        if (validatePasswordForm())
-                            updateCustomerInfo();
-                    }
-                    
-                }
+//                boolean isValidData = validateInfoForm();
+//
+//                if (isValidData) {
+//                    if ("".equalsIgnoreCase(input_current_password.getText().toString()) &&  "".equalsIgnoreCase(input_new_password.getText().toString())) {
+//                        // Proceed User Registration
+//                        updateCustomerInfo();
+//                    }
+//                    else {
+//                        if (validatePasswordForm())
+//                            updateCustomerInfo();
+//                    }
+//
+//                }
             }
         });
-
-
+//
+//
         return rootView;
 
     }
@@ -267,142 +292,182 @@ public class Update_Account extends Fragment {
     
     //*********** Receives the result from a previous call of startActivityForResult(Intent, int) ********//
     
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == PICK_IMAGE_ID) {
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (resultCode == Activity.RESULT_OK) {
+//            if (requestCode == PICK_IMAGE_ID) {
+//
+//                // Get the User Selected Image as Bitmap from the static method of ImagePicker class
+//                Bitmap bitmap = ImagePicker.getImageFromResult(this.getActivity(), resultCode, data);
+//
+//                // Upload the Bitmap to ImageView
+//                user_photo.setImageBitmap(bitmap);
+//
+//                // Get the converted Bitmap as Base64ImageString from the static method of Helper class
+//                profileImageChanged = Utilities.getBase64ImageStringFromBitmap(bitmap);
+//            }
+//        }
+//    }
 
-                // Get the User Selected Image as Bitmap from the static method of ImagePicker class
-                Bitmap bitmap = ImagePicker.getImageFromResult(this.getActivity(), resultCode, data);
-
-                // Upload the Bitmap to ImageView
-                user_photo.setImageBitmap(bitmap);
-
-                // Get the converted Bitmap as Base64ImageString from the static method of Helper class
-                profileImageChanged = Utilities.getBase64ImageStringFromBitmap(bitmap);
-            }
-        }
-    }
-    
     
     
     //*********** This method is invoked for every call on requestPermissions(Activity, String[], int) ********//
     
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        
-        if (requestCode == CheckPermissions.PERMISSIONS_REQUEST_CAMERA) {
-            if (grantResults.length > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                // The Camera and Storage Permission is granted
-                pickImage();
-            }
-            else {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.CAMERA)) {
-                    // Show Information about why you need the permission
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle(getString(R.string.permission_camera_storage));
-                    builder.setMessage(getString(R.string.permission_camera_storage_needed));
-                    builder.setPositiveButton(getString(R.string.grant), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                            requestPermissions
-                                (
-                                    new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                    CheckPermissions.PERMISSIONS_REQUEST_CAMERA
-                                );
-                        }
-                    });
-                    builder.setNegativeButton(getString(R.string.not_now), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-                    builder.show();
-                }
-                else {
-                    Toast.makeText(getContext(),getString(R.string.permission_rejected), Toast.LENGTH_LONG).show();
-                }
-            }
-        }
-    }
-    
-    
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//
+//        if (requestCode == CheckPermissions.PERMISSIONS_REQUEST_CAMERA) {
+//            if (grantResults.length > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+//                // The Camera and Storage Permission is granted
+//                pickImage();
+//            }
+//            else {
+//                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.CAMERA)) {
+//                    // Show Information about why you need the permission
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//                    builder.setTitle(getString(R.string.permission_camera_storage));
+//                    builder.setMessage(getString(R.string.permission_camera_storage_needed));
+//                    builder.setPositiveButton(getString(R.string.grant), new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.cancel();
+//                            requestPermissions
+//                                (
+//                                    new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+//                                    CheckPermissions.PERMISSIONS_REQUEST_CAMERA
+//                                );
+//                        }
+//                    });
+//                    builder.setNegativeButton(getString(R.string.not_now), new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.cancel();
+//                        }
+//                    });
+//                    builder.show();
+//                }
+//                else {
+//                    Toast.makeText(getContext(),getString(R.string.permission_rejected), Toast.LENGTH_LONG).show();
+//                }
+//            }
+//        }
+//    }
+
+
     //*********** Updates User's Personal Information ********//
 
-    private void updateCustomerInfo() {
+    private void EditCustomerInfo(){
+//        hhhhhhhhhhhhhhhhhhhhhhhhhhhh
+        //implement validatePasswordForm for password before send update data
+        
+    }
+
+    private void getCustomerInfo() {
 
         dialogLoader.showProgressDialog();
-        
-
-        Call<UserData> call = APIClient.getInstance()
-                .updateCustomerInfo
+        Call<Userdata2> call = APIClient.getInstance()
+                .processProfile
                         (
-                                customers_id,
-                                input_first_name.getText().toString().trim(),
-                                input_last_name.getText().toString().trim(),
-                                input_contact_no.getText().toString().trim(),
-                                input_dob.getText().toString().trim(),
-                                profileImageChanged,
-                                profileImageCurrent,
-                                input_new_password.getText().toString().trim()
+                                username.trim()
+
                         );
 
-        call.enqueue(new Callback<UserData>() {
+        call.enqueue(new Callback<Userdata2>() {
             @Override
-            public void onResponse(Call<UserData> call, retrofit2.Response<UserData> response) {
-
+            public void onResponse(Call<Userdata2> call, Response<Userdata2> response) {
                 dialogLoader.hideProgressDialog();
+                Userdata2 userDetails = response.body();
+//                Toast.makeText(getContext(),response.message()+username,Toast.LENGTH_LONG).show();
 
-                if (response.isSuccessful()) {
-                    if (response.body().getSuccess().equalsIgnoreCase("1")  &&  response.body().getData() != null) {
-                        // User's Info has been Updated.
-                        
-                        UserDetails userDetails = response.body().getData().get(0);
+                input_first_name.setText(userDetails.getfirstname());
+                input_last_name.setText(userDetails.getlastname());
+                input_email.setText(userDetails.getEmail());
+                input_address.setText(userDetails.getaddress());
+                input_city.setText(userDetails.getcity());
+                input_zipcode.setText(userDetails.getpostcode());
+                input_country.setText(userDetails.getcountry());
+                input_contact_no.setText(userDetails.getphone());
+                input_current_password.setText("");
+                input_new_password.setText("");
+                Glide.with(Update_Account.this).load(Uri.parse(userDetails.getimage())).into(user_photo);
 
-                        // Update in Local Databases as well
-                       // userInfoDB.updateUserData(userDetails);
-                        userInfoDB.updateUserPassword(userDetails);
-    
-                        // Get the User's Info from the Local Databases User_Info_DB
-                        userInfo = userInfoDB.getUserData(customers_id);
-                        
-                        // Set the userName in SharedPreferences
-                        SharedPreferences.Editor editor = getContext().getSharedPreferences("UserInfo", getContext().MODE_PRIVATE).edit();
-                        editor.putString("userName", userDetails.getCustomersFirstname()+" "+userDetails.getCustomersLastname());
-                        editor.apply();
 
-                        // Set the User Info in the NavigationDrawer Header with the public method of MainActivity
-                        ((MainActivity)getActivity()).setupExpandableDrawerHeader();
 
-                        Snackbar.make(rootView, response.body().getMessage(), Snackbar.LENGTH_SHORT).show();
-
-                    }
-                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
-                        // Unable to Update User's Info.
-                        Snackbar.make(rootView, response.body().getMessage(), Snackbar.LENGTH_SHORT).show();
-
-                    }
-                    else {
-                        // Unable to get Success status
-                        Toast.makeText(getContext(), getString(R.string.unexpected_response), Toast.LENGTH_SHORT).show();
-                    }
-                    
-                }
-                else {
-                    Toast.makeText(getContext(), ""+response.message(), Toast.LENGTH_SHORT).show();
-                }
             }
 
             @Override
-            public void onFailure(Call<UserData> call, Throwable t) {
-                dialogLoader.hideProgressDialog();
-                Toast.makeText(getContext(), "NetworkCallFailure : "+t, Toast.LENGTH_LONG).show();
+            public void onFailure(Call<Userdata2> call, Throwable t) {
+                               Toast.makeText(getContext() , "failure :"+ t.toString(), Toast.LENGTH_LONG).show();
+
+
             }
         });
+
+
+
+//        Call<UserData> call = APIClient.getInstance()
+//                .updateCustomerInfo
+//                        (
+//                                customers_id,
+//                                input_first_name.getText().toString().trim(),
+//                                input_last_name.getText().toString().trim(),
+//                                input_contact_no.getText().toString().trim(),
+//                                input_dob.getText().toString().trim(),
+//                                profileImageChanged,
+//                                profileImageCurrent,
+//                                input_new_password.getText().toString().trim()
+//                        );
+//
+//        processProfile.enqueue(new Callback<Userdata2>() {
+//            @Override
+//            public void onResponse(Call<UserData> call, retrofit2.Response<UserData> response) {
+//
+//                dialogLoader.hideProgressDialog();
+//
+//                if (response.isSuccessful()) {
+//                    if (response.body().getSuccess().equalsIgnoreCase("1")  &&  response.body().getData() != null) {
+//                        // User's Info has been Updated.
+//
+//                        UserDetails userDetails = response.body().getData().get(0);
+//
+//                        // Update in Local Databases as well
+//                       // userInfoDB.updateUserData(userDetails);
+//                        userInfoDB.updateUserPassword(userDetails);
+//
+//                        // Get the User's Info from the Local Databases User_Info_DB
+//                        userInfo = userInfoDB.getUserData(customers_id);
+//
+//                        // Set the userName in SharedPreferences
+//                        SharedPreferences.Editor editor = getContext().getSharedPreferences("UserInfo", getContext().MODE_PRIVATE).edit();
+//                        editor.putString("userName", userDetails.getCustomersFirstname()+" "+userDetails.getCustomersLastname());
+//                        editor.apply();
+//
+//                        // Set the User Info in the NavigationDrawer Header with the public method of MainActivity
+//                        ((MainActivity)getActivity()).setupExpandableDrawerHeader();
+//
+//                        Snackbar.make(rootView, response.body().getMessage(), Snackbar.LENGTH_SHORT).show();
+//
+//                    }
+//                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
+//                        // Unable to Update User's Info.
+//                        Snackbar.make(rootView, response.body().getMessage(), Snackbar.LENGTH_SHORT).show();
+//
+//                    }
+//                    else {
+//                        // Unable to get Success status
+//                        Toast.makeText(getContext(), getString(R.string.unexpected_response), Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                }
+//                else {
+//                    Toast.makeText(getContext(), ""+response.message(), Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//
+//
+//        });
     }
     
     
