@@ -360,6 +360,8 @@ public class Update_Account extends Fragment {
 
     private void EditCustomerInfo(){
 //        hhhhhhhhhhhhhhhhhhhhhhhhhhhh
+        //implement validatePasswordForm for password before send update data
+        
     }
 
     private void getCustomerInfo() {
