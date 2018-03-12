@@ -359,8 +359,10 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                         //editor.putString("userID", userDetails.getCustomersId());
                         editor.putString("userEmail", userDetails.getEmail());
                         editor.putString("userName", userDetails.getNicename());
-                        editor.putString("usernamename", userDetails.getNicename());
-             //   editor.putString("usernamename", user_email.getText().toString().trim());
+//                        editor.putString("usernamename", userDetails.getNicename());
+                        editor.putString("token", userDetails.getToken());
+
+                //   editor.putString("usernamename", user_email.getText().toString().trim());
                        // editor.putString("userDefaultAddressID", userDetails.getCustomersDefaultAddressId());
                         editor.putBoolean("isLogged_in", true);
                         editor.apply();

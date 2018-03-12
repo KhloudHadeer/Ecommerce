@@ -10,8 +10,10 @@ import android.content.SharedPreferences;
 
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -20,6 +22,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,6 +40,12 @@ import com.cairohat.customs.CircularImageView;
 import com.cairohat.activities.MainActivity;
 import com.cairohat.R;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -61,6 +70,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 import static com.braintreepayments.api.internal.BraintreeSharedPreferences.getSharedPreferences;
 
@@ -71,18 +81,20 @@ public class Update_Account extends Fragment {
     String profileImageCurrent = "";
     String profileImageChanged = "";
     private static final int PICK_IMAGE_ID = 360;           // the number doesn't matter
-    
+    int Gallery_request = 0;
     Button updateInfoBtn;
     CircularImageView user_photo;
     FloatingActionButton user_photo_edit_fab;
-    EditText input_first_name, input_last_name, input_email,input_address,input_city,input_zipcode,input_country,input_contact_no, input_current_password, input_new_password;
-    String username;
+    EditText input_first_name, input_last_name, input_email, input_address, input_city, input_zipcode, input_country, input_contact_no, input_current_password, input_new_password;
+    String username, init_token,token;
     DialogLoader dialogLoader;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     UserDetails userInfo;
     User_Info_DB userInfoDB = new User_Info_DB();
+    Uri uri;
 
+    Bitmap bitmapimagesss;
 
     @Nullable
     @Override
@@ -91,13 +103,12 @@ public class Update_Account extends Fragment {
 
         // Enable Drawer Indicator with static variable actionBarDrawerToggle of MainActivity
         MainActivity.actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getString(R.string.actionAccount));
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.actionAccount));
         sharedPreferences = this.getContext().getSharedPreferences("UserInfo", getContext().MODE_PRIVATE);
         // Get the CustomerID from SharedPreferences
         username = sharedPreferences.getString("userEmail", null);
-
-
-
+        init_token= sharedPreferences.getString("token", null);
+        token ="Bearer "+init_token;
 //        username= this.getContext().getSharedPreferences("UserInfo", getContext().MODE_PRIVATE).getString("userName","");
 
 
@@ -120,16 +131,13 @@ public class Update_Account extends Fragment {
         dialogLoader = new DialogLoader(getContext());
 
         // Set KeyListener of some View to null
-       // input_dob.setKeyListener(null);
+        // input_dob.setKeyListener(null);
 
         getCustomerInfo();
 
 
-
         // Get the User's Info from the Local Databases User_Info_DB
         //userInfo = userInfoDB.getUserData(customers_id);
-
-
 
 
         // Set User's Info to Form Inputs
@@ -178,7 +186,6 @@ public class Update_Account extends Fragment {
 //                    .error(R.drawable.profile)
 //                    .into(user_photo);
 //        }
-
 
 
         // Handle Touch event of input_dob EditText
@@ -233,18 +240,17 @@ public class Update_Account extends Fragment {
         user_photo_edit_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                
-//                if (CheckPermissions.is_CAMERA_PermissionGranted()  &&  CheckPermissions.is_STORAGE_PermissionGranted()) {
-//                    pickImage();
-//                }
-//                else {
-//                    requestPermissions
-//                        (
-//                            new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
-//                            CheckPermissions.PERMISSIONS_REQUEST_CAMERA
-//                        );
-//                }
-                
+
+                if (CheckPermissions.is_CAMERA_PermissionGranted() && CheckPermissions.is_STORAGE_PermissionGranted()) {
+                    pickImage();
+                } else {
+                    requestPermissions
+                            (
+                                    new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                    CheckPermissions.PERMISSIONS_REQUEST_CAMERA
+                            );
+                }
+
             }
         });
 
@@ -254,6 +260,8 @@ public class Update_Account extends Fragment {
             @Override
             public void onClick(View v) {
                 EditCustomerInfo();
+
+
                 // Validate User's Info Form Inputs
 //                boolean isValidData = validateInfoForm();
 //
@@ -277,24 +285,74 @@ public class Update_Account extends Fragment {
     }
 
 
-
     //*********** Picks User Profile Image from Gallery or Camera ********//
 
     private void pickImage() {
         // Intent with Image Picker Apps from the static method of ImagePicker class
         Intent chooseImageIntent = ImagePicker.getImagePickerIntent(getContext());
-        
+
         // Start Activity with Image Picker Intent
         startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
+
     }
-    
-    
-    
+
+
     //*********** Receives the result from a previous call of startActivityForResult(Intent, int) ********//
-    
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        uri = data.getData();
+
+
+        try {
+            bitmapimagesss = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), uri);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        Glide.with(Update_Account.this).load(uri).into(user_photo);
+
+
+        super.onActivityResult(requestCode, resultCode, data);
+        }
+
+
+    public String getStringImage(Bitmap bmp) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageBytes = baos.toByteArray();
+        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        return encodedImage;
+    }
+
+
+
 //        super.onActivityResult(requestCode, resultCode, data);
+//
+//
+//
+//        if (resultCode == Activity.RESULT_OK) {
+//            if (requestCode == PICK_IMAGE_ID) {
+//
+//                // Get the User Selected Image as Bitmap from the static method of ImagePicker class
+//                bitmap = ImagePicker.getImageFromResult(this.getActivity(), resultCode, data);
+//
+//                // Upload the Bitmap to ImageView
+//                Glide.with(getContext()).load(data.getData()).into(user_photo);
+//
+//                // Get the converted Bitmap as Base64ImageString from the static method of Helper class
+//                profileImageChanged = Utilities.getBase64ImageStringFromBitmap(bitmap);
+//            }
+//        }
+
+
+
+
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//
+//
 //        if (resultCode == Activity.RESULT_OK) {
 //            if (requestCode == PICK_IMAGE_ID) {
 //
@@ -308,7 +366,22 @@ public class Update_Account extends Fragment {
 //                profileImageChanged = Utilities.getBase64ImageStringFromBitmap(bitmap);
 //            }
 //        }
-//    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode == Gallery_request){
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), Gallery_request);
+            }else {
+                Toast.makeText(getContext() , getString(R.string.permission_rejected) ,Toast.LENGTH_LONG).show();
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 
     
     
@@ -361,7 +434,62 @@ public class Update_Account extends Fragment {
     private void EditCustomerInfo(){
 //        hhhhhhhhhhhhhhhhhhhhhhhhhhhh
         //implement validatePasswordForm for password before send update data
-        
+
+
+        String imagedata  = getStringImage(bitmapimagesss);
+        //params.put("image" , imagedata);
+        dialogLoader.showProgressDialog();
+        Call<Userdata2> call = APIClient.getInstance()
+                .processUpdateProfile
+                        (
+                                token.trim(),
+                                input_first_name.getText().toString().trim(),
+                                input_last_name.getText().toString().trim(),
+                                input_email.getText().toString().trim(),
+                                input_address.getText().toString().trim(),
+                                input_city.getText().toString().trim(),
+                                input_zipcode.getText().toString().trim(),
+                                input_country.getText().toString().trim(),
+                                input_contact_no.getText().toString().trim(),
+                                input_new_password.getText().toString().trim(),
+                                imagedata.trim()
+
+
+                        );
+
+        call.enqueue(new Callback<Userdata2>() {
+            @Override
+            public void onResponse(Call<Userdata2> call, Response<Userdata2> response) {
+                dialogLoader.hideProgressDialog();
+                Userdata2 userDetails = response.body();
+               // Toast.makeText(getContext(),response.message(),Toast.LENGTH_LONG).show();
+
+                input_first_name.setText(userDetails.getfirstname());
+                input_last_name.setText(userDetails.getlastname());
+                input_email.setText(userDetails.getEmail());
+                input_address.setText(userDetails.getaddress());
+                input_city.setText(userDetails.getcity());
+                input_zipcode.setText(userDetails.getpostcode());
+                input_country.setText(userDetails.getcountry());
+                input_contact_no.setText(userDetails.getphone());
+                input_current_password.setText("");
+                input_new_password.setText("");
+                Glide.with(Update_Account.this).load(Uri.parse(userDetails.getimage())).into(user_photo);
+
+
+
+            }
+
+            @Override
+            public void onFailure(Call<Userdata2> call, Throwable t) {
+                Toast.makeText(getContext() , "failure :"+ t.toString(), Toast.LENGTH_LONG).show();
+
+
+            }
+        });
+
+
+
     }
 
     private void getCustomerInfo() {
@@ -379,7 +507,7 @@ public class Update_Account extends Fragment {
             public void onResponse(Call<Userdata2> call, Response<Userdata2> response) {
                 dialogLoader.hideProgressDialog();
                 Userdata2 userDetails = response.body();
-//                Toast.makeText(getContext(),response.message()+username,Toast.LENGTH_LONG).show();
+                //Toast.makeText(getContext(),response.message(),Toast.LENGTH_LONG).show();
 
                 input_first_name.setText(userDetails.getfirstname());
                 input_last_name.setText(userDetails.getlastname());

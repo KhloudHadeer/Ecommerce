@@ -33,6 +33,8 @@ import retrofit2.http.Body;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Field;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
@@ -124,9 +126,25 @@ public interface APIRequests {
                                             @Field("customers_picture") String customers_picture,
                                             @Field("customers_old_picture") String customers_old_picture,
                                             @Field("customers_password") String customers_password );
-    
-    
-    
+
+
+    @POST("mobiconnector/user/update_profile")
+    @FormUrlEncoded
+    Call<Userdata2> processUpdateProfile(
+            @Header("Authorization") String customers_token,
+            @Field("first_name") String customers_firstname,
+            @Field("last_name") String customers_lastname,
+            @Field("user_email") String customers_email,
+            @Field("wiloke_address") String customers_address,
+            @Field("wiloke_city") String customers_city,
+            @Field("wiloke_zipcode") String customers_zipcode,
+            @Field("wiloke_country") String customers_country,
+            @Field("wiloke_phone") String customers_phone,
+            @Field("user_pass") String customers_password,
+            @Field("user_profile_picture") String customers_pic
+    );
+
+
     //******************** Address Data ********************//
     
     @POST("getCountries")
