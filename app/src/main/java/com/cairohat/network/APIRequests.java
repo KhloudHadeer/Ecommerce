@@ -16,6 +16,7 @@ import com.cairohat.models.pages_model.PagesData;
 import com.cairohat.models.product_model.GetAllProducts;
 import com.cairohat.models.coupons_model.CouponsData;
 import com.cairohat.models.payment_model.PaymentMethodsData;
+import com.cairohat.models.product_model.ProductDetails;
 import com.cairohat.models.shipping_model.PostTaxAndShippingData;
 import com.cairohat.models.order_model.OrderData;
 import com.cairohat.models.payment_model.GetBrainTreeToken;
@@ -210,6 +211,15 @@ public interface APIRequests {
 
     @GET("wooconnector/product/getproduct")
     Call<List<ProductData>> getallproduct(@Query("post_num_page") int num);
+
+
+    @GET("wooconnector/product/getproductbycategory")
+    Call<ProductDetails> getproductbycategory(@Query("post_category") int numcateg ,
+                                              @Query("post_num_page") int numpage);
+
+
+    @GET("wooconnector/product/getdealofday")
+    Call<List<ProductData>> getproductsdeals(@Query("post_num_page") int numpage);
 
 
     @FormUrlEncoded

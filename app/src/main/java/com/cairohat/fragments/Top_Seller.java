@@ -1,8 +1,11 @@
 package com.cairohat.fragments;
 
 
+import android.os.AsyncTask;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +22,7 @@ import java.util.List;
 
 import com.cairohat.adapters.ProductAdapter;
 import com.cairohat.constant.ConstantValues;
+import com.cairohat.customs.EndlessRecyclerViewScroll;
 import com.cairohat.models.product_model.GetAllProducts;
 import com.cairohat.models.product_model.ProductData;
 import com.cairohat.network.APIClient;
@@ -39,9 +43,10 @@ public class Top_Seller extends Fragment {
     ProductAdapter productAdapter;
 
     List<ProductData> topSellerProductsList;
-    private static int numberpage= 0;
+    private static int numberpage= 1;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -77,12 +82,19 @@ public class Top_Seller extends Fragment {
         // RecyclerView has fixed Size
         top_seller_recycler.setHasFixedSize(true);
         top_seller_recycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        RequestTopSellerProducts();
+        RequestTopSellerProducts(numberpage);
         // Initialize the ProductAdapter for RecyclerView
         productAdapter = new ProductAdapter(getContext(), topSellerProductsList, true);
     
         // Set the Adapter and LayoutManager to the RecyclerView
         top_seller_recycler.setAdapter(productAdapter);
+        top_seller_recycler.addOnScrollListener(new EndlessRecyclerViewScroll(top_seller_recycler) {
+            @Override
+            public void onLoadMore(int current_page) {
+                new LoadMoreTask(current_page).execute();
+            }
+        });
+    
 
 
 
@@ -110,17 +122,17 @@ public class Top_Seller extends Fragment {
 
     //*********** Request all the Products from the Server based on the Sales of Products ********//
 
-    public void RequestTopSellerProducts() {
+    public void RequestTopSellerProducts( int page) {
 
-        GetAllProducts getAllProducts = new GetAllProducts();
-        getAllProducts.setPageNumber(0);
-        getAllProducts.setLanguageId(ConstantValues.LANGUAGE_ID);
-        getAllProducts.setCustomersId(customerID);
-        getAllProducts.setType("top seller");
+//        GetAllProducts getAllProducts = new GetAllProducts();
+//        getAllProducts.setPageNumber(0);
+//        getAllProducts.setLanguageId(ConstantValues.LANGUAGE_ID);
+//        getAllProducts.setCustomersId(customerID);
+//        getAllProducts.setType("top seller");
 
         networkCall = APIClient.getInstance()
-                .getbestsales(numberpage+1);
-        numberpage++;
+                .getbestsales(page);
+
 
         networkCall.enqueue(new Callback<List<ProductData>>() {
             @Override
@@ -134,10 +146,7 @@ public class Top_Seller extends Fragment {
                         for (int i = 0; i < response.body().size(); i++) {
                             addProducts(response.body().get(i));
                         }
-                        if(response.body().size() == 10){
-                            RequestTopSellerProducts();
 
-                        }
                     }
 
                     // Check the Success status
@@ -176,5 +185,48 @@ public class Top_Seller extends Fragment {
         }
 
         super.onPause();
+    }
+
+
+
+    private class LoadMoreTask extends AsyncTask<String, Void, String> {
+
+        int page_number;
+
+
+        private LoadMoreTask(int page_number) {
+            this.page_number = page_number;
+        }
+
+
+        //*********** Runs on the UI thread before #doInBackground() ********//
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+
+        //*********** Performs some Processes on Background Thread and Returns a specified Result  ********//
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            // Request for Products based on PageNo.
+            RequestTopSellerProducts(page_number);
+            System.out.println("num "+page_number);
+
+
+            return "All Done!";
+        }
+
+
+        //*********** Runs on the UI thread after #doInBackground() ********//
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+        }
     }
 }

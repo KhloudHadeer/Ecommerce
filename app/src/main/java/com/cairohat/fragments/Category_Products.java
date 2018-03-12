@@ -428,23 +428,23 @@ public class Category_Products extends Fragment {
         getAllProducts.setType(sortBy);
 
 
-        Call<List<ProductData>> call = APIClient.getInstance()
-                .getallproduct(numpage+1);
-        numpage++;
+        Call<ProductDetails> call = APIClient.getInstance()
+                .getproductbycategory(categoryID  , pageNumber);
+       // numpage++;
 
 
 
-        call.enqueue(new Callback<List<ProductData>>() {
+        call.enqueue(new Callback<ProductDetails>() {
             @Override
-            public void onResponse(Call<List<ProductData>> call, retrofit2.Response<List<ProductData>> response) {
+            public void onResponse(Call<ProductDetails> call, retrofit2.Response<ProductDetails> response) {
                 
                 if (response.isSuccessful()) {
-                    for(int i=0; i<response.body().size(); i++) {
-                        addCategoryProducts(response.body().get(i));
+                    for(int i=0; i<response.body().getProductDataList().size(); i++) {
+                        addCategoryProducts(response.body().getProductDataList().get(i));
                     }
-                    if(response.body().size() == 10){
-                        RequestCategoryProducts(pageNumber , sortBy);
-                    }
+//                    if(response.body().size() == 10){
+//                        RequestCategoryProducts(pageNumber , sortBy);
+//                    }
 
 //                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
 //
@@ -479,7 +479,7 @@ public class Category_Products extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<ProductData>> call, Throwable t) {
+            public void onFailure(Call<ProductDetails> call, Throwable t) {
                // if (isVisible)
                     Toast.makeText(getContext(), "NetworkCallFailure : "+t, Toast.LENGTH_LONG).show();
             }

@@ -39,6 +39,7 @@ public class App extends MultiDexApplication {
     private AppSettingsDetails appSettingsDetails = null;
     private List<BannerDetails> bannersList = new ArrayList<>();
     private List<CategoryData> categoriesList = new ArrayList<>();
+    private  List<CategoryData> categprodlist = new ArrayList<>();
     private List<PagesDetails> staticPagesDetails = new ArrayList<>();
 
     private String tax = "";
@@ -71,7 +72,13 @@ public class App extends MultiDexApplication {
     }
 
 
+    public List<CategoryData> getCategprodlist() {
+        return categprodlist;
+    }
 
+    public void setCategprodlist(List<CategoryData> categprodlist) {
+        this.categprodlist = categprodlist;
+    }
 
     public List<Drawer_Items> getDrawerHeaderList() {
         return drawerHeaderList;

@@ -41,7 +41,7 @@ public class All_Products extends Fragment {
 
     View rootView;
     
-    int pageNo = 0;
+    int pageNo = 1;
     boolean isGridView;
     String customerID;
     String sortBy = "Newest";
@@ -258,6 +258,7 @@ public class All_Products extends Fragment {
 //            ProductData productDetails = productData.getProductData().get(i);
 //            productsList.add(productDetails);
 //        }
+        productsList.add(productData);
 
         productAdapter.notifyDataSetChanged();
 
@@ -277,11 +278,11 @@ public class All_Products extends Fragment {
 
     public void RequestAllProducts(int pageNumber, String sortBy) {
 
-        GetAllProducts getAllProducts = new GetAllProducts();
-        getAllProducts.setPageNumber(pageNumber);
-        getAllProducts.setLanguageId(ConstantValues.LANGUAGE_ID);
-        getAllProducts.setCustomersId(customerID);
-        getAllProducts.setType(sortBy);
+//        GetAllProducts getAllProducts = new GetAllProducts();
+//        getAllProducts.setPageNumber(pageNumber);
+//        getAllProducts.setLanguageId(ConstantValues.LANGUAGE_ID);
+//        getAllProducts.setCustomersId(customerID);
+//        getAllProducts.setType(sortBy);
 
         Call<List<ProductData>> call = APIClient.getInstance()
                 .getallproduct(pageNumber);
@@ -290,7 +291,10 @@ public class All_Products extends Fragment {
             public void onResponse(Call<List<ProductData>> call, retrofit2.Response<List<ProductData>> response) {
                 
                 if (response.isSuccessful()) {
-                    Toast.makeText(getContext() , response.code()+response.message() , Toast.LENGTH_LONG).cancel();
+                   for(int i=0; i<response.body().size(); i++){
+                       addProducts(response.body().get(i));
+
+                   }
 //                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
 //                        // Products have been returned. Add Products to the ProductsList
 //                        addProducts(response.body());
@@ -352,7 +356,8 @@ public class All_Products extends Fragment {
         protected String doInBackground(String... params) {
 
             // Request for Products based on PageNo.
-          //  RequestAllProducts(page_number, sortBy);
+            RequestAllProducts(page_number, sortBy);
+            System.out.println("number " +page_number);
 
             return "All Done!";
         }

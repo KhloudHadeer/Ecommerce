@@ -5,11 +5,18 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.cairohat.models.category_model.CategoryData;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
 public class ProductDetails implements Parcelable {
+
+
+
+    private CategoryData category;
+    private List<ProductData> products;
 
 
     @SerializedName("products_id")
@@ -162,6 +169,21 @@ public class ProductDetails implements Parcelable {
     private List<Attribute> attributes = new ArrayList<Attribute>();
 
 
+    public CategoryData getCategoryData() {
+        return category;
+    }
+
+    public void setCategoryData(CategoryData categoryData) {
+        this.category = categoryData;
+    }
+
+    public List<ProductData> getProductDataList() {
+        return products;
+    }
+
+    public void setProductDataList(List<ProductData> productDataList) {
+        this.products = productDataList;
+    }
 
     public ProductDetails() {
     }

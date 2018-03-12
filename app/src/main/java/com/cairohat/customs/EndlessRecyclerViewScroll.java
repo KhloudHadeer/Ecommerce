@@ -17,7 +17,7 @@ public abstract class EndlessRecyclerViewScroll extends RecyclerView.OnScrollLis
     private View bottomBar = null;
 
     private boolean loading = true;             // True if we are still waiting for the last set of data to load
-    private int current_page = 0;               // The current offset index of data you have loaded
+    private int current_page = 1;               // The current offset index of data you have loaded
     private int previousTotal = 0;              // The total number of items in the RecyclerView after the last load
     private int totalItemCount;                 // The total number of items in the RecyclerView
     private int visibleItemCount;               // The total number of visible items in the RecyclerView
