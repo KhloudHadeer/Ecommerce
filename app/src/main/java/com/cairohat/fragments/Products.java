@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 
 import com.cairohat.activities.MainActivity;
@@ -47,7 +48,7 @@ public class Products extends Fragment {
         super.onCreate(savedInstanceState);
 
         // Get CategoriesList from AppContext
-        allCategoriesList = ((App) getContext().getApplicationContext()).getCategoriesList();
+        allCategoriesList = ((App) getContext().getApplicationContext()).getCategprodlist();
 
         allSubCategoriesList = new ArrayList<>();
 
@@ -140,22 +141,23 @@ public class Products extends Fragment {
 
         // Add the Fragments to the ViewPagerAdapter with TabHeader
         viewPagerCustomAdapter.addFragment(allProducts, getContext().getString(R.string.all));
+       // Toast.makeText(getContext() , allCategoriesList.size() +" "+ allSubCategoriesList.size() , Toast.LENGTH_LONG).show();
 
 
-        for (int i=0;  i < allSubCategoriesList.size();  i++) {
+        for (int i=0;  i < allCategoriesList.size();  i++) {
 
             // Initialize Category_Products Fragment with specified arguments
             Fragment categoryProducts = new Category_Products();
             Bundle categoryInfo = new Bundle();
             categoryInfo.putString("sortBy", sortBy);
-            categoryInfo.putInt("CategoryID", Integer.parseInt(allSubCategoriesList.get(i).getId()));
+            categoryInfo.putInt("CategoryID", Integer.parseInt(allCategoriesList.get(i).getId()));
             categoryProducts.setArguments(categoryInfo);
 
             // Add the Fragments to the ViewPagerAdapter with TabHeader
-            viewPagerCustomAdapter.addFragment(categoryProducts, allSubCategoriesList.get(i).getName());
+            viewPagerCustomAdapter.addFragment(categoryProducts, allCategoriesList.get(i).getName());
 
 
-            if (selectedTabText.equalsIgnoreCase(allSubCategoriesList.get(i).getName())) {
+            if (selectedTabText.equalsIgnoreCase(allCategoriesList.get(i).getName())) {
                 selectedTabIndex = i + 1;
             }
         }

@@ -31,7 +31,8 @@ public class Special_Deals extends Fragment {
 
     String customerID;
     Boolean isHeaderVisible;
-    Call<ProductData> networkCall;
+    Call<List<ProductData>> networkCall;
+    private static int pagenum = 0;
 
     TextView emptyRecord, headerText;
     RecyclerView super_deals_recycler;
@@ -96,10 +97,10 @@ public class Special_Deals extends Fragment {
 
     //*********** Adds Products returned from the Server to the DealProductsList ********//
 
-    private void addProducts(ProductData productData) {
+    private void addProducts(List<ProductData> productData) {
 
         // Add Products to dealProductsList
-        dealProductsList.add(productData);
+        dealProductsList.addAll(productData);
 
         productAdapter.notifyDataSetChanged();
     }
@@ -110,24 +111,27 @@ public class Special_Deals extends Fragment {
 
     public void RequestSpecialDeals() {
 
-        GetAllProducts getAllProducts = new GetAllProducts();
-        getAllProducts.setPageNumber(0);
-        getAllProducts.setLanguageId(ConstantValues.LANGUAGE_ID);
-        getAllProducts.setCustomersId(customerID);
-        getAllProducts.setType("special");
+//        GetAllProducts getAllProducts = new GetAllProducts();
+//        getAllProducts.setPageNumber(0);
+//        getAllProducts.setLanguageId(ConstantValues.LANGUAGE_ID);
+//        getAllProducts.setCustomersId(customerID);
+//        getAllProducts.setType("special");
 
 
         networkCall = APIClient.getInstance()
-                .getAllProducts
+                .getproductsdeals
                         (
-                                getAllProducts
+                                pagenum+1
                         );
 
-        networkCall.enqueue(new Callback<ProductData>() {
+        networkCall.enqueue(new Callback<List<ProductData>>() {
             @Override
-            public void onResponse(Call<ProductData> call, retrofit2.Response<ProductData> response) {
+            public void onResponse(Call<List<ProductData>> call, retrofit2.Response<List<ProductData>> response) {
                 
                 if (response.isSuccessful()) {
+
+                        addProducts(response.body());
+
                     
 //                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
 //                        // Products have been returned. Add Products to the dealProductsList
@@ -144,7 +148,7 @@ public class Special_Deals extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<ProductData> call, Throwable t) {
+            public void onFailure(Call<List<ProductData>> call, Throwable t) {
                 if (!networkCall.isCanceled()) {
                     Toast.makeText(getContext(), "NetworkCallFailure : "+t, Toast.LENGTH_LONG).show();
                 }

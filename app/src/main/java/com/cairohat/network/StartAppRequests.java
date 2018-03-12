@@ -50,6 +50,7 @@ public class StartAppRequests {
     private App app = new App();
     private static int pagenum = 0;
     List<CategoryData> categoryDataList = new ArrayList<>();
+    List<CategoryData> categlistproduct = new ArrayList<>();
 
     public StartAppRequests(Context context) {
         context = context;
@@ -113,7 +114,8 @@ public class StartAppRequests {
         try {
      
                 categoryDataList.addAll(call.clone().execute().body());
-                categoryDataList.addAll(call1.clone().execute().body());
+                //categoryDataList.addAll(call1.clone().execute().body());
+                categlistproduct.addAll(call1.clone().execute().body());
 
 
             if (call.clone().execute().body().size() == 10){
@@ -127,6 +129,7 @@ public class StartAppRequests {
 
 
             app.setCategoriesList(categoryDataList);
+            app.setCategprodlist(categlistproduct);
 
         } catch (IOException e) {
             e.printStackTrace();

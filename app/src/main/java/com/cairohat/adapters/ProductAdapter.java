@@ -109,6 +109,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
+
         
         if (position != productList.size()) {
         
@@ -124,22 +125,23 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
     
     
             // Set Product Image on ImageView with Glide Library
-//            Glide.with(context)
-//                    .load(ConstantValues.URL+product.getProductsImage())
-//                    .listener(new RequestListener<String, GlideDrawable>() {
-//                        @Override
-//                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-//                            holder.cover_loader.setVisibility(View.GONE);
-//                            return false;
-//                        }
-//
-//                        @Override
-//                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-//                            holder.cover_loader.setVisibility(View.GONE);
-//                            return false;
-//                        }
-//                    })
-//                    .into(holder.product_thumbnail);
+            Glide.with(context)
+                    .load(product.getImages().get(0).getImage())
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            holder.cover_loader.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            holder.cover_loader.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
+                    .into(holder.product_thumbnail);
+           // Toast.makeText(context , product.getImages().get(0).getImage() , Toast.LENGTH_LONG).show();
     
     
             holder.product_title.setText(product.getName());
