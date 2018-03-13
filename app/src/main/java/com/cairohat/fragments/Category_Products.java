@@ -164,9 +164,11 @@ public class Category_Products extends Fragment {
 
         // Initialize the ProductAdapter for RecyclerView
         productAdapter = new ProductAdapter(getContext(), categoryProductsList, false);
-        Toast.makeText(getContext() , categoryProductsList.size()+"" , Toast.LENGTH_LONG).cancel();
 
 
+        if(categoryProductsList.size() == 0){
+            emptyRecord.setVisibility(View.VISIBLE);
+        }
         
         setRecyclerViewLayoutManager(isGridView);
         category_products_recycler.setAdapter(productAdapter);
@@ -389,14 +391,14 @@ public class Category_Products extends Fragment {
 
     //*********** Adds Products returned from the Server to the CategoryProductsList ********//
 
-    private void addCategoryProducts(ProductData productData) {
+    private void addCategoryProducts(List<ProductData> productData) {
 
         // Add Products to CategoryProductsList from the List of ProductData
 //        for (int i = 0; i < productData.getProductData().size(); i++) {
 //            ProductDetails productDetails = productData.getProductData().get(i);
 //            categoryProductsList.add(productDetails);
 //        }
-        categoryProductsList.add(productData);
+        categoryProductsList.addAll(productData);
 
         productAdapter.notifyDataSetChanged();
 
@@ -420,12 +422,12 @@ public class Category_Products extends Fragment {
 
     public void RequestCategoryProducts(final int pageNumber, final String sortBy) {
 
-        GetAllProducts getAllProducts = new GetAllProducts();
-        getAllProducts.setPageNumber(pageNumber);
-        getAllProducts.setLanguageId(ConstantValues.LANGUAGE_ID);
-        getAllProducts.setCustomersId(customerID);
-        getAllProducts.setCategoriesId(String.valueOf(categoryID));
-        getAllProducts.setType(sortBy);
+//        GetAllProducts getAllProducts = new GetAllProducts();
+//        getAllProducts.setPageNumber(pageNumber);
+//        getAllProducts.setLanguageId(ConstantValues.LANGUAGE_ID);
+//        getAllProducts.setCustomersId(customerID);
+//        getAllProducts.setCategoriesId(String.valueOf(categoryID));
+//        getAllProducts.setType(sortBy);
 
 
         Call<ProductDetails> call = APIClient.getInstance()
@@ -439,9 +441,8 @@ public class Category_Products extends Fragment {
             public void onResponse(Call<ProductDetails> call, retrofit2.Response<ProductDetails> response) {
                 
                 if (response.isSuccessful()) {
-                    for(int i=0; i<response.body().getProductDataList().size(); i++) {
-                        addCategoryProducts(response.body().getProductDataList().get(i));
-                    }
+                        addCategoryProducts(response.body().getProductDataList());
+
 //                    if(response.body().size() == 10){
 //                        RequestCategoryProducts(pageNumber , sortBy);
 //                    }

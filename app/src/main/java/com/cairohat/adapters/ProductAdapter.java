@@ -78,7 +78,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
 
         recents_db = new User_Recents_DB();
 
-        customerID = this.context.getSharedPreferences("UserInfo", Context.MODE_PRIVATE).getString("userID", "");
+        customerID = this.context.getSharedPreferences("UserInfo", Context.MODE_PRIVATE).getString("userEmail", "");
     }
 
 
@@ -112,18 +112,18 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
 
         
         if (position != productList.size()) {
-        
+
             // Get the data model based on Position
             final ProductData product = productList.get(position);
-    
+
             // Check if the Product is already in the Cart
             if (My_Cart.checkCartHasProduct(product.getParent_id())) {
                 holder.product_checked.setVisibility(View.VISIBLE);
             } else {
                 holder.product_checked.setVisibility(View.GONE);
             }
-    
-    
+
+
             // Set Product Image on ImageView with Glide Library
             Glide.with(context)
                     .load(product.getImages().get(0).getImage())
@@ -142,30 +142,42 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
                     })
                     .into(holder.product_thumbnail);
            // Toast.makeText(context , product.getImages().get(0).getImage() , Toast.LENGTH_LONG).show();
-    
-    
+
+
             holder.product_title.setText(product.getName());
             holder.product_price_old.setPaintFlags(holder.product_price_old.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
-    
-    
+
+
             // Calculate the Discount on Product with static method of Helper class
-            final String discount = null; /*= Utilities.checkDiscount(product.getRegular_price(), product.getSale_price());*/
-    
+            if( product.getSale_price() == ""){
+                product.setSale_price(String.valueOf(0));
+            }
+            final String discount = Utilities.checkDiscount(product.getRegular_price(), product.getSale_price());
+
+
             if (discount != null) {
-                // Set Product's Price
-                holder.product_price_old.setVisibility(View.VISIBLE);
-                holder.product_price_old.setText(ConstantValues.CURRENCY_SYMBOL + product.getRegular_price());
-                holder.product_price_new.setText(ConstantValues.CURRENCY_SYMBOL + product.getSale_price());
-    
-                holder.product_tag_new.setVisibility(View.GONE);
-                holder.product_tag_new_text.setVisibility(View.GONE);
-    
-                // Set Discount Tag and its Text
-                holder.product_tag_discount.setVisibility(View.VISIBLE);
-                holder.product_tag_discount_text.setVisibility(View.VISIBLE);
-                holder.product_tag_discount_text.setText(discount);
-    
-            } else {
+                if (discount.equals("100% OFF")) {
+                    holder.product_tag_discount.setVisibility(View.GONE);
+                    holder.product_tag_discount_text.setVisibility(View.GONE);
+                    holder.product_price_old.setVisibility(View.GONE);
+                    holder.product_price_new.setText(ConstantValues.CURRENCY_SYMBOL + product.getRegular_price());
+
+                } else {
+                    // Set Product's Price
+                    holder.product_price_old.setVisibility(View.VISIBLE);
+                    holder.product_price_old.setText(ConstantValues.CURRENCY_SYMBOL + product.getRegular_price());
+                    holder.product_price_new.setText(ConstantValues.CURRENCY_SYMBOL + product.getSale_price());
+
+                    holder.product_tag_new.setVisibility(View.GONE);
+                    holder.product_tag_new_text.setVisibility(View.GONE);
+
+                    // Set Discount Tag and its Text
+                    holder.product_tag_discount.setVisibility(View.VISIBLE);
+                    holder.product_tag_discount_text.setVisibility(View.VISIBLE);
+                    holder.product_tag_discount_text.setText(discount);
+
+                }
+            }else {
     
                 // Check if the Product is Newly Added with the help of static method of Helper class
 //                if (Utilities.checkNewProduct(product.getProductsDateAdded())) {
@@ -205,20 +217,20 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
                     if (ConstantValues.IS_USER_LOGGED_IN) {
     
                         
-//                        if(holder.product_like_btn.isChecked()) {
-//                            product.setIsLiked("1");
-//                            holder.product_like_btn.setChecked(true);
-//
-//                            // Like the Product for the User with the static method of Product_Description
-//                            Product_Description.LikeProduct(product.getProductsId(), customerID, context, view);
-//                        }
-//                        else {
-//                            product.setIsLiked("0");
-//                            holder.product_like_btn.setChecked(false);
-//
-//                            // Unlike the Product for the User with the static method of Product_Description
-//                            Product_Description.UnlikeProduct(product.getProductsId(), customerID, context, view);
-//                        }
+                        if(holder.product_like_btn.isChecked()) {
+                           // product.setIsLiked("1");
+                            holder.product_like_btn.setChecked(true);
+
+                            // Like the Product for the User with the static method of Product_Description
+                            Product_Description.LikeProduct(product.getId(), customerID, context, view);
+                        }
+                        else {
+                           // product.setIsLiked("0");
+                            holder.product_like_btn.setChecked(false);
+
+                            // Unlike the Product for the User with the static method of Product_Description
+                            Product_Description.UnlikeProduct(product.getId(), customerID, context, view);
+                        }
 //
                     } else {
                         // Keep the Like Button Unchecked

@@ -88,13 +88,7 @@ public class Top_Seller extends Fragment {
     
         // Set the Adapter and LayoutManager to the RecyclerView
         top_seller_recycler.setAdapter(productAdapter);
-        top_seller_recycler.addOnScrollListener(new EndlessRecyclerViewScroll(top_seller_recycler) {
-            @Override
-            public void onLoadMore(int current_page) {
-                new LoadMoreTask(current_page).execute();
-            }
-        });
-    
+
 
 
 
@@ -109,10 +103,10 @@ public class Top_Seller extends Fragment {
 
     //*********** Adds Products returned from the Server to the topSellerProductsList ********//
 
-    private void addProducts(ProductData productData) {
+    private void addProducts(List<ProductData> productData) {
 
         // Add Products to topSellerProductsList
-        topSellerProductsList.add(productData);
+        topSellerProductsList.addAll(productData);
 
         productAdapter.notifyDataSetChanged();
 
@@ -122,7 +116,7 @@ public class Top_Seller extends Fragment {
 
     //*********** Request all the Products from the Server based on the Sales of Products ********//
 
-    public void RequestTopSellerProducts( int page) {
+    public void RequestTopSellerProducts(final int page) {
 
 //        GetAllProducts getAllProducts = new GetAllProducts();
 //        getAllProducts.setPageNumber(0);
@@ -139,15 +133,17 @@ public class Top_Seller extends Fragment {
             public void onResponse(Call<List<ProductData>> call, retrofit2.Response<List<ProductData>> response) {
 
                 if (response.isSuccessful()) {
-                    if(response.body().size() == 0){
-                       // emptyRecord.setVisibility(View.VISIBLE);
+//                    if(response.body().size() == 0){
+//                       // emptyRecord.setVisibility(View.VISIBLE);
+//
+//                    }else {
+                      addProducts(response.body());
+                      if(response.body().size() == 10){
+                          new LoadMoreTask(page+1).execute();
+                      }
 
-                    }else {
-                        for (int i = 0; i < response.body().size(); i++) {
-                            addProducts(response.body().get(i));
-                        }
 
-                    }
+                   // }
 
                     // Check the Success status
 //                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
@@ -174,20 +170,12 @@ public class Top_Seller extends Fragment {
     }
 
 
-
     @Override
-    public void onPause() {
+    public void onResume() {
+        super.onResume();
+        productAdapter.notifyDataSetChanged();
 
-        // Check if NetworkCall is being executed
-        if (networkCall.isExecuted()){
-            // Cancel the NetworkCall
-            networkCall.cancel();
-        }
-
-        super.onPause();
     }
-
-
 
     private class LoadMoreTask extends AsyncTask<String, Void, String> {
 
