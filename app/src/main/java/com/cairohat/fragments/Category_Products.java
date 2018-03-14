@@ -42,6 +42,7 @@ import com.cairohat.network.APIClient;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class Category_Products extends Fragment {
@@ -79,9 +80,10 @@ public class Category_Products extends Fragment {
 
     GridLayoutManager gridLayoutManager;
     LinearLayoutManager linearLayoutManager;
-    
-    
-    
+    String[] sortArray;
+
+
+
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
@@ -148,13 +150,14 @@ public class Category_Products extends Fragment {
 
         // Initialize CategoryProductsList
         categoryProductsList = new ArrayList<>();
+        sortArray = getResources().getStringArray(R.array.sortBy_array);
     
     
         // Request for Products of given Category based on PageNo.
         RequestCategoryProducts(pageNo, sortBy);
     
         // Request for Filters of given Category
-        RequestFilters(categoryID);
+       // RequestFilters(categoryID);
 
 
         // Initialize GridLayoutManager and LinearLayoutManager
@@ -273,7 +276,7 @@ public class Category_Products extends Fragment {
             @Override
             public void onClick(View v) {
 
-                final String[] sortArray = getResources().getStringArray(R.array.sortBy_array);
+
 
                 AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
                 dialog.setCancelable(true);
@@ -286,43 +289,44 @@ public class Category_Products extends Fragment {
     
                         
                         if (selectedText.equalsIgnoreCase(sortArray[0])) {
-                            sortBy = "Newest";
+                            sortBy = sortArray[0];
                         }
                         else if (selectedText.equalsIgnoreCase(sortArray[1])) {
-                            sortBy = "a to z";
+                            sortBy = sortArray[1];
                         }
                         else if (selectedText.equalsIgnoreCase(sortArray[2])) {
-                            sortBy = "z to a";
+                            sortBy = sortArray[2];
                         }
                         else if (selectedText.equalsIgnoreCase(sortArray[3])) {
-                            sortBy = "high to low";
+                            sortBy = sortArray[3];
                         }
                         else if (selectedText.equalsIgnoreCase(sortArray[4])) {
-                            sortBy = "low to high";
+                            sortBy = sortArray[4];
                         }
                         else if (selectedText.equalsIgnoreCase(sortArray[5])) {
-                            sortBy = "top seller";
+                            sortBy = sortArray[5];
                         }
                         else if (selectedText.equalsIgnoreCase(sortArray[6])) {
-                            sortBy = "special";
+                            sortBy = sortArray[6];
                         }
                         else if (selectedText.equalsIgnoreCase(sortArray[7])) {
-                            sortBy = "most liked";
+                            sortBy = sortArray[7];
                         }
                         else {
-                            sortBy = "Newest";
+                            sortBy = sortArray[0];
                         }
                         
 
-                        categoryProductsList.clear();
-                        if(isFilterApplied){
-                            // Initialize LoadMoreTask to Load More Products from Server against some Filters
-                            RequestFilteredProducts(pageNo, sortBy, filters);
-                        }else {
+                        //categoryProductsList.clear();
+//                        if(isFilterApplied){
+//                            // Initialize LoadMoreTask to Load More Products from Server against some Filters
+//                            RequestFilteredProducts(pageNo, sortBy, filters);
+//                        }else {
                             // Initialize LoadMoreTask to Load More Products from Server without Filters
                             RequestCategoryProducts(pageNo, sortBy);
-                        }
+                       // }
                         dialog.dismiss();
+
 
 
                         // Handle the Scroll event of Product's RecyclerView
@@ -401,6 +405,7 @@ public class Category_Products extends Fragment {
         categoryProductsList.addAll(productData);
 
         productAdapter.notifyDataSetChanged();
+       // Toast.makeText(getContext() , "refresh" , Toast.LENGTH_LONG).show();
 
 
         // Change the Visibility of emptyRecord Text based on CategoryProductsList's Size
@@ -430,11 +435,98 @@ public class Category_Products extends Fragment {
 //        getAllProducts.setType(sortBy);
 
 
-        Call<ProductDetails> call = APIClient.getInstance()
-                .getproductbycategory(categoryID  , pageNumber);
+        Call<ProductDetails> call = null;/*APIClient.getInstance()
+                .getproductbycategory(categoryID  , pageNumber);*/
        // numpage++;
 
+        if(sortBy.equalsIgnoreCase(sortArray[0])){
+            call = APIClient.getInstance()
+                    .getproductbycategory(categoryID  , pageNumber);;
+//            Toast.makeText(getContext() ,sortArray[0] , Toast.LENGTH_LONG ).show();
 
+        }else if(sortBy.equalsIgnoreCase(sortArray[1])){
+            call = APIClient.getInstance().getproductbycategoryAtoZ("DESC" ,categoryID ,  pageNumber);
+//            Toast.makeText(getContext() ,sortArray[1] , Toast.LENGTH_LONG ).show();
+
+
+        }else if(sortBy.equalsIgnoreCase(sortArray[2])){
+            call = APIClient.getInstance().getproductbycategoryAtoZ("ASC" ,categoryID ,  pageNumber);
+         //   call = APIClient.getInstance().getallproductAtoZ("ASC" , pageNumber);
+//            Toast.makeText(getContext() ,sortArray[2] , Toast.LENGTH_LONG ).show();
+
+
+        }else if(sortBy.equalsIgnoreCase(sortArray[3])){
+            Toast.makeText(getContext() ,sortArray[3] , Toast.LENGTH_LONG ).show();
+
+
+        }else if(sortBy.equalsIgnoreCase(sortArray[4])){
+            Toast.makeText(getContext() ,sortArray[4] , Toast.LENGTH_LONG ).show();
+
+
+        }else if(sortBy.equalsIgnoreCase(sortArray[5])){
+            call = APIClient.getInstance()
+                    .getproductbycategory(categoryID  , pageNumber);
+            Call<List<ProductData>> call1 = APIClient.getInstance().getbestsales(pageNumber);
+            final List<ProductData> products = new ArrayList<>();
+            call1.enqueue(new Callback<List<ProductData>>() {
+                @Override
+                public void onResponse(Call<List<ProductData>> call, Response<List<ProductData>> response) {
+                   for(int i=0; i<categoryProductsList.size(); i++){
+                       if(response.body().get(i).getId() == categoryProductsList.get(i).getId()){
+                           products.add(response.body().get(i));
+
+                       }
+                   }
+                   //categoryProductsList.clear();
+                   addCategoryProducts(products);
+                }
+
+                @Override
+                public void onFailure(Call<List<ProductData>> call, Throwable t) {
+
+                }
+            });
+         //   call = APIClient.getInstance().getbestsales(pageNumber);
+//            Toast.makeText(getContext() ,sortArray[5] , Toast.LENGTH_LONG ).show();
+
+
+        }else if(sortBy.equalsIgnoreCase(sortArray[6])){
+            call = APIClient.getInstance().getproductbycategory(categoryID  , pageNumber);
+
+            Call<List<ProductData>> call1 = APIClient.getInstance().getproductsdeals(pageNo+1);
+            final List<ProductData> products = new ArrayList<>();
+            call1.enqueue(new Callback<List<ProductData>>() {
+                @Override
+                public void onResponse(Call<List<ProductData>> call, Response<List<ProductData>> response) {
+                    for(int i=0; i<response.body().size(); i++){
+                        if(response.body().get(i).getName() == categoryProductsList.get(i).getName()){
+                            products.add(response.body().get(i));
+                            addCategoryProducts(products);
+                            Toast.makeText(getContext() , products.size()+"" , Toast.LENGTH_LONG).show();
+
+                        }
+
+
+                    }
+                    //categoryProductsList.clear();
+
+                }
+
+                @Override
+                public void onFailure(Call<List<ProductData>> call, Throwable t) {
+                    Toast.makeText(getContext() , "error"+t , Toast.LENGTH_LONG).show();
+
+                }
+            });
+           // call = APIClient.getInstance().getproductsdeals(pageNumber);
+//            Toast.makeText(getContext() ,sortArray[6] , Toast.LENGTH_LONG ).show();
+
+
+        }else if(sortBy.equalsIgnoreCase(sortArray[7])){
+            Toast.makeText(getContext() ,sortArray[7] , Toast.LENGTH_LONG ).show();
+
+
+        }
 
         call.enqueue(new Callback<ProductDetails>() {
             @Override
@@ -491,111 +583,111 @@ public class Category_Products extends Fragment {
 
     //*********** Request Products of given Category from the Server based on PageNo. against some Filters ********//
 
-    public void RequestFilteredProducts(int pageNumber, String sortBy, PostFilterData postFilterData) {
-
-
-        GetAllProducts getAllProducts = new GetAllProducts();
-        getAllProducts.setPageNumber(pageNumber);
-        getAllProducts.setLanguageId(ConstantValues.LANGUAGE_ID);
-        getAllProducts.setCustomersId(customerID);
-        getAllProducts.setCategoriesId(String.valueOf(categoryID));
-        getAllProducts.setType(sortBy);
-        getAllProducts.setPrice(postFilterData.getPrice());
-        getAllProducts.setFilters(postFilterData.getFilters());
-
-
-        Call<ProductData> call = APIClient.getInstance()
-                .getAllProducts
-                        (
-                                getAllProducts
-                        );
-
-        call.enqueue(new Callback<ProductData>() {
-            @Override
-            public void onResponse(Call<ProductData> call, retrofit2.Response<ProductData> response) {
-                
-                if (response.isSuccessful()) {
+//    public void RequestFilteredProducts(int pageNumber, String sortBy, PostFilterData postFilterData) {
+//
+//
+//        GetAllProducts getAllProducts = new GetAllProducts();
+//        getAllProducts.setPageNumber(pageNumber);
+//        getAllProducts.setLanguageId(ConstantValues.LANGUAGE_ID);
+//        getAllProducts.setCustomersId(customerID);
+//        getAllProducts.setCategoriesId(String.valueOf(categoryID));
+//        getAllProducts.setType(sortBy);
+//        getAllProducts.setPrice(postFilterData.getPrice());
+//        getAllProducts.setFilters(postFilterData.getFilters());
+//
+//
+//        Call<ProductData> call = APIClient.getInstance()
+//                .getAllProducts
+//                        (
+//                                getAllProducts
+//                        );
+//
+//        call.enqueue(new Callback<ProductData>() {
+//            @Override
+//            public void onResponse(Call<ProductData> call, retrofit2.Response<ProductData> response) {
+//
+//                if (response.isSuccessful()) {
+////                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
+////
+////                        // Products have been returned. Add Products to the ProductsList
+////                        addCategoryProducts(response.body());
+////
+////                    }
+////                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
+////                        // Products haven't been returned. Call the method to process some implementations
+////                        addCategoryProducts(response.body());
+////
+////                        // Show the Message to the User
+////                        Snackbar.make(rootView, response.body().getMessage(), Snackbar.LENGTH_SHORT).show();
+////
+////                    }
+////                    else {
+////                        // Unable to get Success status
+////                        Snackbar.make(rootView, getString(R.string.unexpected_response), Snackbar.LENGTH_SHORT).show();
+////                    }
+//
+//                    // Hide the ProgressBar
+//                    progressBar.setVisibility(View.GONE);
+//
+//                }
+//                else {
+//                    Toast.makeText(getContext(), ""+response.message(), Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ProductData> call, Throwable t) {
+//                Toast.makeText(getContext(), "NetworkCallFailure : "+t, Toast.LENGTH_LONG).show();
+//            }
+//        });
+//    }
+//
+//
+//
+//    //*********** Request Filters of the given Category ********//
+//
+//    private void RequestFilters(int categories_id) {
+//
+//        Call<FilterData> call = APIClient.getInstance()
+//                .getFilters
+//                        (
+//                                categories_id,
+//                                ConstantValues.LANGUAGE_ID
+//                        );
+//
+//        call.enqueue(new Callback<FilterData>() {
+//            @Override
+//            public void onResponse(Call<FilterData> call, retrofit2.Response<FilterData> response) {
+//
+//                if (response.isSuccessful()) {
 //                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
 //
-//                        // Products have been returned. Add Products to the ProductsList
-//                        addCategoryProducts(response.body());
+//                        filtersList = response.body().getFilters();
+//                        maxPrice = Double.parseDouble(response.body().getMaxPrice());
 //
 //                    }
 //                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
-//                        // Products haven't been returned. Call the method to process some implementations
-//                        addCategoryProducts(response.body());
-//
-//                        // Show the Message to the User
 //                        Snackbar.make(rootView, response.body().getMessage(), Snackbar.LENGTH_SHORT).show();
 //
 //                    }
 //                    else {
-//                        // Unable to get Success status
-//                        Snackbar.make(rootView, getString(R.string.unexpected_response), Snackbar.LENGTH_SHORT).show();
+//                        if (isVisible)
+//                            Snackbar.make(rootView, getString(R.string.unexpected_response), Snackbar.LENGTH_SHORT).show();
 //                    }
-
-                    // Hide the ProgressBar
-                    progressBar.setVisibility(View.GONE);
-                    
-                }
-                else {
-                    Toast.makeText(getContext(), ""+response.message(), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ProductData> call, Throwable t) {
-                Toast.makeText(getContext(), "NetworkCallFailure : "+t, Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-
-
-    //*********** Request Filters of the given Category ********//
-
-    private void RequestFilters(int categories_id) {
-
-        Call<FilterData> call = APIClient.getInstance()
-                .getFilters
-                        (
-                                categories_id,
-                                ConstantValues.LANGUAGE_ID
-                        );
-
-        call.enqueue(new Callback<FilterData>() {
-            @Override
-            public void onResponse(Call<FilterData> call, retrofit2.Response<FilterData> response) {
-
-                if (response.isSuccessful()) {
-                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
-
-                        filtersList = response.body().getFilters();
-                        maxPrice = Double.parseDouble(response.body().getMaxPrice());
-
-                    }
-                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
-                        Snackbar.make(rootView, response.body().getMessage(), Snackbar.LENGTH_SHORT).show();
-
-                    }
-                    else {
-                        if (isVisible)
-                            Snackbar.make(rootView, getString(R.string.unexpected_response), Snackbar.LENGTH_SHORT).show();
-                    }
-                }
-                else {
-                    if (isVisible)
-                        Toast.makeText(getContext(), ""+response.message(), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<FilterData> call, Throwable t) {
-                if (isVisible)
-                    Toast.makeText(getContext(), "NetworkCallFailure : "+t, Toast.LENGTH_LONG).show();
-            }
-        });
-    }
+//                }
+//                else {
+//                    if (isVisible)
+//                        Toast.makeText(getContext(), ""+response.message(), Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<FilterData> call, Throwable t) {
+//                if (isVisible)
+//                    Toast.makeText(getContext(), "NetworkCallFailure : "+t, Toast.LENGTH_LONG).show();
+//            }
+//        });
+//    }
 
 
 
@@ -627,14 +719,14 @@ public class Category_Products extends Fragment {
         protected String doInBackground(String... params) {
 
             // Check if any of the Filter is applied
-            if (isFilterApplied) {
-                // Request for Products against specified Filters, based on PageNo.
-                RequestFilteredProducts(page_number, sortBy, postFilters);
-            }
-            else {
+//            if (isFilterApplied) {
+//                // Request for Products against specified Filters, based on PageNo.
+//              //  RequestFilteredProducts(page_number, sortBy, postFilters);
+//            }
+//            else {
                 // Request for Products of given Category, based on PageNo.
                 RequestCategoryProducts(page_number, sortBy);
-            }
+           // }
 
             return "All Done!";
         }

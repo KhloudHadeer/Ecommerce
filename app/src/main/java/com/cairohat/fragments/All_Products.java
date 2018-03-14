@@ -60,6 +60,7 @@ public class All_Products extends Fragment {
     
     GridLayoutManager gridLayoutManager;
     LinearLayoutManager linearLayoutManager;
+    String[] sortArray;
 
 
     @Nullable
@@ -112,6 +113,7 @@ public class All_Products extends Fragment {
 
         
         productsList = new ArrayList<>();
+        sortArray = getResources().getStringArray(R.array.sortBy_array);
 
         // Request for Products based on PageNo.
         RequestAllProducts(pageNo, sortBy);
@@ -151,14 +153,14 @@ public class All_Products extends Fragment {
                 setRecyclerViewLayoutManager(isGridView);
             }
         });
-        
+
 
         sortList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 // Get sortBy_array from String_Resources
-                final String[] sortArray = getResources().getStringArray(R.array.sortBy_array);
+
 
                 AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
                 dialog.setCancelable(true);
@@ -171,38 +173,39 @@ public class All_Products extends Fragment {
                         
                         
                         if (selectedText.equalsIgnoreCase(sortArray[0])) {
-                            sortBy = "Newest";
+                            sortBy = sortArray[0];
                         }
                         else if (selectedText.equalsIgnoreCase(sortArray[1])) {
-                            sortBy = "a to z";
+                            sortBy = sortArray[1];
                         }
                         else if (selectedText.equalsIgnoreCase(sortArray[2])) {
-                            sortBy = "z to a";
+                            sortBy = sortArray[2];
                         }
                         else if (selectedText.equalsIgnoreCase(sortArray[3])) {
-                            sortBy = "high to low";
+                            sortBy = sortArray[3];
                         }
                         else if (selectedText.equalsIgnoreCase(sortArray[4])) {
-                            sortBy = "low to high";
+                            sortBy = sortArray[4];
                         }
                         else if (selectedText.equalsIgnoreCase(sortArray[5])) {
-                            sortBy = "top seller";
+                            sortBy = sortArray[5];
                         }
                         else if (selectedText.equalsIgnoreCase(sortArray[6])) {
-                            sortBy = "special";
+                            sortBy = sortArray[6];
                         }
                         else if (selectedText.equalsIgnoreCase(sortArray[7])) {
-                            sortBy = "most liked";
+                            sortBy = sortArray[7];
                         }
                         else {
-                            sortBy = "Newest";
+                            sortBy = sortArray[0];
                         }
                         
 
                         productsList.clear();
                         // Request for Products based on sortBy
-                     //   RequestAllProducts(pageNo, sortBy);
+                        RequestAllProducts(pageNo, sortBy);
                         dialog.dismiss();
+
 
 
                         // Handle the Scroll event of Product's RecyclerView
@@ -210,8 +213,10 @@ public class All_Products extends Fragment {
                             // Override abstract method onLoadMore() of EndlessRecyclerViewScroll class
                             @Override
                             public void onLoadMore(int current_page) {
-//                                progressBar.setVisibility(View.VISIBLE);
+//
                                 // Execute AsyncTask LoadMoreTask to Load More Products from Server
+
+                                progressBar.setVisibility(View.VISIBLE);
                                 new LoadMoreTask(current_page).execute();
                             }
                         });
@@ -251,14 +256,14 @@ public class All_Products extends Fragment {
 
     //*********** Adds Products returned from the Server to the ProductsList ********//
 
-    private void addProducts(ProductData productData) {
+    private void addProducts(List<ProductData> productData) {
         
         // Add Products to ProductsList from the List of ProductData
 //        for (int i = 0; i < productData.getProductData().size(); i++) {
 //            ProductData productDetails = productData.getProductData().get(i);
 //            productsList.add(productDetails);
 //        }
-        productsList.add(productData);
+        productsList.addAll(productData);
 
         productAdapter.notifyDataSetChanged();
 
@@ -277,6 +282,45 @@ public class All_Products extends Fragment {
     //*********** Request Products from the Server based on PageNo. ********//
 
     public void RequestAllProducts(int pageNumber, String sortBy) {
+        Call<List<ProductData>> call = null;/*= APIClient.getInstance()
+                .getallproduct(pageNumber);*/
+        if(sortBy.equalsIgnoreCase(sortArray[0])){
+            call = APIClient.getInstance().getallproduct(pageNumber);
+//            Toast.makeText(getContext() ,sortArray[0] , Toast.LENGTH_LONG ).show();
+
+        }else if(sortBy.equalsIgnoreCase(sortArray[1])){
+            call = APIClient.getInstance().getallproductAtoZ("DESC" , pageNumber);
+//            Toast.makeText(getContext() ,sortArray[1] , Toast.LENGTH_LONG ).show();
+
+
+        }else if(sortBy.equalsIgnoreCase(sortArray[2])){
+            call = APIClient.getInstance().getallproductAtoZ("ASC" , pageNumber);
+//            Toast.makeText(getContext() ,sortArray[2] , Toast.LENGTH_LONG ).show();
+
+
+        }else if(sortBy.equalsIgnoreCase(sortArray[3])){
+            Toast.makeText(getContext() ,sortArray[3] , Toast.LENGTH_LONG ).show();
+
+
+        }else if(sortBy.equalsIgnoreCase(sortArray[4])){
+            Toast.makeText(getContext() ,sortArray[4] , Toast.LENGTH_LONG ).show();
+
+
+        }else if(sortBy.equalsIgnoreCase(sortArray[5])){
+            call = APIClient.getInstance().getbestsales(pageNumber);
+//            Toast.makeText(getContext() ,sortArray[5] , Toast.LENGTH_LONG ).show();
+
+
+        }else if(sortBy.equalsIgnoreCase(sortArray[6])){
+            call = APIClient.getInstance().getproductsdeals(pageNumber);
+//            Toast.makeText(getContext() ,sortArray[6] , Toast.LENGTH_LONG ).show();
+
+
+        }else if(sortBy.equalsIgnoreCase(sortArray[7])){
+            Toast.makeText(getContext() ,sortArray[7] , Toast.LENGTH_LONG ).show();
+
+
+        }
 
 //        GetAllProducts getAllProducts = new GetAllProducts();
 //        getAllProducts.setPageNumber(pageNumber);
@@ -284,17 +328,16 @@ public class All_Products extends Fragment {
 //        getAllProducts.setCustomersId(customerID);
 //        getAllProducts.setType(sortBy);
 
-        Call<List<ProductData>> call = APIClient.getInstance()
-                .getallproduct(pageNumber);
+
         call.enqueue(new Callback<List<ProductData>>() {
             @Override
             public void onResponse(Call<List<ProductData>> call, retrofit2.Response<List<ProductData>> response) {
                 
                 if (response.isSuccessful()) {
-                   for(int i=0; i<response.body().size(); i++){
-                       addProducts(response.body().get(i));
 
-                   }
+                       addProducts(response.body());
+
+
 //                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
 //                        // Products have been returned. Add Products to the ProductsList
 //                        addProducts(response.body());
@@ -357,7 +400,7 @@ public class All_Products extends Fragment {
 
             // Request for Products based on PageNo.
             RequestAllProducts(page_number, sortBy);
-            System.out.println("number " +page_number);
+
 
             return "All Done!";
         }

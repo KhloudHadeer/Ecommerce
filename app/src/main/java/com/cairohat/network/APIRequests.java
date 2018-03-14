@@ -212,10 +212,19 @@ public interface APIRequests {
     @GET("wooconnector/product/getproduct")
     Call<List<ProductData>> getallproduct(@Query("post_num_page") int num);
 
+    @GET("wooconnector/product/getproduct")
+    Call<List<ProductData>> getallproductAtoZ(@Query("post_order_page")String  order,
+                                                      @Query("post_num_page") int pagenum);
+
 
     @GET("wooconnector/product/getproductbycategory")
     Call<ProductDetails> getproductbycategory(@Query("post_category") int numcateg ,
                                               @Query("post_num_page") int numpage);
+    @GET("wooconnector/product/getproductbycategory")
+    Call<ProductDetails> getproductbycategoryAtoZ(@Query("post_order_page")String order ,
+                                                  @Query("post_category") int numcateg ,
+                                              @Query("post_num_page") int numpage);
+
 
 
     @GET("wooconnector/product/getdealofday")
