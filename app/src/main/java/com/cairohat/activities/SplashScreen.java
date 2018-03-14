@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.cairohat.app.App;
+import com.cairohat.fragments.ProfileFragment;
 import com.cairohat.models.device_model.AppSettingsDetails;
 import com.cairohat.app.MyAppPrefsManager;
 
@@ -199,8 +200,8 @@ public class SplashScreen extends Activity {
                 }
                 else {
                     // Navigate to MainActivity
-                    startActivity(new Intent(getBaseContext(), MainActivity.class));
-                    finish();
+                    startActivity(new Intent(getBaseContext(), ProfileActivity.class));
+
                 }
             }
         }
