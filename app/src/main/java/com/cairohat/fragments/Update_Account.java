@@ -102,7 +102,7 @@ public class Update_Account extends Fragment {
         rootView = inflater.inflate(R.layout.update_account, container, false);
 
         // Enable Drawer Indicator with static variable actionBarDrawerToggle of MainActivity
-        MainActivity.actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+//        MainActivity.actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.actionAccount));
         sharedPreferences = this.getContext().getSharedPreferences("UserInfo", getContext().MODE_PRIVATE);
         // Get the CustomerID from SharedPreferences

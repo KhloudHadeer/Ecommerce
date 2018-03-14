@@ -119,7 +119,8 @@
 
         <activity android:name=".activities.ActivityDialogNotification" />
         <activity android:name=".activities.AddAdActivity" />
-        <activity android:name=".activities.OffersMapActivity"></activity>
+        <activity android:name=".activities.OffersMapActivity" />
+        <activity android:name=".activities.ProfileActivity"></activity>
     </application>
 
 </manifest>

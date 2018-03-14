@@ -24,7 +24,7 @@
         <item
             android:id="@+id/drawerAccount"
             android:icon="@drawable/ic_account"
-            android:title="@string/actionAccount" />
+            android:title="@string/actionProfile" />
 
         <item
             android:id="@+id/drawerOrders"

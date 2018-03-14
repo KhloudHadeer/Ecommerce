@@ -88,10 +88,10 @@ import com.cairohat.models.drawer_model.Drawer_Items;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     int homeStyle, categoryStyle;
-    
+
     Toolbar toolbar;
     ActionBar actionBar;
-    
+
     ImageView drawer_header;
     DrawerLayout drawerLayout;
     NavigationView navigationDrawer;
@@ -112,35 +112,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     List<Drawer_Items> listDataHeader = new ArrayList<>();
     Map<Drawer_Items, List<Drawer_Items>> listDataChild = new HashMap<>();
-    
-    
-    
+
+
+
     //*********** Called when the Activity is becoming Visible to the User ********//
-    
+
     @Override
     protected void onStart() {
         super.onStart();
         active = true;
-        
+
         if (myAppPrefsManager.isFirstTimeLaunch()) {
             NotificationScheduler.setReminder(MainActivity.this, AlarmReceiver.class);
         }
-    
+
         myAppPrefsManager.setFirstTimeLaunch(false);
     }
-    
-    
-    
+
+
+
     //*********** Called when the Activity is first Created ********//
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    
+
         MobileAds.initialize(this, ConstantValues.ADMOBE_ID);
-        
-        
+
+
         // Get MyAppPrefsManager
         myAppPrefsManager = new MyAppPrefsManager(MainActivity.this);
         sharedPreferences = getSharedPreferences("UserInfo", MODE_PRIVATE);
@@ -238,8 +238,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerSelectedItemNavigation(mSelectedItem);
 
     }
-    
-    
+
+
 
     //*********** Setup Header of Navigation Drawer ********//
 
@@ -324,20 +324,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //*********** Setup Expandable List of Navigation Drawer ********//
 
     public void setupExpandableDrawerList() {
-    
+
         listDataHeader = new ArrayList<>();
         listDataChild = new HashMap<>();
         AppSettingsDetails appSettings = ((App) getApplicationContext()).getAppSettingsDetails();
-    
+
         if (appSettings != null) {
-            
+
             homeStyle = appSettings.getHomeStyle();
             categoryStyle = appSettings.getCategoryStyle();
-            
+
             listDataHeader.add(new Drawer_Items(R.drawable.ic_home, getString(R.string.actionHome)));
             listDataHeader.add(new Drawer_Items(R.drawable.ic_categories, getString(R.string.actionCategories)));
             listDataHeader.add(new Drawer_Items(R.drawable.ic_cart, getString(R.string.actionShop)));
-            
+
             if (appSettings.getEditProfilePage() == 1)
                 listDataHeader.add(new Drawer_Items(R.drawable.ic_account, getString(R.string.actionAccount)));
             if (appSettings.getMyOrdersPage() == 1)
@@ -360,15 +360,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 listDataHeader.add(new Drawer_Items(R.drawable.ic_star_circle, getString(R.string.actionRateApp)));
             if (appSettings.getSettingPage() == 1)
                 listDataHeader.add(new Drawer_Items(R.drawable.ic_settings, getString(R.string.actionSettings)));
-            
+
             // Add last Header Item in Drawer Header List
             if (ConstantValues.IS_USER_LOGGED_IN) {
                 listDataHeader.add(new Drawer_Items(R.drawable.ic_logout, getString(R.string.actionLogout)));
             } else {
                 listDataHeader.add(new Drawer_Items(R.drawable.ic_logout, getString(R.string.actionLogin)));
             }
-    
-    
+
+
             if (!ConstantValues.IS_CLIENT_ACTIVE) {
                 List<Drawer_Items> home_styles = new ArrayList<>();
                 home_styles.add(new Drawer_Items(R.drawable.ic_home, getString(R.string.homeStyle1)));
@@ -376,7 +376,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 home_styles.add(new Drawer_Items(R.drawable.ic_home, getString(R.string.homeStyle3)));
                 home_styles.add(new Drawer_Items(R.drawable.ic_home, getString(R.string.homeStyle4)));
                 home_styles.add(new Drawer_Items(R.drawable.ic_home, getString(R.string.homeStyle5)));
-    
+
                 List<Drawer_Items> category_styles = new ArrayList<>();
                 category_styles.add(new Drawer_Items(R.drawable.ic_categories, getString(R.string.categoryStyle1)));
                 category_styles.add(new Drawer_Items(R.drawable.ic_categories, getString(R.string.categoryStyle2)));
@@ -384,25 +384,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 category_styles.add(new Drawer_Items(R.drawable.ic_categories, getString(R.string.categoryStyle4)));
                 category_styles.add(new Drawer_Items(R.drawable.ic_categories, getString(R.string.categoryStyle5)));
                 category_styles.add(new Drawer_Items(R.drawable.ic_categories, getString(R.string.categoryStyle6)));
-    
+
                 List<Drawer_Items> shop_childs = new ArrayList<>();
                 shop_childs.add(new Drawer_Items(R.drawable.ic_arrow_up, getString(R.string.Newest)));
                 shop_childs.add(new Drawer_Items(R.drawable.ic_sale, getString(R.string.topSeller)));
                 shop_childs.add(new Drawer_Items(R.drawable.ic_star_circle, getString(R.string.superDeals)));
                 shop_childs.add(new Drawer_Items(R.drawable.ic_most_liked, getString(R.string.mostLiked)));
-    
-    
+
+
                 // Add Child to selective Headers
                 listDataChild.put(listDataHeader.get(0), home_styles);
                 listDataChild.put(listDataHeader.get(1), category_styles);
                 listDataChild.put(listDataHeader.get(2), shop_childs);
             }
-            
+
         }
         else {
             homeStyle = 1;
             categoryStyle = 1;
-            
+
             listDataHeader.add(new Drawer_Items(R.drawable.ic_home, getString(R.string.actionHome)));
             listDataHeader.add(new Drawer_Items(R.drawable.ic_categories, getString(R.string.actionCategories)));
             listDataHeader.add(new Drawer_Items(R.drawable.ic_cart, getString(R.string.actionShop)));
@@ -423,8 +423,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             } else {
                 listDataHeader.add(new Drawer_Items(R.drawable.ic_logout, getString(R.string.actionLogin)));
             }
-    
-    
+
+
             if (!ConstantValues.IS_CLIENT_ACTIVE) {
                 List<Drawer_Items> home_styles = new ArrayList<>();
                 home_styles.add(new Drawer_Items(R.drawable.ic_home, getString(R.string.homeStyle1)));
@@ -432,7 +432,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 home_styles.add(new Drawer_Items(R.drawable.ic_home, getString(R.string.homeStyle3)));
                 home_styles.add(new Drawer_Items(R.drawable.ic_home, getString(R.string.homeStyle4)));
                 home_styles.add(new Drawer_Items(R.drawable.ic_home, getString(R.string.homeStyle5)));
-    
+
                 List<Drawer_Items> category_styles = new ArrayList<>();
                 category_styles.add(new Drawer_Items(R.drawable.ic_categories, getString(R.string.categoryStyle1)));
                 category_styles.add(new Drawer_Items(R.drawable.ic_categories, getString(R.string.categoryStyle2)));
@@ -440,23 +440,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 category_styles.add(new Drawer_Items(R.drawable.ic_categories, getString(R.string.categoryStyle4)));
                 category_styles.add(new Drawer_Items(R.drawable.ic_categories, getString(R.string.categoryStyle5)));
                 category_styles.add(new Drawer_Items(R.drawable.ic_categories, getString(R.string.categoryStyle6)));
-    
+
                 List<Drawer_Items> shop_childs = new ArrayList<>();
                 shop_childs.add(new Drawer_Items(R.drawable.ic_arrow_up, getString(R.string.Newest)));
                 shop_childs.add(new Drawer_Items(R.drawable.ic_sale, getString(R.string.topSeller)));
                 shop_childs.add(new Drawer_Items(R.drawable.ic_star_circle, getString(R.string.superDeals)));
                 shop_childs.add(new Drawer_Items(R.drawable.ic_most_liked, getString(R.string.mostLiked)));
-    
-    
+
+
                 // Add Child to selective Headers
                 listDataChild.put(listDataHeader.get(0), home_styles);
                 listDataChild.put(listDataHeader.get(1), category_styles);
                 listDataChild.put(listDataHeader.get(2), shop_childs);
             }
-            
+
         }
-        
-        
+
+
 
         // Initialize DrawerExpandableListAdapter
         drawerExpandableAdapter = new DrawerExpandableListAdapter(this, listDataHeader, listDataChild);
@@ -464,10 +464,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Bind ExpandableListView and set DrawerExpandableListAdapter to the ExpandableListView
       /*  main_drawer_list = (ExpandableListView) findViewById(R.id.main_drawer_list);
         main_drawer_list.setAdapter(drawerExpandableAdapter);*/
-        
+
         drawerExpandableAdapter.notifyDataSetChanged();
 
-        
+
 
         // Handle Group Item Click Listener
       /*  main_drawer_list.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
@@ -1018,42 +1018,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Configure ActionBarDrawerToggle with new Configuration
         actionBarDrawerToggle.onConfigurationChanged(newConfig);
     }
-    
-    
-    
+
+
+
     //*********** Invoked to Save the Instance's State when the Activity may be Temporarily Destroyed ********//
-    
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         // Save the Selected NavigationDrawer Item
         outState.putString(SELECTED_ITEM_ID, mSelectedItem);
     }
-    
-    
-    
+
+
+
     //*********** Set the Base Context for the ContextWrapper ********//
-    
+
     @Override
     protected void attachBaseContext(Context newBase) {
 
         String languageCode = ConstantValues.LANGUAGE_CODE;
         if ("".equalsIgnoreCase(languageCode))
             languageCode = ConstantValues.LANGUAGE_CODE = "en";
-        
+
         super.attachBaseContext(LocaleHelper.wrapLocale(newBase, languageCode));
     }
-    
-    
-    
+
+
+
     //*********** Receives the result from a previous call of startActivityForResult(Intent, int) ********//
-    
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
     }
-    
-    
+
+
 
     //*********** Creates the Activity's OptionsMenu ********//
 
@@ -1123,11 +1123,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         else {
             MenuItem cartItem = menu.findItem(R.id.toolbar_ic_cart);
-    
+
             // Get No. of Cart Items with the static method of My_Cart Fragment
             int cartSize = My_Cart.getCartSize();
 
-            
+
             // if Cart has some Items
             if (cartSize > 0) {
 
@@ -1147,7 +1147,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     drawable = ((DrawableWrapper)drawable).getWrappedDrawable();
                 }
                 icon = (LayerDrawable) drawable;
-                
+
 
                 // Set BadgeCount on Cart_Icon with the static method of NotificationBadger class
                 NotificationBadger.setBadgeCount(this, icon, String.valueOf(cartSize));
@@ -1168,7 +1168,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-    
+
         Fragment fragment;
         FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -1235,7 +1235,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             // Pop previous Fragment
             fm.popBackStack();
-            
+
         }
         // Check if doubleBackToExitPressed is true
         else if (doublePressedBackToExit) {
@@ -1358,11 +1358,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 break;
             case R.id.drawerAccount:
-                fragment = new Update_Account();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.main_fragment, fragment)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .addToBackStack(getString(R.string.actionHome)).commit();
+//                fragment = new Update_Account();
+//                fragmentManager.beginTransaction()
+//                        .replace(R.id.main_fragment, fragment)
+//                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//                        .addToBackStack(getString(R.string.actionHome)).commit();
+
+                Intent intent=new Intent(MainActivity.this,ProfileActivity.class);
+                MainActivity.this.startActivity(intent);
 
                 //drawerLayout.closeDrawers();
 
