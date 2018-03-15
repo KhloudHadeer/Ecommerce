@@ -184,7 +184,7 @@ public class SplashScreen extends Activity {
                                         myTask = new MyTask();
                                         myTask.execute();
                                     }
-                                }, 3000);
+                                }, 0001);
                             }
                         })
                         .show();
@@ -200,7 +200,7 @@ public class SplashScreen extends Activity {
                 }
                 else {
                     // Navigate to MainActivity
-                    startActivity(new Intent(getBaseContext(), ProfileActivity.class));
+                    startActivity(new Intent(getBaseContext(), MainActivity.class));
 
                 }
             }

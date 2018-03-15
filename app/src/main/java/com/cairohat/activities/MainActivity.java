@@ -811,94 +811,96 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             drawerLayout.closeDrawers();
 
         }
-        else if (selectedItem.equalsIgnoreCase(getString(R.string.actionAccount))) {
-            if (ConstantValues.IS_USER_LOGGED_IN) {
-                mSelectedItem = selectedItem;
 
-                // Navigate to Update_Account Fragment
-                fragment = new Update_Account();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.main_fragment, fragment)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .addToBackStack(getString(R.string.actionHome)).commit();
 
-                drawerLayout.closeDrawers();
+//        else if (selectedItem.equalsIgnoreCase(getString(R.string.actionAccount))) {
+//            if (ConstantValues.IS_USER_LOGGED_IN) {
+//                mSelectedItem = selectedItem;
+//
+//                // Navigate to Update_Account Fragment
+//                fragment = new Update_Account();
+//                fragmentManager.beginTransaction()
+//                        .replace(R.id.main_fragment, fragment)
+//                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//                        .addToBackStack(getString(R.string.actionHome)).commit();
+//
+//                drawerLayout.closeDrawers();
+//
+//            }
+//            else {
+//                // Navigate to Login Activity
+//                startActivity(new Intent(MainActivity.this, Login.class));
+//                finish();
+//                overridePendingTransition(R.anim.enter_from_left, R.anim.exit_out_left);
+//            }
+//
+//        }
+//        else if (selectedItem.equalsIgnoreCase(getString(R.string.actionOrders))) {
+//            if (ConstantValues.IS_USER_LOGGED_IN) {
+//                mSelectedItem = selectedItem;
+//
+//                // Navigate to My_Orders Fragment
+//                fragment = new My_Orders();
+//                fragmentManager.beginTransaction()
+//                        .replace(R.id.main_fragment, fragment)
+//                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//                        .addToBackStack(getString(R.string.actionHome)).commit();
+//
+//                drawerLayout.closeDrawers();
+//
+//            }
+//            else {
+//                // Navigate to Login Activity
+//                startActivity(new Intent(MainActivity.this, Login.class));
+//                finish();
+//                overridePendingTransition(R.anim.enter_from_left, R.anim.exit_out_left);
+//            }
+//
+//        }
+//        else if (selectedItem.equalsIgnoreCase(getString(R.string.actionAddresses))) {
+//            if (ConstantValues.IS_USER_LOGGED_IN) {
+//                mSelectedItem = selectedItem;
+//
+//                // Navigate to My_Addresses Fragment
+//                fragment = new My_Addresses();
+//                fragmentManager.beginTransaction()
+//                        .replace(R.id.main_fragment, fragment)
+//                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//                        .addToBackStack(getString(R.string.actionHome)).commit();
+//
+//                drawerLayout.closeDrawers();
+//
+//            }
+//            else {
+//                // Navigate to Login Activity
+//                startActivity(new Intent(MainActivity.this, Login.class));
+//                finish();
+//                overridePendingTransition(R.anim.enter_from_left, R.anim.exit_out_left);
+//            }
+//
+//        }
+//        else if (selectedItem.equalsIgnoreCase(getString(R.string.actionFavourites))) {
+//            if (ConstantValues.IS_USER_LOGGED_IN) {
+//                mSelectedItem = selectedItem;
+//
+//                // Navigate to WishList Fragment
+//                fragment = new WishList();
+//                fragmentManager.beginTransaction()
+//                        .replace(R.id.main_fragment, fragment)
+//                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//                        .addToBackStack(getString(R.string.actionHome)).commit();
+//
+//                drawerLayout.closeDrawers();
+//
+//            }
+//            else {
+//                // Navigate to Login Activity
+//                startActivity(new Intent(MainActivity.this, Login.class));
+//                finish();
+//                overridePendingTransition(R.anim.enter_from_left, R.anim.exit_out_left);
+//            }
 
-            }
-            else {
-                // Navigate to Login Activity
-                startActivity(new Intent(MainActivity.this, Login.class));
-                finish();
-                overridePendingTransition(R.anim.enter_from_left, R.anim.exit_out_left);
-            }
-
-        }
-        else if (selectedItem.equalsIgnoreCase(getString(R.string.actionOrders))) {
-            if (ConstantValues.IS_USER_LOGGED_IN) {
-                mSelectedItem = selectedItem;
-
-                // Navigate to My_Orders Fragment
-                fragment = new My_Orders();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.main_fragment, fragment)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .addToBackStack(getString(R.string.actionHome)).commit();
-
-                drawerLayout.closeDrawers();
-
-            }
-            else {
-                // Navigate to Login Activity
-                startActivity(new Intent(MainActivity.this, Login.class));
-                finish();
-                overridePendingTransition(R.anim.enter_from_left, R.anim.exit_out_left);
-            }
-
-        }
-        else if (selectedItem.equalsIgnoreCase(getString(R.string.actionAddresses))) {
-            if (ConstantValues.IS_USER_LOGGED_IN) {
-                mSelectedItem = selectedItem;
-
-                // Navigate to My_Addresses Fragment
-                fragment = new My_Addresses();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.main_fragment, fragment)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .addToBackStack(getString(R.string.actionHome)).commit();
-
-                drawerLayout.closeDrawers();
-
-            }
-            else {
-                // Navigate to Login Activity
-                startActivity(new Intent(MainActivity.this, Login.class));
-                finish();
-                overridePendingTransition(R.anim.enter_from_left, R.anim.exit_out_left);
-            }
-
-        }
-        else if (selectedItem.equalsIgnoreCase(getString(R.string.actionFavourites))) {
-            if (ConstantValues.IS_USER_LOGGED_IN) {
-                mSelectedItem = selectedItem;
-
-                // Navigate to WishList Fragment
-                fragment = new WishList();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.main_fragment, fragment)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .addToBackStack(getString(R.string.actionHome)).commit();
-
-                drawerLayout.closeDrawers();
-
-            }
-            else {
-                // Navigate to Login Activity
-                startActivity(new Intent(MainActivity.this, Login.class));
-                finish();
-                overridePendingTransition(R.anim.enter_from_left, R.anim.exit_out_left);
-            }
-
-        }
+//        }
         else if (selectedItem.equalsIgnoreCase(getString(R.string.actionNews))) {
             mSelectedItem = selectedItem;
 
@@ -1285,14 +1287,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int wishlist_count /*= db.getWishlistSize()*/ = 0;
         ((TextView) menu.findItem(R.id.drawerCart).getActionView().findViewById(R.id.counter)).setText(String.valueOf(wishlist_count));
 
-        int order_count /*= db.getWishlistSize()*/ = 0;
-        ((TextView) menu.findItem(R.id.drawerOrders).getActionView().findViewById(R.id.counter)).setText(String.valueOf(order_count));
-
-        int address_count /*= db.getWishlistSize()*/ = 0;
-        ((TextView) menu.findItem(R.id.drawerAddresses).getActionView().findViewById(R.id.counter)).setText(String.valueOf(address_count));
-
-        int favour_count /*= db.getWishlistSize()*/ = 0;
-        ((TextView) menu.findItem(R.id.drawerFavourite).getActionView().findViewById(R.id.counter)).setText(String.valueOf(favour_count));
+//        int order_count /*= db.getWishlistSize()*/ = 0;
+//        ((TextView) menu.findItem(R.id.drawerOrders).getActionView().findViewById(R.id.counter)).setText(String.valueOf(order_count));
+//
+//        int address_count /*= db.getWishlistSize()*/ = 0;
+//        ((TextView) menu.findItem(R.id.drawerAddresses).getActionView().findViewById(R.id.counter)).setText(String.valueOf(address_count));
+//
+//        int favour_count /*= db.getWishlistSize()*/ = 0;
+//        ((TextView) menu.findItem(R.id.drawerFavourite).getActionView().findViewById(R.id.counter)).setText(String.valueOf(favour_count));
 
         int news_count /*= db.getWishlistSize()*/ = 0;
         ((TextView) menu.findItem(R.id.drawerNews).getActionView().findViewById(R.id.counter)).setText(String.valueOf(news_count));
@@ -1370,38 +1372,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 //drawerLayout.closeDrawers();
 
                 break;
-            case R.id.drawerOrders:
-                fragment = new My_Orders();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.main_fragment, fragment)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .addToBackStack(getString(R.string.actionHome)).commit();
-
-                //drawerLayout.closeDrawers();
-                break;
-            case R.id.drawerAddresses:
-                fragment = new My_Addresses();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.main_fragment, fragment)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .addToBackStack(getString(R.string.actionHome)).commit();
-
-                //drawerLayout.closeDrawers();
-                break;
-            case R.id.drawerFavourite:
-                if (ConstantValues.IS_USER_LOGGED_IN) {
-                    // mSelectedItem = selectedItem;
-
-                    // Navigate to WishList Fragment
-                    fragment = new WishList();
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.main_fragment, fragment)
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                            .addToBackStack(getString(R.string.actionHome)).commit();
-
-                  //  drawerLayout.closeDrawers();
-                }
-                break;
+//            case R.id.drawerOrders:
+//                fragment = new My_Orders();
+//                fragmentManager.beginTransaction()
+//                        .replace(R.id.main_fragment, fragment)
+//                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//                        .addToBackStack(getString(R.string.actionHome)).commit();
+//
+//                //drawerLayout.closeDrawers();
+//                break;
+//            case R.id.drawerAddresses:
+//                fragment = new My_Addresses();
+//                fragmentManager.beginTransaction()
+//                        .replace(R.id.main_fragment, fragment)
+//                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//                        .addToBackStack(getString(R.string.actionHome)).commit();
+//
+//                //drawerLayout.closeDrawers();
+//                break;
+//            case R.id.drawerFavourite:
+//                if (ConstantValues.IS_USER_LOGGED_IN) {
+//                    // mSelectedItem = selectedItem;
+//
+//                    // Navigate to WishList Fragment
+//                    fragment = new WishList();
+//                    fragmentManager.beginTransaction()
+//                            .replace(R.id.main_fragment, fragment)
+//                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//                            .addToBackStack(getString(R.string.actionHome)).commit();
+//
+//                  //  drawerLayout.closeDrawers();
+//                }
+//                break;
             case R.id.drawerIntro:
                 startActivity(new Intent(getBaseContext(), IntroScreen.class));
                 break;

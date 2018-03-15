@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -47,6 +48,7 @@ import com.cairohat.app.App;
 import com.cairohat.app.MyAppPrefsManager;
 import com.cairohat.constant.ConstantValues;
 import com.cairohat.customs.CircularImageView;
+import com.cairohat.customs.DialogLoader;
 import com.cairohat.customs.LocaleHelper;
 import com.cairohat.customs.NotificationBadger;
 import com.cairohat.databases.User_Info_DB;
@@ -75,6 +77,8 @@ import com.cairohat.fragments.WishList;
 import com.cairohat.models.device_model.AppSettingsDetails;
 import com.cairohat.models.drawer_model.Drawer_Items;
 import com.cairohat.models.user_model.UserDetails;
+import com.cairohat.models.user_model.Userdata2;
+import com.cairohat.network.APIClient;
 import com.cairohat.receivers.AlarmReceiver;
 import com.cairohat.utils.NotificationScheduler;
 import com.cairohat.utils.Utilities;
@@ -88,7 +92,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ProfileActivity extends AppCompatActivity{
+import retrofit2.Call;
+import retrofit2.Callback;
+
+public class ProfileActivity extends AppCompatActivity {
 
 
     NavigationView navigation;
@@ -96,65 +103,116 @@ public class ProfileActivity extends AppCompatActivity{
     private ActionBarDrawerToggle mToggle;
     Toolbar toolbar;
     ActionBar actionBar;
+    LinearLayout drawer_header;
+    View header;
+    SharedPreferences sharedPreferences;
+    DialogLoader dialogLoader;
+    String username;
+    String usermail;
+    CircularImageView drawer_profile_image;
+    TextView drawer_profile_name;
+    TextView drawer_profile_email;
+    String imagee;
 
+
+    @SuppressLint("WrongViewCast")
     @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_profile);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_profile);
         setTitle("Add Advertisement");
 
         toolbar = (Toolbar) findViewById(R.id.myToolbar);
+        sharedPreferences = getSharedPreferences("UserInfo", MODE_PRIVATE);
+
+
         setSupportActionBar(toolbar);
         actionBar = getSupportActionBar();
         actionBar.setTitle("My Profile");
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        mdrawerLayout= (LinearLayout) findViewById(R.id.drawer_layout);
-        navigation= (NavigationView) findViewById(R.id.navigation_view);
-        Menu nav_Menu = navigation.getMenu();
+        mdrawerLayout = (LinearLayout) findViewById(R.id.drawer_layout);
+        navigation = (NavigationView) findViewById(R.id.navigation_view);
+        dialogLoader = new DialogLoader(ProfileActivity.this);
+
+
+//        Menu nav_Menu = navigation.getMenu();
 
 //        mToggle=new ActionBarDrawerToggle(ProfileActivity.this,mdrawerLayout,R.string.open,R.string.close);
 //        mdrawerLayout.addDrawerListener(mToggle);
 //        mToggle.syncState();
 
 
+        header = navigation.getHeaderView(0);
+        drawer_header = header.findViewById(R.id.drawer_header);
+        drawer_profile_image = header.findViewById(R.id.drawer_profile_image);
+        drawer_profile_name = header.findViewById(R.id.drawer_profile_name);
+        drawer_profile_email = header.findViewById(R.id.drawer_profile_email);
 
 
+        setCustomerInfo();
+        // Check if the User is Authenticated
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener(){
+            navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
 
-            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int id = item.getItemId();
-                Fragment fragment;
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                switch (id) {
-                    case R.id.prof_account:
-                        fragment = new Update_Account();
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.main_fragment, fragment)
-                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                .commit();
+                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    int id = item.getItemId();
+                    Fragment fragment;
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    switch (id) {
 
-                        break;
-                    case R.id.prof_addresses:
+                        case R.id.prof_account:
+                            fragment = new Update_Account();
+                            fragmentManager.beginTransaction()
+                                    .replace(R.id.main_fragment, fragment)
+                                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                    .commit();
+                            break;
 
-                        break;
-                    case R.id.prof_favourites:
 
-                        break;
-                    
+                        case R.id.prof_addresses:
+                            fragment = new My_Addresses();
+                            fragmentManager.beginTransaction()
+                                    .replace(R.id.main_fragment, fragment)
+                                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                    .commit();
+                            break;
+
+
+                        case R.id.prof_favourites:
+                            fragment = new WishList();
+                            fragmentManager.beginTransaction()
+                                    .replace(R.id.main_fragment, fragment)
+                                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                    .commit();
+                            break;
+
+
+                        case R.id.prof_orders:
+                            fragment = new My_Orders();
+                            fragmentManager.beginTransaction()
+                                    .replace(R.id.main_fragment, fragment)
+                                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                    .commit();
+                            break;
+
+                    }
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
 
 
-    }
+        }
+
+
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -167,14 +225,69 @@ public class ProfileActivity extends AppCompatActivity{
         }
         return super.onOptionsItemSelected(item);
     }
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        if(mToggle.onOptionsItemSelected(item)){
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
+
+    private void setCustomerInfo() {
+        username = sharedPreferences.getString("userName", null);
+        usermail = sharedPreferences.getString("userEmail", null);
+        dialogLoader.showProgressDialog();
+        Call<Userdata2> call = APIClient.getInstance()
+                .processProfile
+                        (
+                                usermail.trim()
+
+                        );
+
+        call.enqueue(new Callback<Userdata2>() {
+            @Override
+            public void onResponse(Call<Userdata2> call, retrofit2.Response<Userdata2> response) {
+                dialogLoader.hideProgressDialog();
+                Userdata2 userDetails = response.body();
+
+//                Glide.with(ProfileActivity.this)
+//                        .load(ConstantValues.URL+userInfo.getCustomersPicture()).asBitmap()
+//                        .placeholder(R.drawable.profile)
+//                        .error(R.drawable.profile)
+//                        .into(drawer_profile_image);
+//
+                imagee = userDetails.getimage();
+                if (ConstantValues.IS_USER_LOGGED_IN) {
+                    // Check User's Info from SharedPreferences
+                    if (sharedPreferences.getString("userEmail", null) != null) {
 
 
 
+
+                        // Set User's Name, Email and Photo
+                        drawer_profile_email.setText(username);
+                        drawer_profile_name.setText(usermail);
+//                Glide.with(this)
+//                        .load(ConstantValues.URL+userInfo.getCustomersPicture()).asBitmap()
+//                        .placeholder(R.drawable.profile)
+//                        .error(R.drawable.profile)
+//                        .into(drawer_profile_image);
+
+                        Glide.with(ProfileActivity.this).load(Uri.parse(imagee)).into(drawer_profile_image);
+                        Toast.makeText(ProfileActivity.this, imagee, Toast.LENGTH_LONG).show();
+
+
+                    } else {
+                        // Set Default Name, Email and Photo
+                        drawer_profile_image.setImageResource(R.drawable.profile);
+                        drawer_profile_name.setText(getString(R.string.login_or_signup));
+                        drawer_profile_email.setText(getString(R.string.login_or_create_account));
+                    }
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Userdata2> call, Throwable t) {
+                Toast.makeText(ProfileActivity.this, "failure :" + t.toString(), Toast.LENGTH_LONG).show();
+
+
+            }
+        });
+
+    }
 }

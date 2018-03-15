@@ -8,7 +8,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
 
 
@@ -16,7 +17,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:background="#DADCDB"
+            android:id="@+id/drawer_header"
+            android:background="#E6E6E6"
             android:paddingEnd="0dp"
             android:paddingTop="5dp"
             android:paddingStart="15dp"
