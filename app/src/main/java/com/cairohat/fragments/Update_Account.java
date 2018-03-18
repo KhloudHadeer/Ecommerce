@@ -24,6 +24,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.cairohat.activities.Login;
+import com.cairohat.activities.ProfileActivity;
 import com.cairohat.app.MyAppPrefsManager;
 import com.cairohat.customs.CircularImageView;
 
@@ -615,6 +617,17 @@ public class Update_Account extends Fragment {
     }
 
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                Intent intent=new Intent(getContext(),ProfileActivity.class);
+                getContext().startActivity(intent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     //*********** Validate Password Info Form Inputs ********//
 

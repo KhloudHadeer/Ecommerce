@@ -184,7 +184,7 @@ public class SplashScreen extends Activity {
                                         myTask = new MyTask();
                                         myTask.execute();
                                     }
-                                }, 3000);
+                                }, 0001);
                             }
                         })
                         .show();

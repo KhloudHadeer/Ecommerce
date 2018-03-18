@@ -26,23 +26,23 @@
             android:icon="@drawable/ic_account"
             android:title="@string/actionProfile" />
 
-        <item
-            android:id="@+id/drawerOrders"
-            android:icon="@drawable/ic_order"
-            app:actionLayout="@layout/menu_counter_plain_"
-            android:title="@string/actionOrders" />
+        <!--<item-->
+            <!--android:id="@+id/drawerOrders"-->
+            <!--android:icon="@drawable/ic_order"-->
+            <!--app:actionLayout="@layout/menu_counter_plain_"-->
+            <!--android:title="@string/actionOrders" />-->
 
-        <item
-            android:id="@+id/drawerAddresses"
-            android:icon="@drawable/ic_location"
-            app:actionLayout="@layout/menu_counter_plain_"
-            android:title="@string/actionAddresses" />
+        <!--<item-->
+            <!--android:id="@+id/drawerAddresses"-->
+            <!--android:icon="@drawable/ic_location"-->
+            <!--app:actionLayout="@layout/menu_counter_plain_"-->
+            <!--android:title="@string/actionAddresses" />-->
 
-        <item
-            android:id="@+id/drawerFavourite"
-            android:icon="@drawable/ic_favorite"
-            app:actionLayout="@layout/menu_counter_plain_"
-            android:title="@string/actionFavourites" />
+        <!--<item-->
+            <!--android:id="@+id/drawerFavourite"-->
+            <!--android:icon="@drawable/ic_favorite"-->
+            <!--app:actionLayout="@layout/menu_counter_plain_"-->
+            <!--android:title="@string/actionFavourites" />-->
 
         <item
             android:id="@+id/drawerIntro"
