@@ -107,6 +107,7 @@ public class RecentlyViewed extends Fragment {
 //        if (productData.getProductData().size() > 0 ) {
 //            recentViewedList.add(productData.getProductData().get(0));
 //        }
+        recentViewedList.add(productData);
 
         // Notify the Adapter
         productAdapter.notifyDataSetChanged();
@@ -118,24 +119,22 @@ public class RecentlyViewed extends Fragment {
 
     public void RequestProductDetails(final int products_id) {
 
-        GetAllProducts getAllProducts = new GetAllProducts();
-        getAllProducts.setPageNumber(0);
-        getAllProducts.setLanguageId(ConstantValues.LANGUAGE_ID);
-        getAllProducts.setCustomersId(customerID);
-        getAllProducts.setProductsId(String.valueOf(products_id));
-
+//        GetAllProducts getAllProducts = new GetAllProducts();
+//        getAllProducts.setPageNumber(0);
+//        getAllProducts.setLanguageId(ConstantValues.LANGUAGE_ID);
+//        getAllProducts.setCustomersId(customerID);
+//        getAllProducts.setProductsId(String.valueOf(products_id));
+//
 
         Call<ProductData> call = APIClient.getInstance()
-                .getAllProducts
-                        (
-                                getAllProducts
-                        );
+                .getproductdetail(products_id);
 
         call.enqueue(new Callback<ProductData>() {
             @Override
             public void onResponse(Call<ProductData> call, retrofit2.Response<ProductData> response) {
                 
                 if (response.isSuccessful()) {
+                    addRecentProducts(response.body());
                     
 //                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
 //                        // Product's Details has been returned.

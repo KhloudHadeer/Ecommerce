@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
@@ -97,22 +98,22 @@ public class ProductAdapterRemovable extends RecyclerView.Adapter<ProductAdapter
 
 
         // Set Product Image on ImageView with Glide Library
-//        Glide.with(context)
-//                .load(ConstantValues.URL+product.getProductsImage())
-//                .listener(new RequestListener<String, GlideDrawable>() {
-//                    @Override
-//                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-//                        holder.cover_loader.setVisibility(View.GONE);
-//                        return false;
-//                    }
-//
-//                    @Override
-//                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-//                        holder.cover_loader.setVisibility(View.GONE);
-//                        return false;
-//                    }
-//                })
-//                .into(holder.product_thumbnail);
+        Glide.with(context)
+                .load(product.getImages().get(0).getImage())
+                .listener(new RequestListener<String, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                        holder.cover_loader.setVisibility(View.GONE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        holder.cover_loader.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
+                .into(holder.product_thumbnail);
 
 
         holder.product_title.setText(product.getName());
@@ -120,23 +121,34 @@ public class ProductAdapterRemovable extends RecyclerView.Adapter<ProductAdapter
 
 
         // Calculate the Discount on Product with static method of Helper class
+        if(product.getSale_price() == ""){
+            product.setSale_price(String.valueOf(0));
+        }
         String discount = Utilities.checkDiscount(product.getRegular_price(), product.getSale_price());
 
         if (discount != null) {
-            // Set Product's Price
-            holder.product_price_old.setVisibility(View.VISIBLE);
-            holder.product_price_old.setText(ConstantValues.CURRENCY_SYMBOL + product.getRegular_price());
-            holder.product_price_new.setText(ConstantValues.CURRENCY_SYMBOL + product.getSale_price());
+            if (discount.equals("100% OFF")) {
+                holder.product_tag_discount.setVisibility(View.GONE);
+                holder.product_tag_discount_text.setVisibility(View.GONE);
+                holder.product_price_old.setVisibility(View.GONE);
+                holder.product_price_new.setText(ConstantValues.CURRENCY_SYMBOL + product.getRegular_price());
 
-            holder.product_tag_new.setVisibility(View.GONE);
-            holder.product_tag_new_text.setVisibility(View.GONE);
+            } else {
+                // Set Product's Price
+                holder.product_price_old.setVisibility(View.VISIBLE);
+                holder.product_price_old.setText(ConstantValues.CURRENCY_SYMBOL + product.getRegular_price());
+                holder.product_price_new.setText(ConstantValues.CURRENCY_SYMBOL + product.getSale_price());
 
-            // Set Discount Tag and its Text
-            holder.product_tag_discount.setVisibility(View.VISIBLE);
-            holder.product_tag_discount_text.setVisibility(View.VISIBLE);
-            holder.product_tag_discount_text.setText(discount);
+                holder.product_tag_new.setVisibility(View.GONE);
+                holder.product_tag_new_text.setVisibility(View.GONE);
 
-        } else {
+                // Set Discount Tag and its Text
+                holder.product_tag_discount.setVisibility(View.VISIBLE);
+                holder.product_tag_discount_text.setVisibility(View.VISIBLE);
+                holder.product_tag_discount_text.setText(discount);
+
+            }
+        }else {
 
             // Check if the Product is Newly Added with the help of static method of Helper class
 //            if (Utilities.checkNewProduct(product.getProductsDateAdded())) {

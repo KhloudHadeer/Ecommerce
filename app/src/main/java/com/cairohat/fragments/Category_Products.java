@@ -38,6 +38,7 @@ import com.cairohat.customs.FilterDialog;
 import com.cairohat.models.filter_model.post_filters.PostFilterData;
 import com.cairohat.models.product_model.ProductData;
 import com.cairohat.models.product_model.ProductDetails;
+import com.cairohat.models.search_model.Product;
 import com.cairohat.network.APIClient;
 
 import retrofit2.Call;
@@ -76,6 +77,7 @@ public class Category_Products extends Fragment {
 
     ProductAdapter productAdapter;
     List<ProductData> categoryProductsList;
+    List<ProductData> categoryProductsList1 = new ArrayList<>();
     List<FilterDetails> filtersList = new ArrayList<>();
 
     GridLayoutManager gridLayoutManager;
@@ -315,9 +317,11 @@ public class Category_Products extends Fragment {
                         else {
                             sortBy = sortArray[0];
                         }
+
+                        categoryProductsList1.addAll(categoryProductsList);
                         
 
-                        //categoryProductsList.clear();
+                        categoryProductsList.clear();
 //                        if(isFilterApplied){
 //                            // Initialize LoadMoreTask to Load More Products from Server against some Filters
 //                            RequestFilteredProducts(pageNo, sortBy, filters);
@@ -435,13 +439,16 @@ public class Category_Products extends Fragment {
 //        getAllProducts.setType(sortBy);
 
 
-        Call<ProductDetails> call = null;/*APIClient.getInstance()
+        Call<ProductDetails> call = null;
+        Call<List<ProductData>> call1 = null;
+        /*APIClient.getInstance()
+
                 .getproductbycategory(categoryID  , pageNumber);*/
        // numpage++;
 
         if(sortBy.equalsIgnoreCase(sortArray[0])){
             call = APIClient.getInstance()
-                    .getproductbycategory(categoryID  , pageNumber);;
+                    .getproductbycategory(categoryID  , pageNumber);
 //            Toast.makeText(getContext() ,sortArray[0] , Toast.LENGTH_LONG ).show();
 
         }else if(sortBy.equalsIgnoreCase(sortArray[1])){
@@ -466,58 +473,40 @@ public class Category_Products extends Fragment {
         }else if(sortBy.equalsIgnoreCase(sortArray[5])){
             call = APIClient.getInstance()
                     .getproductbycategory(categoryID  , pageNumber);
-            Call<List<ProductData>> call1 = APIClient.getInstance().getbestsales(pageNumber);
-            final List<ProductData> products = new ArrayList<>();
-            call1.enqueue(new Callback<List<ProductData>>() {
-                @Override
-                public void onResponse(Call<List<ProductData>> call, Response<List<ProductData>> response) {
-                   for(int i=0; i<categoryProductsList.size(); i++){
-                       if(response.body().get(i).getId() == categoryProductsList.get(i).getId()){
-                           products.add(response.body().get(i));
+            call1 = APIClient.getInstance().getbestsales(pageNumber);
 
-                       }
-                   }
-                   //categoryProductsList.clear();
-                   addCategoryProducts(products);
-                }
-
-                @Override
-                public void onFailure(Call<List<ProductData>> call, Throwable t) {
-
-                }
-            });
          //   call = APIClient.getInstance().getbestsales(pageNumber);
 //            Toast.makeText(getContext() ,sortArray[5] , Toast.LENGTH_LONG ).show();
 
 
         }else if(sortBy.equalsIgnoreCase(sortArray[6])){
-            call = APIClient.getInstance().getproductbycategory(categoryID  , pageNumber);
-
-            Call<List<ProductData>> call1 = APIClient.getInstance().getproductsdeals(pageNo+1);
-            final List<ProductData> products = new ArrayList<>();
-            call1.enqueue(new Callback<List<ProductData>>() {
-                @Override
-                public void onResponse(Call<List<ProductData>> call, Response<List<ProductData>> response) {
-                    for(int i=0; i<response.body().size(); i++){
-                        if(response.body().get(i).getName() == categoryProductsList.get(i).getName()){
-                            products.add(response.body().get(i));
-                            addCategoryProducts(products);
-                            Toast.makeText(getContext() , products.size()+"" , Toast.LENGTH_LONG).show();
-
-                        }
-
-
-                    }
-                    //categoryProductsList.clear();
-
-                }
-
-                @Override
-                public void onFailure(Call<List<ProductData>> call, Throwable t) {
-                    Toast.makeText(getContext() , "error"+t , Toast.LENGTH_LONG).show();
-
-                }
-            });
+//            call = APIClient.getInstance().getproductbycategory(categoryID  , pageNumber);
+//
+//            Call<List<ProductData>> call1 = APIClient.getInstance().getproductsdeals(pageNo+1);
+//            final List<ProductData> products = new ArrayList<>();
+//            call1.enqueue(new Callback<List<ProductData>>() {
+//                @Override
+//                public void onResponse(Call<List<ProductData>> call, Response<List<ProductData>> response) {
+//                    for( ProductData prod : categoryProductsList1 ) {
+//                        for (ProductData pr : response.body()) {
+//                            if (pr.getId() ==prod.getId()) {
+//                                products.add(pr);
+//
+//                            }
+//                        }
+//                    }
+//                    addCategoryProducts(products);
+//
+//                    //categoryProductsList.clear();
+//
+//                }
+//
+//                @Override
+//                public void onFailure(Call<List<ProductData>> call, Throwable t) {
+//                    Toast.makeText(getContext() , "error"+t , Toast.LENGTH_LONG).show();
+//
+//                }
+//            });
            // call = APIClient.getInstance().getproductsdeals(pageNumber);
 //            Toast.makeText(getContext() ,sortArray[6] , Toast.LENGTH_LONG ).show();
 
@@ -577,6 +566,8 @@ public class Category_Products extends Fragment {
                     Toast.makeText(getContext(), "NetworkCallFailure : "+t, Toast.LENGTH_LONG).show();
             }
         });
+
+
     }
 
 
@@ -726,6 +717,7 @@ public class Category_Products extends Fragment {
 //            else {
                 // Request for Products of given Category, based on PageNo.
                 RequestCategoryProducts(page_number, sortBy);
+
            // }
 
             return "All Done!";

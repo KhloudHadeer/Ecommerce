@@ -226,6 +226,10 @@ public interface APIRequests {
                                               @Query("post_num_page") int numpage);
 
 
+    @GET("wooconnector/product/getproduct")
+    Call<ProductData> getproductdetail(@Query("product_id") int id);
+
+
 
     @GET("wooconnector/product/getdealofday")
     Call<List<ProductData>> getproductsdeals(@Query("post_num_page") int numpage);
