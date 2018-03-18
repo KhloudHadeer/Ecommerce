@@ -258,23 +258,23 @@ public class Product_Description extends Fragment {
                 CartProductAttributes productAttribute = new CartProductAttributes();
         
                 // Get Name and First Value of current Attribute
-                Option option = attributesList.get(i).getOption();
-                Value value = attributesList.get(i).getValues().get(0);
-        
+               // Option option = attributesList.get(i).getOption();
+                String value = attributesList.get(i).getoptions().get(0);
+
         
                 // Add the Attribute's Value Price to the attributePrices
-                String attrPrice = value.getPricePrefix() + value.getPrice();
-                attributesPrice += Double.parseDouble(attrPrice);
+               // String attrPrice = value.getPricePrefix() + value.getPrice();
+               // attributesPrice += Double.parseDouble(attrPrice);
         
         
                 // Add Value to new List
-                List<Value> valuesList = new ArrayList<>();
+                List<String> valuesList = new ArrayList<>();
                 valuesList.add(value);
         
         
                 // Set the Name and Value of Attribute
-                productAttribute.setOption(option);
-                productAttribute.setValues(valuesList);
+               // productAttribute.setOption(option);
+               // productAttribute.setValues(valuesList);
         
         
                 // Add current Attribute to selectedAttributesList

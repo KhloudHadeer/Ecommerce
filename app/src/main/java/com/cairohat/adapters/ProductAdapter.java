@@ -33,6 +33,7 @@ import com.bumptech.glide.request.target.Target;
 
 import com.cairohat.activities.MainActivity;
 
+import com.cairohat.databases.Product_Fav_DB;
 import com.cairohat.models.product_model.Option;
 import com.cairohat.models.product_model.ProductData;
 import com.cairohat.models.product_model.Value;
@@ -222,7 +223,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
                             holder.product_like_btn.setChecked(true);
 
                             // Like the Product for the User with the static method of Product_Description
-                            Product_Description.LikeProduct(product.getId(), customerID, context, view);
+                            Product_Fav_DB product_fav_db = new Product_Fav_DB();
+                            product_fav_db.addSaveItem(product);
+                            List<ProductData> products = new ArrayList<>();
+                            products.addAll(product_fav_db.getSavedItems());
+                            Toast.makeText(context , products.size()+"" , Toast.LENGTH_LONG).show();
+                           // Product_Description.LikeProduct(product.getId(), customerID, context, view);
                         }
                         else {
                            // product.setIsLiked("0");
@@ -483,23 +489,23 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
             CartProductAttributes productAttribute = new CartProductAttributes();
 
             // Get Name and First Value of current Attribute
-            Option option = product.getAttributes().get(i).getOption();
-            Value value = product.getAttributes().get(i).getValues().get(0);
+//            Option option = product.getAttributes().get(i).getOption();
+            String value = product.getAttributes().get(i).getoptions().get(0);
 
 
             // Add the Attribute's Value Price to the attributePrices
-            String attrPrice = value.getPricePrefix() + value.getPrice();
-            attributesPrice += Double.parseDouble(attrPrice);
+////            String attrPrice = value.getPricePrefix() + value.getPrice();
+//            attributesPrice += Double.parseDouble(attrPrice);
 
 
             // Add Value to new List
-            List<Value> valuesList = new ArrayList<>();
+            List<String> valuesList = new ArrayList<>();
             valuesList.add(value);
 
 
             // Set the Name and Value of Attribute
-            productAttribute.setOption(option);
-            productAttribute.setValues(valuesList);
+           // productAttribute.setOption(option);
+           // productAttribute.setValues(valuesList);
 
 
             // Add current Attribute to selectedAttributesList

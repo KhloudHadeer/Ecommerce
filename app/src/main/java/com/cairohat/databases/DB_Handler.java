@@ -35,6 +35,7 @@ public class DB_Handler extends SQLiteOpenHelper {
         db.execSQL(User_Recents_DB.createTable());
         db.execSQL(User_Cart_DB.createTableCart());
         db.execSQL(User_Cart_DB.createTableCartAttributes());
+        db.execSQL(Product_Fav_DB.createTableSave());
     }
 
 
@@ -48,6 +49,7 @@ public class DB_Handler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + User_Recents_DB.TABLE_RECENTS);
         db.execSQL("DROP TABLE IF EXISTS " + User_Cart_DB.TABLE_CART);
         db.execSQL("DROP TABLE IF EXISTS " + User_Cart_DB.TABLE_CART_ATTRIBUTES);
+        db.execSQL("DROP TABLE IF EXISTS "  + Product_Fav_DB.TABLE_SAVE);
 
         // Create tables again
         onCreate(db);

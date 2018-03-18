@@ -171,9 +171,7 @@ public class Category_Products extends Fragment {
         productAdapter = new ProductAdapter(getContext(), categoryProductsList, false);
 
 
-        if(categoryProductsList.size() == 0){
-            emptyRecord.setVisibility(View.VISIBLE);
-        }
+
         
         setRecyclerViewLayoutManager(isGridView);
         category_products_recycler.setAdapter(productAdapter);
@@ -413,7 +411,7 @@ public class Category_Products extends Fragment {
 
 
         // Change the Visibility of emptyRecord Text based on CategoryProductsList's Size
-        if (productAdapter.getItemCount() == 0) {
+        if (categoryProductsList.size() == 0) {
             if (isFilterApplied) {
                 resetFiltersBtn.setVisibility(View.VISIBLE);
             }

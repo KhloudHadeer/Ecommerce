@@ -12,45 +12,69 @@ import com.google.gson.annotations.SerializedName;
 
 public class Attribute implements Parcelable {
 
-    @SerializedName("option")
-    @Expose
+    private int id;
+    private String name;
+    private List<String> options;
+
+
     private Option option;
-    @SerializedName("values")
-    @Expose
+
     private List<Value> values = new ArrayList<Value>();
 
 
+    public List<String> getOptions() {
+        return options;
+    }
+
+    public void setOptions(List<String> options) {
+        this.options = options;
+    }
+
+    public Option getOption() {
+        return option;
+    }
+
+    public void setOption(Option option) {
+        this.option = option;
+    }
+
+
+    public List<Value> getValues() {
+        return values;
+    }
+
+    public void setValues(List<Value> values) {
+        this.values = values;
+    }
 
     public Attribute() {
     }
 
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     /**
      * 
      * @return
      *     The option
      */
-    public Option getOption() {
-        return option;
-    }
 
-    /**
-     * 
-     * @param option
-     *     The option
-     */
-    public void setOption(Option option) {
-        this.option = option;
-    }
-
-    /**
-     * 
-     * @return
-     *     The values
-     */
-    public List<Value> getValues() {
-        return values;
+    public List<String> getoptions() {
+        return options;
     }
 
     /**
@@ -58,8 +82,8 @@ public class Attribute implements Parcelable {
      * @param values
      *     The values
      */
-    public void setValues(List<Value> values) {
-        this.values = values;
+    public void setoptions(List<String> values) {
+        this.options = values;
     }
 
 
@@ -78,8 +102,8 @@ public class Attribute implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel_out, int flags) {
-        parcel_out.writeParcelable(option, flags);
-        parcel_out.writeList(values);
+       // parcel_out.writeParcelable(option, flags);
+        parcel_out.writeList(options);
     }
 
 
@@ -106,10 +130,10 @@ public class Attribute implements Parcelable {
 
     protected Attribute(Parcel parcel_in) {
 
-        this.option = parcel_in.readParcelable(Option.class.getClassLoader());
+       // this.option = parcel_in.readParcelable(Option.class.getClassLoader());
 
-        this.values = new ArrayList<Value>();
-        parcel_in.readList(values, Value.class.getClassLoader());
+        this.options = new ArrayList<String>();
+        parcel_in.readList(options, Value.class.getClassLoader());
     }
 
 }
