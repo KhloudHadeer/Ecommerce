@@ -202,12 +202,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
             holder.product_like_btn.setOnCheckedChangeListener(null);
     
             // Check if Product is Liked
-//            if (product.getIsLiked().equalsIgnoreCase("1")) {
-//                holder.product_like_btn.setChecked(true);
-//            } else {
-//                holder.product_like_btn.setChecked(false);
-//            }
-    
+            if(product.getIsliked() == null){
+
+            }else
+            if (product.getIsliked().equalsIgnoreCase("1")) {
+                holder.product_like_btn.setChecked(true);
+            } else {
+                holder.product_like_btn.setChecked(false);
+            }
+//
     
             // Handle the Click event of product_like_btn ToggleButton
             holder.product_like_btn.setOnClickListener(new View.OnClickListener() {
@@ -219,14 +222,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
     
                         
                         if(holder.product_like_btn.isChecked()) {
-                           // product.setIsLiked("1");
+                            product.setIsliked("1");
                             holder.product_like_btn.setChecked(true);
 
                             // Like the Product for the User with the static method of Product_Description
                             Product_Fav_DB product_fav_db = new Product_Fav_DB();
-                            product_fav_db.addSaveItem(product);
+                            product_fav_db.addSaveItem(product , customerID);
                             List<ProductData> products = new ArrayList<>();
-                            products.addAll(product_fav_db.getSavedItems());
+                            products.addAll(product_fav_db.getSavedItems(customerID));
                             Toast.makeText(context , products.size()+"" , Toast.LENGTH_LONG).show();
                            // Product_Description.LikeProduct(product.getId(), customerID, context, view);
                         }
@@ -234,8 +237,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
                            // product.setIsLiked("0");
                             holder.product_like_btn.setChecked(false);
 
+                            Product_Fav_DB product_fav_db = new Product_Fav_DB();
+                            product_fav_db.deleteSavedItem(product.getId());
+
                             // Unlike the Product for the User with the static method of Product_Description
-                            Product_Description.UnlikeProduct(product.getId(), customerID, context, view);
+//                            Product_Description.UnlikeProduct(product.getId(), customerID, context, view);
+
                         }
 //
                     } else {
@@ -250,6 +257,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
                     }
                 }
             });
+
+
     
     
             // Handle the Click event of product_thumbnail ImageView

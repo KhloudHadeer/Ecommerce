@@ -177,15 +177,18 @@ public class ProfileActivity extends AppCompatActivity {
 
 
                         case R.id.prof_addresses:
+
                             fragment = new My_Addresses();
                             fragmentManager.beginTransaction()
                                     .replace(R.id.main_fragment, fragment)
                                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                     .commit();
+
                             break;
 
 
                         case R.id.prof_favourites:
+                            navigation.setVisibility(View.GONE);
                             fragment = new WishList();
                             fragmentManager.beginTransaction()
                                     .replace(R.id.main_fragment, fragment)

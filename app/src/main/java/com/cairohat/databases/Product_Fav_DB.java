@@ -31,6 +31,7 @@ public class Product_Fav_DB {
     public static final String SAVE_PRODUCT_TOTAL_PRICE     = "products_total_price";
     public static final String SAVE_PRODUCT_FINAL_PRICE     = "products_final_price";
     public static final String SAVE_PRODUCT_CUS_QUANTITY    = "products_customer_quantity";
+    public static final String SAVE_PRODUCT_CUSTOMER        = "products_customer";
 
 
     public static String createTableSave() {
@@ -47,14 +48,15 @@ public class Product_Fav_DB {
                 SAVE_PRODUCT_PRICE              + " TEXT," +
 
                 SAVE_PRODUCT_FINAL_PRICE        + " TEXT," +
-                SAVE_PRODUCT_TOTAL_PRICE        + " TEXT" +
+                SAVE_PRODUCT_TOTAL_PRICE        + " TEXT," +
+                SAVE_PRODUCT_CUSTOMER           + " TEXT"  +
 
                 ")";
     }
 
 
 
-    public void addSaveItem(ProductData savedproduct) {
+    public void addSaveItem(ProductData savedproduct , String customid) {
         // get and open SQLiteDatabase Instance from static method of DB_Manager class
         db = DB_Manager.getInstance().openDatabase();
 
@@ -74,6 +76,7 @@ public class Product_Fav_DB {
         // productValues.put(CART_PRODUCT_ATTR_PRICE,              cart.getCustomersBasketProduct().getAttributesPrice());
         productValues.put(SAVE_PRODUCT_FINAL_PRICE,             savedproduct.getPrice());
         productValues.put(SAVE_PRODUCT_TOTAL_PRICE,             savedproduct.getPrice());
+        productValues.put(SAVE_PRODUCT_CUSTOMER,                 customid  );
 //        productValues.put(CART_PRODUCT_DESCRIPTION,             cart.getCustomersBasketProduct().getShort_description());
 //        productValues.put(CART_CATEGORIES_ID,                   cart.getCustomersBasketProduct().getCategories().get(0).getId());
 //        productValues.put(CART_CATEGORIES_NAME,                 cart.getCustomersBasketProduct().getCategories().get(0).getName());
@@ -122,11 +125,11 @@ public class Product_Fav_DB {
 
 
 
-    public ArrayList<ProductData> getSavedItems() {
+    public ArrayList<ProductData> getSavedItems(String customerid) {
         // get and open SQLiteDatabase Instance from static method of DB_Manager class
         db = DB_Manager.getInstance().openDatabase();
 
-        Cursor cursor =  db.rawQuery( "SELECT * FROM "+ TABLE_SAVE, null);
+        Cursor cursor =  db.rawQuery( "SELECT * FROM "+ TABLE_SAVE + " WHERE " + SAVE_PRODUCT_CUSTOMER + " = ?", new String[]{customerid}, null);
 
         ArrayList<ProductData> savelist = new ArrayList<>();
 
@@ -213,6 +216,7 @@ public class Product_Fav_DB {
 //                cart.setCustomersBasketProductAttributes(cartProductAttributesList);
 //
 //                cartList.add(cart);
+                savelist.add(product);
 //
 //
             } while (cursor.moveToNext());
@@ -226,6 +230,15 @@ public class Product_Fav_DB {
     }
 
 
+    public void deleteSavedItem(int save_id) {
+        // get and open SQLiteDatabase Instance from static method of DB_Manager class
+        db = DB_Manager.getInstance().openDatabase();
 
+        db.delete(TABLE_SAVE, SAVE_PRODUCT_ID +" = ?", new String[]{String.valueOf(save_id)});
+       // db.delete(TABLE_CART_ATTRIBUTES, CART_TABLE_ID +" = ?", new String[]{String.valueOf(cart_id)});
+
+        // close the Database
+        DB_Manager.getInstance().closeDatabase();
+    }
 
 }

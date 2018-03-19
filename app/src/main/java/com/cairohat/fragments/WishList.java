@@ -26,6 +26,7 @@ import java.util.List;
 
 import com.cairohat.constant.ConstantValues;
 import com.cairohat.customs.DialogLoader;
+import com.cairohat.databases.Product_Fav_DB;
 import com.cairohat.models.product_model.GetAllProducts;
 import com.cairohat.customs.EndlessRecyclerViewScroll;
 import com.cairohat.adapters.ProductAdapterRemovable;
@@ -69,7 +70,7 @@ public class WishList extends Fragment {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getString(R.string.actionFavourites));
 
         // Get the CustomerID from SharedPreferences
-        customerID = this.getContext().getSharedPreferences("UserInfo", getContext().MODE_PRIVATE).getString("userID", "");
+        customerID = this.getContext().getSharedPreferences("UserInfo", getContext().MODE_PRIVATE).getString("userEmail", "");
 
 
         // Binding Layout Views
@@ -101,7 +102,6 @@ public class WishList extends Fragment {
 
 
         // Initialize the ProductAdapter and GridLayoutManager for RecyclerView
-        productAdapter = new ProductAdapterRemovable(getContext(), favouriteProductsList, false, false, emptyRecord);
         gridLayoutManager = new GridLayoutManager(getContext(), 2);
 
         
@@ -111,16 +111,16 @@ public class WishList extends Fragment {
 
 
         // Handle Scroll event of the RecyclerView
-        favourites_recycler.addOnScrollListener(new EndlessRecyclerViewScroll() {
-            @Override
-            public void onLoadMore(int current_page) {
-                progressBar.setVisibility(View.VISIBLE);
-
-                // Execute LoadMoreTask
-                new LoadMoreTask(current_page).execute();
-            }
-
-        });
+//        favourites_recycler.addOnScrollListener(new EndlessRecyclerViewScroll() {
+//            @Override
+//            public void onLoadMore(int current_page) {
+//                progressBar.setVisibility(View.VISIBLE);
+//
+//                // Execute LoadMoreTask
+//                new LoadMoreTask(current_page).execute();
+//            }
+//
+//        });
 
 
         return rootView;
@@ -130,18 +130,22 @@ public class WishList extends Fragment {
 
     //*********** Adds Products returned from the Server to the FavouriteProductsList ********//
 
-    private void addProducts(ProductData productData) {
+    private void addProducts(List<ProductData> productDataList) {
 
         // Add Products to favouriteProductsList from the List of ProductData
 //        for (int i = 0; i < productData.getProductData().size(); i++) {
 //            favouriteProductsList.add(productData.getProductData().get(i));
 //        }
 
+        favouriteProductsList.addAll(productDataList);
+        productAdapter = new ProductAdapterRemovable(getContext(), favouriteProductsList, false, false, emptyRecord);
+
+
         productAdapter.notifyDataSetChanged();
 
 
         // Change the Visibility of emptyRecord Text based on ProductList's Size
-        if (productAdapter.getItemCount() == 0) {
+        if (favouriteProductsList.size() == 0) {
             emptyRecord.setVisibility(View.VISIBLE);
         }
         else {
@@ -155,98 +159,107 @@ public class WishList extends Fragment {
 
     public void RequestWishList(int pageNumber) {
 
-        GetAllProducts getAllProducts = new GetAllProducts();
-        getAllProducts.setPageNumber(pageNumber);
-        getAllProducts.setLanguageId(ConstantValues.LANGUAGE_ID);
-        getAllProducts.setCustomersId(customerID);
-        getAllProducts.setType("wishlist");
 
 
-        Call<ProductData> call = APIClient.getInstance()
-                .getAllProducts
-                        (
-                                getAllProducts
-                        );
 
-        call.enqueue(new Callback<ProductData>() {
-            @Override
-            public void onResponse(Call<ProductData> call, retrofit2.Response<ProductData> response) {
+        Product_Fav_DB product_fav_db = new Product_Fav_DB();
+         addProducts(product_fav_db.getSavedItems(customerID));
+        dialogLoader.hideProgressDialog();
 
-                dialogLoader.hideProgressDialog();
+        //addProducts(favouriteProductsList);
 
-                // Check if the Response is successful
-                if (response.isSuccessful()) {
-//                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
+//        GetAllProducts getAllProducts = new GetAllProducts();
+//        getAllProducts.setPageNumber(pageNumber);
+//        getAllProducts.setLanguageId(ConstantValues.LANGUAGE_ID);
+//        getAllProducts.setCustomersId(customerID);
+//        getAllProducts.setType("wishlist");
 //
-//                        // Products have been returned. Add Products to the favouriteProductsList
-//                        addProducts(response.body());
 //
-//                    }
-//                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
-//                        addProducts(response.body());
-//                        Snackbar.make(rootView, response.body().getMessage(), Snackbar.LENGTH_LONG).show();
+//        Call<ProductData> call = APIClient.getInstance()
+//                .getAllProducts
+//                        (
+//                                getAllProducts
+//                        );
 //
-//                    }
-//                    else {
-//                        // Unable to get Success status
-//                        Snackbar.make(rootView, getString(R.string.unexpected_response), Snackbar.LENGTH_SHORT).show();
-//                    }
-    
-                    progressBar.setVisibility(View.GONE);
-    
-                }
-                else {
-                    Toast.makeText(getContext(), response.message(), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ProductData> call, Throwable t) {
-                dialogLoader.hideProgressDialog();
-                Toast.makeText(getContext(), "NetworkCallFailure : "+t, Toast.LENGTH_LONG).show();
-            }
-        });
+//        call.enqueue(new Callback<ProductData>() {
+//            @Override
+//            public void onResponse(Call<ProductData> call, retrofit2.Response<ProductData> response) {
+//
+//
+//
+//                // Check if the Response is successful
+//                if (response.isSuccessful()) {
+////                    if (response.body().getSuccess().equalsIgnoreCase("1")) {
+////
+////                        // Products have been returned. Add Products to the favouriteProductsList
+////                        addProducts(response.body());
+////
+////                    }
+////                    else if (response.body().getSuccess().equalsIgnoreCase("0")) {
+////                        addProducts(response.body());
+////                        Snackbar.make(rootView, response.body().getMessage(), Snackbar.LENGTH_LONG).show();
+////
+////                    }
+////                    else {
+////                        // Unable to get Success status
+////                        Snackbar.make(rootView, getString(R.string.unexpected_response), Snackbar.LENGTH_SHORT).show();
+////                    }
+//
+//                    progressBar.setVisibility(View.GONE);
+//
+//                }
+//                else {
+//                    Toast.makeText(getContext(), response.message(), Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ProductData> call, Throwable t) {
+//                dialogLoader.hideProgressDialog();
+//                Toast.makeText(getContext(), "NetworkCallFailure : "+t, Toast.LENGTH_LONG).show();
+//            }
+//        });
     }
 
 
 
     /*********** LoadMoreTask Used to Load more Products from the Server in the Background Thread using AsyncTask ********/
 
-    private class LoadMoreTask extends AsyncTask<String, Void, String> {
-
-        int page_number;
-
-        private LoadMoreTask(int page_number) {
-            this.page_number = page_number;
-        }
-
-
-        //*********** Runs on the UI thread before #doInBackground() ********//
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-        }
-
-
-        //*********** Performs some Processes on Background Thread and Returns a specified Result  ********//
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            // Request for User's Favourite Products
-            RequestWishList(page_number);
-
-            return "All Done!";
-        }
-
-
-        //*********** Runs on the UI thread after #doInBackground() ********//
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-        }
-    }
+//    private class LoadMoreTask extends AsyncTask<String, Void, String> {
+//
+//        int page_number;
+//
+//        private LoadMoreTask(int page_number) {
+//            this.page_number = page_number;
+//        }
+//
+//
+//        //*********** Runs on the UI thread before #doInBackground() ********//
+//
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//
+//        }
+//
+//
+//        //*********** Performs some Processes on Background Thread and Returns a specified Result  ********//
+//
+//        @Override
+//        protected String doInBackground(String... params) {
+//
+//            // Request for User's Favourite Products
+//            RequestWishList(page_number);
+//
+//            return "All Done!";
+//        }
+//
+//
+//        //*********** Runs on the UI thread after #doInBackground() ********//
+//
+//        @Override
+//        protected void onPostExecute(String result) {
+//            super.onPostExecute(result);
+//        }
+//    }
 }

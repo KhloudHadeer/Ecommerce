@@ -33,6 +33,16 @@ public class ProductData implements Parcelable {
     private String short_description;
     private int stock_quantity;
     private int customerquantity;
+    private String isliked;
+
+
+    public String getIsliked() {
+        return isliked;
+    }
+
+    public void setIsliked(String isliked) {
+        this.isliked = isliked;
+    }
 
     public int getCustomerquantity() {
         return customerquantity;

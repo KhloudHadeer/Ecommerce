@@ -157,7 +157,7 @@ public class Utilities {
                     @Override
                     public void onProviderDisabled(String provider) {}
                 };
-                locationManager.requestLocationUpdates(provider, 1000, 0, locationListener);
+                //locationManager.requestLocationUpdates(provider, 1000, 0, locationListener);
                 
                 if (gps_enabled) {
                     location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);

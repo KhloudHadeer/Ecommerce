@@ -29,6 +29,7 @@ import com.cairohat.R;
 
 import java.util.List;
 
+import com.cairohat.databases.Product_Fav_DB;
 import com.cairohat.models.product_model.ProductData;
 import com.cairohat.utils.Utilities;
 import com.cairohat.constant.ConstantValues;
@@ -211,7 +212,10 @@ public class ProductAdapterRemovable extends RecyclerView.Adapter<ProductAdapter
                 
                 } else {
                     // Unlike the Product for the User with the static method of Product_Description
-                    Product_Description.UnlikeProduct(product.getId(), customerID, context, view);
+
+                    Product_Fav_DB product_fav_db = new Product_Fav_DB();
+                    product_fav_db.deleteSavedItem(product.getId());
+//                    Product_Description.UnlikeProduct(product.getId(), customerID, context, view);
                 }
             
                 // Remove Product from productList List
