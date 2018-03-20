@@ -138,7 +138,7 @@ public class Top_Seller extends Fragment {
 //
 //                    }else {
                       addProducts(response.body());
-                      if(response.body().size() == 10){
+                      if(response.body().size() == 10 ){
                           new LoadMoreTask(page+1).execute();
                       }
 
@@ -170,12 +170,7 @@ public class Top_Seller extends Fragment {
     }
 
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        productAdapter.notifyDataSetChanged();
 
-    }
 
     private class LoadMoreTask extends AsyncTask<String, Void, String> {
 

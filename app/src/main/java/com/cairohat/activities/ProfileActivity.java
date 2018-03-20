@@ -168,6 +168,7 @@ public class ProfileActivity extends AppCompatActivity {
                     switch (id) {
 
                         case R.id.prof_account:
+                            navigation.setVisibility(View.GONE);
                             fragment = new Update_Account();
                             fragmentManager.beginTransaction()
                                     .replace(R.id.main_fragment, fragment)
@@ -177,6 +178,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
                         case R.id.prof_addresses:
+                            navigation.setVisibility(View.GONE);
 
                             fragment = new My_Addresses();
                             fragmentManager.beginTransaction()
@@ -198,6 +200,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
                         case R.id.prof_orders:
+                            navigation.setVisibility(View.GONE);
                             fragment = new My_Orders();
                             fragmentManager.beginTransaction()
                                     .replace(R.id.main_fragment, fragment)
